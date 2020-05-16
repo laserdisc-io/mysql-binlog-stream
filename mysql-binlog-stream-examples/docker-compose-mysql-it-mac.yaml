@@ -37,13 +37,5 @@ services:
       - |
         set -e
         echo 'Waiting for Mysql to be available'
-        maxTries=10
-        while [ "$$maxTries" -gt 0 ] && ! nc -z "$$DB_HOST" "$$DB_PORT"; do
-            sleep 1
-        done
-        echo
-        if [ "$$maxTries" -le 0 ]; then
-            echo >&2 'error: unable to contact Mysql after 10 tries'
-            exit 1
-        fi
+        sleep 3
         exec /opt/docker/bin/mysql-binlog-stream-examples

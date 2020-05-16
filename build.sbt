@@ -57,10 +57,6 @@ lazy val dockerPublishSettings = Seq(
   javaOptions        in Universal ++= Seq(
     "-J-XX:InitialRAMPercentage=70",
     "-J-XX:MaxRAMPercentage=85"
-  ),
-  dockerCommands ++= Seq(
-    ExecCmd("RUN", "apt-get", "update"),
-    ExecCmd("RUN", "apt-get", "install", "-y", "netcat")
   )
 )
 
