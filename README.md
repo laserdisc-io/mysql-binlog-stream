@@ -8,7 +8,7 @@ MysqlBinlogStream
               .through(streamEvents[IO](transactionState))
               .evalTap(msg => logger.info(s"received $msg"))
 ```
-Refer to [examples](examples) for complete snippet
+Refer to [examples](mysql-binlog-stream-examples) for complete snippet
 
 ### How to build and launch example
 
