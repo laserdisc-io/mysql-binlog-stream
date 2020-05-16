@@ -11,15 +11,39 @@ services:
       MYSQL_TCP_PORT: 3307
       MYSQL_ROOT_HOST: '%'
     command: --log-bin --server-id=1 --bind-address=0.0.0.0 --binlog-format=ROW --default-authentication-plugin=mysql_native_password -h 127.0.0.1
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d/:ro
+    healthcheck:
+      test: ["CMD", "mysql" ,"-e", "'select * from LastSchema.LastDBInsert'", "test"]
+      timeout: 20s
+      retries: 10
+      interval: 1m30s
 
   example:
     depends_on:
       - mysql
-    image: mysql-binlog-stream-examples:3b8fdddd
+    image: mysql-binlog-stream-examples:latest
     environment:
       DB_HOST: mysql
       DB_PORT: 3307
       DB_USER: root
       DB_PASSWORD: ''
-      DB_URL: jdbc:mysql://mysql:3307/test
+      DB_URL: jdbc:mysql://mysql:3307/test?useSSL=false
       DB_SCHEMA: test
+      USE_SSL: 'false'
+    entrypoint:
+      - bash
+      - -c
+      - |
+        set -e
+        echo 'Waiting for Mysql to be available'
+        maxTries=10
+        while [ "$$maxTries" -gt 0 ] && ! nc -z "$$DB_HOST" "$$DB_PORT"; do
+            sleep 1
+        done
+        echo
+        if [ "$$maxTries" -le 0 ]; then
+            echo >&2 'error: unable to contact Mysql after 10 tries'
+            exit 1
+        fi
+        exec /opt/docker/bin/mysql-binlog-stream-examples

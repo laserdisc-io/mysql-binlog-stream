@@ -28,11 +28,17 @@ object BinLogListener extends IOApp {
         env("DB_USER").as[TrimmedString],
         env("DB_PASSWORD"),
         env("DB_URL"),
-        env("DB_SCHEMA")
+        env("DB_SCHEMA"),
+        env("USE_SSL").as[Boolean]
       ).mapN {
-          case (host, port, user, password, url, schema) =>
+          case (host, port, user, password, url, schema, useSSL) =>
             (
-              BinLogConfig(host, user, password, schema, port = port),
+              BinLogConfig(host,
+                           user,
+                           password,
+                           schema,
+                           port = port,
+                           useSSL = useSSL),
               DbConfig(user, password, url, 1)
             )
         }
