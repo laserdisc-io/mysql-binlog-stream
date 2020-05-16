@@ -24,14 +24,15 @@ object BinLogListener extends IOApp {
     val confs =
       (
         env("DB_HOST").as[TrimmedString],
+        env("DB_PORT").as[Int],
         env("DB_USER").as[TrimmedString],
         env("DB_PASSWORD"),
         env("DB_URL"),
         env("DB_SCHEMA")
       ).mapN {
-          case (host, user, password, url, schema) =>
+          case (host, port, user, password, url, schema) =>
             (
-              BinLogConfig(host, user, password, schema),
+              BinLogConfig(host, user, password, schema, port = port),
               DbConfig(user, password, url, 1)
             )
         }

@@ -52,6 +52,7 @@ lazy val dockerPublishSettings = Seq(
   maintainer         in Docker := "Dmytro Semenov <sdo.semenov@gmail.com>",
   dockerBaseImage    := "openjdk:11",
   dockerExposedPorts in Docker := Seq(),
+  dockerUpdateLatest := true,
   javaOptions        in Universal ++= Seq(
     "-J-XX:InitialRAMPercentage=70",
     "-J-XX:MaxRAMPercentage=85"

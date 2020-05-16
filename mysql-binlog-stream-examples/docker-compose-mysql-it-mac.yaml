@@ -11,3 +11,15 @@ services:
       MYSQL_TCP_PORT: 3307
       MYSQL_ROOT_HOST: '%'
     command: --log-bin --server-id=1 --bind-address=0.0.0.0 --binlog-format=ROW --default-authentication-plugin=mysql_native_password -h 127.0.0.1
+
+  example:
+    depends_on:
+      - mysql
+    image: mysql-binlog-stream-examples:3b8fdddd
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3307
+      DB_USER: root
+      DB_PASSWORD: ''
+      DB_URL: jdbc:mysql://mysql:3307/test
+      DB_SCHEMA: test
