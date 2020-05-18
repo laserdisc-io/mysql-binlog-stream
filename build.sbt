@@ -4,8 +4,8 @@ import sbt.Keys.scalaSource
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-lazy val scala212               = "2.12.10"
-lazy val scala213               = "2.13.1"
+lazy val scala212               = "2.12.11"
+lazy val scala213               = "2.13.2"
 lazy val supportedScalaVersions = List(scala212, scala213)
 
 scalaVersion       in ThisBuild := scala213
