@@ -50,9 +50,9 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val dockerPublishSettings = Seq(
-  maintainer         in Docker := "Dmytro Semenov <sdo.semenov@gmail.com>",
+  maintainer         in Docker     := "Dmytro Semenov <sdo.semenov@gmail.com>",
   dockerBaseImage    := "openjdk:11",
-  dockerExposedPorts in Docker := Seq(),
+  dockerExposedPorts in Docker     := Seq(),
   dockerUpdateLatest := true,
   javaOptions        in Universal ++= Seq(
     "-J-XX:InitialRAMPercentage=70",
@@ -65,7 +65,12 @@ lazy val root = project
   .settings(commonSettings)
   .settings(crossScalaVersions := Nil)
   .settings(noPublishSettings)
-  .aggregate(`mysql-binlog-stream-shared`, `binlog-stream-models`, `binlog-stream`, `mysql-binlog-stream-examples`)
+  .aggregate(
+    `mysql-binlog-stream-shared`,
+    `binlog-stream-models`,
+    `binlog-stream`,
+    `mysql-binlog-stream-examples`
+  )
 
 lazy val `mysql-binlog-stream-examples` = (project in file("mysql-binlog-stream-examples"))
   .settings(

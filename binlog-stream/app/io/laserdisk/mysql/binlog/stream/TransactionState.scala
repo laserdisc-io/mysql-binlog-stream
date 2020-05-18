@@ -52,16 +52,6 @@ case class TransactionPackage(
 object TransactionState {
   type Row = Array[Option[Serializable]]
 
-  implicit val tableFilter: String => Boolean = { table =>
-    !Seq(
-      "triggered_queue_items",
-      "report_responses",
-      "report_requests",
-      "inventory_reports",
-      "wms_radial_inventories"
-    ).contains(table)
-  }
-
   def nextState(event: Event): State[TransactionState, Option[TransactionPackage]] =
     State[TransactionState, Option[TransactionPackage]] { implicit transactionState =>
       (event.getHeader[JEventHeaderV4], event.getData[EventData]) match {
@@ -125,10 +115,7 @@ object TransactionState {
     timestamp: Long,
     rows: List[Array[Serializable]],
     includedColumns: Array[Int]
-  )(
-    implicit transactionState: TransactionState,
-    tableFilter: String => Boolean
-  ): (TransactionState, Option[TransactionPackage]) = {
+  )(implicit transactionState: TransactionState): (TransactionState, Option[TransactionPackage]) = {
 
     val jsonRows = (for {
       tableName <- toTableName(tableId)
@@ -144,8 +131,7 @@ object TransactionState {
           includedColumns,
           (None, Some(nullsToOptions(row)))
         )
-      )
-      .filter(msg => tableFilter(msg.table))).getOrElse(Nil)
+      )).getOrElse(Nil)
 
     (
       transactionState
@@ -161,8 +147,7 @@ object TransactionState {
     beforeAfter: List[(Array[Serializable], Array[Serializable])],
     includedColumns: Array[Int]
   )(
-    implicit transactionState: TransactionState,
-    tableFilter: String => Boolean
+    implicit transactionState: TransactionState
   ): (TransactionState, Option[TransactionPackage]) = {
 
     val jsonRows = (for {
@@ -180,8 +165,7 @@ object TransactionState {
             includedColumns,
             (Some(nullsToOptions(before)), Some(nullsToOptions(after)))
           )
-      }
-      .filter(msg => tableFilter(msg.table))).getOrElse(Nil)
+      }).getOrElse(Nil)
 
     (
       transactionState.copy(
@@ -200,8 +184,7 @@ object TransactionState {
     rows: List[Array[Serializable]],
     includedColumns: Array[Int]
   )(
-    implicit transactionState: TransactionState,
-    tableFilter: String => Boolean
+    implicit transactionState: TransactionState
   ): (TransactionState, Option[TransactionPackage]) = {
     val jsonRows = (for {
       tableName <- toTableName(tableId)
@@ -217,8 +200,7 @@ object TransactionState {
           includedColumns,
           (Some(nullsToOptions(row)), None)
         )
-      )
-      .filter(msg => tableFilter(msg.table))).getOrElse(Nil)
+      )).getOrElse(Nil)
     (
       transactionState.copy(
         transactionEvents = transactionState.transactionEvents ++ jsonRows,
@@ -235,8 +217,7 @@ object TransactionState {
     offset: Long,
     sqlAction: String
   )(
-    implicit transactionState: TransactionState,
-    tableFilter: String => Boolean
+    implicit transactionState: TransactionState
   ): (TransactionState, Option[TransactionPackage]) = {
     val ddlEvent = Queue(
       EventMessage(
@@ -249,7 +230,7 @@ object TransactionState {
         Json.Null,
         Json.Null
       )
-    ).filter(msg => tableFilter(msg.table))
+    )
 
     val pack = transactionState
       .copy(
@@ -324,9 +305,11 @@ object TransactionState {
     }
 
     val pk = record match {
-      case (_, Some(after))     => Json.fromFields(extractPk(tableMeta, includedColumns, after))
-      case (Some(before), None) => Json.fromFields(extractPk(tableMeta, includedColumns, before))
-      case _                    => Json.Null
+      case (_, Some(after)) =>
+        Json.fromFields(extractPk(tableMeta, includedColumns, after))
+      case (Some(before), None) =>
+        Json.fromFields(extractPk(tableMeta, includedColumns, before))
+      case _ => Json.Null
     }
     EventMessage(
       table = tableMeta.name,
@@ -359,7 +342,10 @@ object TransactionState {
     includedColumns: Array[Int],
     record: Array[Option[Serializable]]
   ): Iterable[(String, Json)] =
-    includedColumns.map(i => tableMetadata.columns(i + 1)).zip(record).map(mapRawToMeta)
+    includedColumns
+      .map(i => tableMetadata.columns(i + 1))
+      .zip(record)
+      .map(mapRawToMeta)
 
   def mapRawToMeta: ((ColumnMetadata, Option[Serializable])) => (String, Json) = {
     case (metadata, Some(value)) =>
@@ -394,7 +380,8 @@ object TransactionState {
         )
       )
       .flatMap(v =>
-        SelfAwareStructuredLogger[F].info("created transaction state") >> Sync[F].pure(v)
+        SelfAwareStructuredLogger[F]
+          .info("created transaction state") >> Sync[F].pure(v)
       )
 
 }

@@ -66,19 +66,19 @@ class MysqlBinlogStreamTest
       client.registerLifecycleListener(new BinaryLogClient.AbstractLifecycleListener {
         override def onConnect(client: BinaryLogClient): Unit =
           xaResource
-            .use(
-              xa =>
-                (Sku.insert(2, "sku2").run >>
-                  Sku.insert(3, "sku3").run >>
-                  Sku.insert(4, "sku4").run).transact(xa)
+            .use(xa =>
+              (Sku.insert(2, "sku2").run >>
+                Sku.insert(3, "sku3").run >>
+                Sku.insert(4, "sku4").run).transact(xa)
             )
             .unsafeRunSync()
       })
 
       val s = for {
-        implicit0(logger: SelfAwareStructuredLogger[IO]) <- fs2.Stream.eval(
-                                                             Slf4jLogger.fromName[IO]("application")
-                                                           )
+        implicit0(logger: SelfAwareStructuredLogger[IO]) <-
+          fs2.Stream.eval(
+            Slf4jLogger.fromName[IO]("application")
+          )
         event <- MysqlBinlogStream.rawEvents[IO](client)
         _     <- fs2.Stream.eval(logger.info(s"event received $event"))
       } yield event
