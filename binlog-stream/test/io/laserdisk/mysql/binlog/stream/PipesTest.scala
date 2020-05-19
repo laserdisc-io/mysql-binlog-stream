@@ -26,7 +26,7 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
   def fixture =
     new {
       val testTransactor: Resource[IO, HikariTransactor[IO]] =
-        database.transactor(
+        database.transactor[IO](
           DbConfig(
             mySqlContainer.getUsername,
             mySqlContainer.getPassword,

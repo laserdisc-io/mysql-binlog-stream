@@ -38,7 +38,7 @@ object BinLogListener extends IOApp {
     confs.flatMap {
       case (binLogConfig, dbConfig) =>
         implicit val bc = binLogConfig
-        database.transactor(dbConfig).use { implicit xa =>
+        database.transactor[IO](dbConfig).use { implicit xa =>
           for {
             implicit0(logger: SelfAwareStructuredLogger[IO]) <- Slf4jLogger
                                                                   .fromName[IO]("application")
