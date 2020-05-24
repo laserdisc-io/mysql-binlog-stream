@@ -8,11 +8,11 @@ import eu.timepit.refined.auto._
 import eu.timepit.refined.types.string.TrimmedString
 import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
-import io.laserdisk.mysql.binlog.config.BinLogConfig
-import io.laserdisk.mysql.binlog.database.DbConfig
-import io.laserdisk.mysql.binlog.models.SchemaMetadata
-import io.laserdisk.mysql.binlog.stream.{ streamEvents, MysqlBinlogStream, TransactionState }
-import io.laserdisk.mysql.binlog.{ client, database }
+import io.laserdisc.mysql.binlog.config.BinLogConfig
+import io.laserdisc.mysql.binlog.database.DbConfig
+import io.laserdisc.mysql.binlog.models.SchemaMetadata
+import io.laserdisc.mysql.binlog.stream.{ streamEvents, MysqlBinlogStream, TransactionState }
+import io.laserdisc.mysql.binlog.{ client, database }
 
 object BinLogListener extends IOApp {
 
