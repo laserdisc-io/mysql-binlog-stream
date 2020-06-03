@@ -122,24 +122,27 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
 
     "update and delete yields delete" in {
       compact(Seq(update, delete)) should be(
-        Seq(EventMessage(
-          "sku",
-          1591214002000L,
-          "delete",
-          "8908ecfb63e4-bin.000009",
-          1836,
-          true,
-          parse("""{
+        Seq(
+          EventMessage(
+            "sku",
+            1591214002000L,
+            "delete",
+            "8908ecfb63e4-bin.000009",
+            1836,
+            true,
+            parse("""{
         "id" : 1111
       }""").toOption.value,
-          parse("""{
+            parse("""{
         "before" : {
           "id" : 1111,
           "sku" : "123"
         },
         "after" : null
       }""").toOption.value
-        )))
+          )
+        )
+      )
     }
   }
 }
