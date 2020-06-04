@@ -8,7 +8,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class CompactTest extends AnyWordSpec with OptionValues with Matchers {
   "transaction compacter" should {
-    val inset = EventMessage(
+    val insert = EventMessage(
       "sku",
       1591212793000L,
       "create",
@@ -65,7 +65,7 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
     )
 
     "merge insert and update" in {
-      compact(Seq(inset, update)) should be(
+      compact(Seq(insert, update)) should be(
         Seq(
           EventMessage(
             "sku",
@@ -88,15 +88,15 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
     }
 
     "do not produce value for insert and deletes" in {
-      compact(Seq(inset, delete)) should be(empty)
+      compact(Seq(insert, delete)) should be(empty)
     }
 
     "do not produce value for insert update and deletes" in {
-      compact(Seq(inset, update, delete)) should be(empty)
+      compact(Seq(insert, update, delete)) should be(empty)
     }
 
     "insert delete insert result in latest insert only" in {
-      compact(Seq(inset, delete, delete)) should be(
+      compact(Seq(insert, delete, delete)) should be(
         Seq(
           EventMessage(
             "sku",
