@@ -11,12 +11,25 @@ package object stream {
   def streamEvents[F[_]: ConcurrentEffect: SelfAwareStructuredLogger](
     transactionState: Ref[F, TransactionState]
   ): fs2.Pipe[F, Event, EventMessage] =
+    _.through(streamTransactionPackages[F](transactionState)).flatMap(pkg =>
+      fs2.Stream.eval(warnBigTransactionPackage(pkg)) >> fs2.Stream(pkg.events: _*)
+    )
+
+  def streamCompactedEvents[F[_]: ConcurrentEffect: SelfAwareStructuredLogger](
+    transactionState: Ref[F, TransactionState]
+  ): fs2.Pipe[F, Event, EventMessage] =
+    _.through(streamTransactionPackages[F](transactionState)).flatMap(pkg =>
+      fs2.Stream(compaction.compact(pkg.events): _*)
+    )
+
+  def streamTransactionPackages[F[_]: ConcurrentEffect: SelfAwareStructuredLogger](
+    transactionState: Ref[F, TransactionState]
+  ): fs2.Pipe[F, Event, TransactionPackage] =
     _.evalMap(event =>
       SelfAwareStructuredLogger[F]
         .debug(s"received binlog event $event") >> transactionState
         .modifyState(TransactionState.nextState(event))
     ).unNone
-      .flatMap(pkg => fs2.Stream.eval(warnBigTransactionPackage(pkg)) *> fs2.Stream(pkg.events: _*))
 
   def warnBigTransactionPackage[F[_]: Sync: SelfAwareStructuredLogger](
     transactionPackage: TransactionPackage
