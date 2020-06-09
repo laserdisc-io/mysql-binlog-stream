@@ -16,8 +16,10 @@ package object compaction {
             mkNewEvent(evt)
               .andThen(finalizeNewEvent)
               .run(latest) match {
-              case Some(ne) => acc.put(evt.pk, ne)
-              case None     => acc.remove(evt.pk)
+              case Some(ne) =>
+                acc.remove(evt.pk);
+                acc.put(evt.pk, ne)
+              case None => acc.remove(evt.pk)
             }
           }
           //TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
