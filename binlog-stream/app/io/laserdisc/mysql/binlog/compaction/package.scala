@@ -33,34 +33,31 @@ package object compaction {
       .values
       .toSeq
 
-  def mkNewEvent(
-      current: EventMessage): Kleisli[Option, EventMessage, EventMessage] =
-    Kleisli(
-      latest =>
-        latest.row.hcursor
-          .downField("after")
-          .set(
-            current.row.hcursor.downField("after").focus.getOrElse(Json.Null))
-          .top
-          .map(
-            newJson =>
-              latest
-                .copy(
-                  timestamp = current.timestamp,
-                  fileName = current.fileName,
-                  offset = current.offset,
-                  row = newJson
-              )))
+  def mkNewEvent(current: EventMessage): Kleisli[Option, EventMessage, EventMessage] =
+    Kleisli(latest =>
+      latest.row.hcursor
+        .downField("after")
+        .set(current.row.hcursor.downField("after").focus.getOrElse(Json.Null))
+        .top
+        .map(newJson =>
+          latest
+            .copy(
+              timestamp = current.timestamp,
+              fileName = current.fileName,
+              offset = current.offset,
+              row = newJson
+            )
+        )
+    )
 
-  val finalizeNewEvent: Kleisli[Option, EventMessage, EventMessage] = Kleisli(
-    value =>
-      (value.row.hcursor.downField("before").focus,
-       value.row.hcursor.downField("after").focus)
-        .mapN[Option[EventMessage]] {
-          case (Json.Null, Json.Null) => None
-          case (Json.Null, _)         => Some(value.copy(action = "create"))
-          case (_, Json.Null)         => Some(value.copy(action = "delete"))
-          case (_, _)                 => Some(value.copy(action = "update"))
-        }
-        .flatten)
+  val finalizeNewEvent: Kleisli[Option, EventMessage, EventMessage] = Kleisli(value =>
+    (value.row.hcursor.downField("before").focus, value.row.hcursor.downField("after").focus)
+      .mapN[Option[EventMessage]] {
+        case (Json.Null, Json.Null) => None
+        case (Json.Null, _)         => Some(value.copy(action = "create"))
+        case (_, Json.Null)         => Some(value.copy(action = "delete"))
+        case (_, _)                 => Some(value.copy(action = "update"))
+      }
+      .flatten
+  )
 }

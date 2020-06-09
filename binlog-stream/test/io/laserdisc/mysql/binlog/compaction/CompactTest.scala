@@ -8,22 +8,23 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class CompactTest extends AnyWordSpec with OptionValues with Matchers {
   "transaction compacter" should {
-    def insert(id: Int) = EventMessage(
-      "sku",
-      1591212793000L,
-      "create",
-      "8908ecfb63e4-bin.000009",
-      640,
-      false,
-      parse(s"""{ "id" : $id }""").toOption.value,
-      parse(s"""{
+    def insert(id: Int) =
+      EventMessage(
+        "sku",
+        1591212793000L,
+        "create",
+        "8908ecfb63e4-bin.000009",
+        640,
+        false,
+        parse(s"""{ "id" : $id }""").toOption.value,
+        parse(s"""{
            "before" : null,
            "after" : {
                "id" : $id,
                "sku" : "123"
              }
         }""").toOption.value
-    )
+      )
 
     val update = EventMessage(
       "sku",
