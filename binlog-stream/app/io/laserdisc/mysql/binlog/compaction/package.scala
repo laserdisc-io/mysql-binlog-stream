@@ -12,11 +12,22 @@ package object compaction {
     transaction
       .foldLeft(mutable.LinkedHashMap.empty[Json, EventMessage]) {
         case (acc, evt) =>
-          acc.updateWith(evt.pk) {
-            case Some(latest) =>
-              mkNewEvent(evt).andThen(finalizeNewEvent).run(latest)
-            case None => Some(evt)
+          acc.get(evt.pk).fold[Unit](acc.put(evt.pk, evt)) { latest =>
+            mkNewEvent(evt)
+              .andThen(finalizeNewEvent)
+              .run(latest) match {
+              case Some(ne) =>
+                acc.remove(evt.pk);
+                acc.put(evt.pk, ne)
+              case None => acc.remove(evt.pk)
+            }
           }
+          //TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
+//          acc.updateWith(evt.pk) {
+//            case Some(latest) =>
+//              mkNewEvent(evt).andThen(finalizeNewEvent).run(latest)
+//            case None => Some(evt)
+//          }
           acc
       }
       .values
