@@ -13,56 +13,41 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
         "sku",
         1591212793000L,
         "create",
+        None,
         "8908ecfb63e4-bin.000009",
         640,
         false,
         parse(s"""{ "id" : $id }""").toOption.value,
-        parse(s"""{
-           "before" : null,
-           "after" : {
-               "id" : $id,
-               "sku" : "123"
-             }
-        }""").toOption.value
+        parse(s"""{ "before" : null, 
+             |"after" : { "id" : $id, "sku" : "123" } }""".stripMargin).toOption.value
       )
 
     val update = EventMessage(
       "sku",
       1591212794000L,
       "update",
+      None,
       "8908ecfb63e4-bin.000009",
       821,
       true,
       parse("""{ "id" : 1111 }""").toOption.value,
-      parse("""{
-           "before" : {
-               "id" : 1111,
-               "sku" : "123"
-             },
-           "after" : {
-               "id" : 1111,
-               "sku" : "123_up"
-             }
-         }""").toOption.value
+      parse("""{ "before" : { "id" : 1111, "sku" : "123" }, 
+          |"after" : { "id" : 1111, "sku" : "123_up" } }""".stripMargin).toOption.value
     )
 
     val delete = EventMessage(
       "sku",
       1591214002000L,
       "delete",
+      None,
       "8908ecfb63e4-bin.000009",
       1836,
       true,
       parse("""{
          "id" : 1111
        }""").toOption.value,
-      parse("""{
-         "before" : {
-          "id" : 1111,
-          "sku" : "123"
-        },
-         "after" : null
-       }""").toOption.value
+      parse("""{ "before" : { "id" : 1111, "sku" : "123" }, 
+          |"after" : null }""".stripMargin).toOption.value
     )
 
     "merge insert and update" in {
@@ -72,17 +57,13 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
             "sku",
             1591212794000L,
             "create",
+            None,
             "8908ecfb63e4-bin.000009",
             821,
             false,
             parse("""{ "id" : 1111 }""").toOption.value,
-            parse("""{
-           "before" : null,
-           "after" : {
-               "id" : 1111,
-               "sku" : "123_up"
-             }
-        }""").toOption.value
+            parse("""{ "before" : null, 
+                |"after" : { "id" : 1111, "sku" : "123_up" } }""".stripMargin).toOption.value
           )
         )
       )
@@ -103,19 +84,13 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
             "sku",
             1591214002000L,
             "delete",
+            None,
             "8908ecfb63e4-bin.000009",
             1836,
             true,
-            parse("""{
-        "id" : 1111
-      }""").toOption.value,
-            parse("""{
-        "before" : {
-          "id" : 1111,
-          "sku" : "123"
-        },
-        "after" : null
-      }""").toOption.value
+            parse("""{ "id" : 1111 }""").toOption.value,
+            parse("""{ "before" : { "id" : 1111, "sku" : "123" }, 
+                |"after" : null }""".stripMargin).toOption.value
           )
         )
       )
@@ -128,19 +103,13 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
             "sku",
             1591214002000L,
             "delete",
+            None,
             "8908ecfb63e4-bin.000009",
             1836,
             true,
-            parse("""{
-        "id" : 1111
-      }""").toOption.value,
-            parse("""{
-        "before" : {
-          "id" : 1111,
-          "sku" : "123"
-        },
-        "after" : null
-      }""").toOption.value
+            parse("""{ "id" : 1111 }""").toOption.value,
+            parse("""{ "before" : { "id" : 1111, "sku" : "123" }, 
+                |"after" : null }""".stripMargin).toOption.value
           )
         )
       )
@@ -153,35 +122,25 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
             "sku",
             1591212793000L,
             "create",
+            None,
             "8908ecfb63e4-bin.000009",
             640,
             false,
             parse("""{ "id" : 2222 }""").toOption.value,
-            parse("""{
-           "before" : null,
-           "after" : {
-               "id" : 2222,
-               "sku" : "123"
-             }
-        }""").toOption.value
+            parse("""{ "before" : null, 
+                |"after" : { "id" : 2222, "sku" : "123" } }""".stripMargin).toOption.value
           ),
           EventMessage(
             "sku",
             1591214002000L,
             "delete",
+            None,
             "8908ecfb63e4-bin.000009",
             1836,
             true,
-            parse("""{
-        "id" : 1111
-      }""").toOption.value,
-            parse("""{
-        "before" : {
-          "id" : 1111,
-          "sku" : "123"
-        },
-        "after" : null
-      }""").toOption.value
+            parse("""{ "id" : 1111 }""").toOption.value,
+            parse("""{ "before" : { "id" : 1111, "sku" : "123" }, 
+                |"after" : null }""".stripMargin).toOption.value
           )
         )
       )
