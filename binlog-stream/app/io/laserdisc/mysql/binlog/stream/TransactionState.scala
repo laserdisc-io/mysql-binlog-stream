@@ -101,13 +101,13 @@ object TransactionState {
             ) =>
           handleDelete(tableId, offset, timestamp, rows, columns)
 
-        case (EventHeaderV4(EventType.XID, timestamp, offset), XidEventData(_)) =>
-          handleCommit(transactionState, offset, timestamp)
+        case (EventHeaderV4(EventType.XID, timestamp, offset), XidEventData(xaId)) =>
+          handleCommit(transactionState, offset, timestamp, Some(xaId))
         case (
               EventHeaderV4(EventType.QUERY, timestamp, offset),
               QueryEventData("commit", _, _, _)
             ) =>
-          handleCommit(transactionState, offset, timestamp)
+          handleCommit(transactionState, offset, timestamp, None)
 
         case (
               EventHeaderV4(EventType.QUERY, timestamp, offset),
@@ -235,6 +235,7 @@ object TransactionState {
         table,
         timestamp,
         sqlAction,
+        None,
         transactionState.fileName,
         offset,
         endOfTransaction = true,
@@ -265,12 +266,14 @@ object TransactionState {
   def handleCommit(
     transactionState: TransactionState,
     offset: Long,
-    timestamp: Long
+    timestamp: Long,
+    xaId: Option[Long]
   ): (TransactionState, Option[TransactionPackage]) = {
-    val marked = transactionState.transactionEvents match {
+    val marked = (transactionState.transactionEvents match {
       case xs :+ x => xs :+ x.copy(endOfTransaction = true, offset = offset)
       case xs      => xs
-    }
+    }).map(_.copy(xaId = xaId))
+
     val pack = transactionState
       .copy(offset = offset, end = timestamp, transactionEvents = marked)
       .assemblePackage
@@ -326,6 +329,7 @@ object TransactionState {
       table = tableMeta.name,
       timestamp = timestamp,
       action = action,
+      xaId = None,
       fileName = fileName,
       offset = offset,
       endOfTransaction = false,

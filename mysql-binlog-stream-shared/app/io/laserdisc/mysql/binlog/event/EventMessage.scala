@@ -6,6 +6,7 @@ case class EventMessage(
   table: String,
   timestamp: Long,
   action: String,
+  xaId: Option[Long],
   fileName: String,
   offset: Long,
   endOfTransaction: Boolean,
