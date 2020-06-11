@@ -1,10 +1,12 @@
 package io.laserdisc.mysql.binlog.checkpoint
 
-case class BinlogOffset(appName: String, fileName: String, offset: Long)
+import io.laserdisc.mysql.binlog.event.Offset
+
+case class BinlogOffset(appName: String, override val fileName: String, override val offset: Long)
+    extends Offset
 
 object BinlogOffset {
+
   def compareOffsets(one: BinlogOffset, two: BinlogOffset): BinlogOffset =
-    if (f"${one.fileName}${one.offset}%015d".compareTo(f"${two.fileName}${two.offset}%015d") < 0)
-      two
-    else one
+    if (one > two) one else two
 }

@@ -7,9 +7,9 @@ case class EventMessage(
   timestamp: Long,
   action: String,
   xaId: Option[Long],
-  fileName: String,
-  offset: Long,
+  override val fileName: String,
+  override val offset: Long,
   endOfTransaction: Boolean,
   pk: Json,
   row: Json
-)
+) extends Offset
