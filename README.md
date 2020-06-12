@@ -1,5 +1,5 @@
 ### Motivation
-Stream in real time the MySQL database events, such as CRUD and DDL. That may be useful for building Data Warehouse, integration with monolith application on the database level, etc.
+Stream in real-time the MySQL database events, such as CRUD and DDL. That may be useful for building Data Warehouse, integration with monolith application on the database level, etc.
 
 ### Example 
 ```scala
@@ -44,7 +44,7 @@ example_1  |   }
 example_1  | })
 ```
 
-try to update some row and see what happenning
+try to update some row and see what happens
 
 #### Event examples
 
