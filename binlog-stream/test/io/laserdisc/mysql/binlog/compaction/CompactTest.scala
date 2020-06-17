@@ -34,7 +34,18 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
       parse("""{ "before" : { "id" : 1111, "sku" : "123" }, 
           |"after" : { "id" : 1111, "sku" : "123_up" } }""".stripMargin).toOption.value
     )
-
+    val updateVariant = EventMessage(
+      "variant",
+      1591212694000L,
+      "update",
+      None,
+      "8908ecfb63e4-bin.000009",
+      921,
+      true,
+      parse("""{ "id" : 1111 }""").toOption.value,
+      parse("""{ "before" : { "id" : 1111, "variant" : "456" },
+              |"after" : { "id" : 1111, "variant" : "456_up" } }""".stripMargin).toOption.value
+    )
     val delete = EventMessage(
       "sku",
       1591214002000L,
@@ -144,6 +155,10 @@ class CompactTest extends AnyWordSpec with OptionValues with Matchers {
           )
         )
       )
+    }
+
+    "two events with same PK but different tables" in {
+      compact(Seq(update, updateVariant)) should have size 2
     }
   }
 }
