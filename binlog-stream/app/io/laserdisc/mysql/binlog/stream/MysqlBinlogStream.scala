@@ -1,48 +1,47 @@
 package io.laserdisc.mysql.binlog.stream
 
-import cats.effect.{ Blocker, ConcurrentEffect, ContextShift, Effect, IO, Sync }
+import cats.effect.{ Blocker, ConcurrentEffect, ContextShift, Sync }
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import fs2.concurrent.Queue
 import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
 
-class MysSqlBinlogEventProcessor[F[_]: Effect: SelfAwareStructuredLogger](
+class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: SelfAwareStructuredLogger](
   binlogClient: BinaryLogClient,
   queue: Queue[F, Option[Event]]
 ) {
   def run(): Unit = {
-    binlogClient.registerEventListener(event =>
-      Effect[F]
-        .runAsync(queue.enqueue1(Some(event)))(_ => IO.unit)
-        .unsafeRunSync
-    )
+    binlogClient.registerEventListener { event =>
+      ConcurrentEffect[F].toIO(queue.enqueue1(Some(event))).unsafeRunSync()
+    }
     binlogClient.registerLifecycleListener(new BinaryLogClient.LifecycleListener {
       override def onConnect(client: BinaryLogClient): Unit =
-        Effect[F]
-          .runAsync(SelfAwareStructuredLogger[F].info("Connected"))(_ => IO.unit)
+        ConcurrentEffect[F]
+          .toIO(SelfAwareStructuredLogger[F].info("Connected"))
           .unsafeRunSync
+
       override def onCommunicationFailure(client: BinaryLogClient, ex: Exception): Unit =
-        Effect[F]
-          .runAsync(
+        ConcurrentEffect[F]
+          .toIO(
             SelfAwareStructuredLogger[F].error(ex)("communication failed with") >> queue
               .enqueue1(None)
-          )(_ => IO.unit)
+          )
           .unsafeRunSync
       override def onEventDeserializationFailure(client: BinaryLogClient, ex: Exception): Unit =
-        Effect[F]
-          .runAsync(
+        ConcurrentEffect[F]
+          .toIO(
             SelfAwareStructuredLogger[F].error(ex)("failed to deserialize event") >> queue
               .enqueue1(None)
-          )(_ => IO.unit)
+          )
           .unsafeRunSync
 
       override def onDisconnect(client: BinaryLogClient): Unit =
-        Effect[F]
-          .runAsync(
-            SelfAwareStructuredLogger[F]
-              .error("Disconnected") *> queue.enqueue1(None)
-          )(_ => IO.unit)
+        ConcurrentEffect[F]
+          .toIO(
+            SelfAwareStructuredLogger[F].error("Disconnected") >> queue
+              .enqueue1(None)
+          )
           .unsafeRunSync
     })
     binlogClient.connect()
