@@ -17,7 +17,7 @@ object Dependencies {
   val TestLib = Seq(
     libraryDependencies ++= Seq(
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
-      "org.scalatest"     %% "scalatest"            % "3.1.1"       % Test, // ApacheV2
+      "org.scalatest"     %% "scalatest"            % "3.1.2"       % Test, // ApacheV2
       "org.scalamock"     %% "scalamock"            % "4.4.0"       % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.36.1"      % Test,
       "org.testcontainers" % "mysql"                % "1.13.0"      % Test,
