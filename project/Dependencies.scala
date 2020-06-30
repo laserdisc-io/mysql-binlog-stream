@@ -23,7 +23,7 @@ object Dependencies {
       "org.testcontainers" % "mysql"                % "1.13.0"      % Test,
       "org.mockito"        % "mockito-core"         % "3.3.3"       % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test
+      "com.dimafeng"      %% "testcontainers-scala" % "0.35.2"      % Test
     )
   )
 
