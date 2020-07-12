@@ -83,7 +83,7 @@ object Dependencies {
       "org.tpolecat"      %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
       "org.tpolecat"      %% "doobie-scalatest"            % doobieVersion, // Support for doobie scalatest
       "com.googlecode.usc" % "jdbcdslog"                   % jdbcdslogVersion,
-      "mysql"              % "mysql-connector-java"        % "8.0.19",
+      "mysql"              % "mysql-connector-java"        % "8.0.21",
       "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.20.1"
     )
   )
