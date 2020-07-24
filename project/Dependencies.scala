@@ -18,9 +18,9 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
       "org.scalatest"     %% "scalatest"            % "3.1.1"       % Test, // ApacheV2
-      "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.36.1"      % Test,
-      "org.testcontainers" % "mysql"                % "1.13.0"      % Test,
+      "org.scalamock"     %% "scalamock"            % "4.4.0"       % Test,
+      "com.dimafeng"      %% "testcontainers-scala" % "0.38.1"      % Test,
+      "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
       "org.mockito"        % "mockito-core"         % "3.3.3"       % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test
@@ -84,7 +84,7 @@ object Dependencies {
       "org.tpolecat"      %% "doobie-scalatest"            % doobieVersion, // Support for doobie scalatest
       "com.googlecode.usc" % "jdbcdslog"                   % jdbcdslogVersion,
       "mysql"              % "mysql-connector-java"        % "8.0.19",
-      "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.20.1"
+      "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.21.0"
     )
   )
   val Http4s = Seq(
