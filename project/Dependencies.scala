@@ -6,7 +6,7 @@ object Dependencies {
   val cirisVersion     = "1.0.4"
   val doobieVersion    = "0.9.0"
   val jdbcdslogVersion = "1.0.6.2"
-  val circeVersion     = "0.12.3"
+  val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
   val fs2AwsVersion    = "2.29.0"
   val fs2JmsVersion    = "0.0.2"
