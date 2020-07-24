@@ -84,7 +84,7 @@ object Dependencies {
       "org.tpolecat"      %% "doobie-scalatest"            % doobieVersion, // Support for doobie scalatest
       "com.googlecode.usc" % "jdbcdslog"                   % jdbcdslogVersion,
       "mysql"              % "mysql-connector-java"        % "8.0.19",
-      "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.20.1"
+      "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.21.0"
     )
   )
   val Http4s = Seq(
