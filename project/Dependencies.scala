@@ -3,7 +3,7 @@ import sbt._
 
 object Dependencies {
   val AwsSdkVersion    = "1.11.759"
-  val cirisVersion     = "1.0.4"
+  val cirisVersion     = "1.1.1"
   val doobieVersion    = "0.9.0"
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.12.3"
