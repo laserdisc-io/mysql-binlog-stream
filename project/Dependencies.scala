@@ -3,12 +3,12 @@ import sbt._
 
 object Dependencies {
   val AwsSdkVersion    = "1.11.759"
-  val cirisVersion     = "1.0.4"
+  val cirisVersion     = "1.1.1"
   val doobieVersion    = "0.9.0"
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
-  val fs2AwsVersion    = "2.29.0"
+  val fs2AwsVersion    = "3.0.1"
   val fs2JmsVersion    = "0.0.2"
   val cormorantVersion = "0.2.0-M2"
   val sshjVersion      = "0.26.0"
@@ -17,11 +17,11 @@ object Dependencies {
   val TestLib = Seq(
     libraryDependencies ++= Seq(
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
-      "org.scalatest"     %% "scalatest"            % "3.1.1"       % Test, // ApacheV2
-      "org.scalamock"     %% "scalamock"            % "4.4.0"       % Test,
+      "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
+      "org.scalatest"     %% "scalatest"            % "3.1.2"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.1"      % Test,
       "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
-      "org.mockito"        % "mockito-core"         % "3.3.3"       % Test,
+      "org.mockito"        % "mockito-core"         % "3.4.4"       % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test
     )
@@ -61,7 +61,7 @@ object Dependencies {
 //      "is.cir"     %% "ciris-core"       % cirisVersion,
       "is.cir"     %% "ciris-enumeratum" % "1.1.1",
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.9.13"
+      "eu.timepit" %% "refined"          % "0.9.15"
     )
   )
 
