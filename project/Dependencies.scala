@@ -6,7 +6,7 @@ object Dependencies {
   val cirisVersion     = "1.1.1"
   val doobieVersion    = "0.9.0"
   val jdbcdslogVersion = "1.0.6.2"
-  val circeVersion     = "0.12.3"
+  val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
   val fs2AwsVersion    = "3.0.1"
   val fs2JmsVersion    = "0.0.2"
@@ -18,7 +18,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
       "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
-      "org.scalatest"     %% "scalatest"            % "3.1.2"       % Test, // ApacheV2
+      "org.scalatest"     %% "scalatest"            % "3.2.0"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.1"      % Test,
       "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
       "org.mockito"        % "mockito-core"         % "3.4.4"       % Test,
