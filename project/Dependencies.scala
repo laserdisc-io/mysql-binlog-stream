@@ -2,8 +2,8 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
-  val AwsSdkVersion    = "1.11.828"
-  val cirisVersion     = "1.1.1"
+  val AwsSdkVersion    = "1.11.848"
+  val cirisVersion     = "1.1.2"
   val doobieVersion    = "0.9.0"
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
@@ -18,10 +18,10 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
       "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
-      "org.scalatest"     %% "scalatest"            % "3.2.1"       % Test, // ApacheV2
+      "org.scalatest"     %% "scalatest"            % "3.2.2"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.1"      % Test,
       "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
-      "org.mockito"        % "mockito-core"         % "3.4.6"       % Test,
+      "org.mockito"        % "mockito-core"         % "3.5.7"       % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test
     )
