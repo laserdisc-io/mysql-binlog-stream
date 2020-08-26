@@ -59,7 +59,7 @@ object Dependencies {
   val Config = Seq(
     libraryDependencies ++= Seq(
 //      "is.cir"     %% "ciris-core"       % cirisVersion,
-      "is.cir"     %% "ciris-enumeratum" % "1.1.2",
+      "is.cir"     %% "ciris-enumeratum" % "1.2.0",
       "is.cir"     %% "ciris-refined"    % cirisVersion,
       "eu.timepit" %% "refined"          % "0.9.15"
     )
