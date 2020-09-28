@@ -2,7 +2,7 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
-  val AwsSdkVersion    = "1.11.869"
+  val AwsSdkVersion    = "1.11.871"
   val cirisVersion     = "1.2.1"
   val doobieVersion    = "0.9.2"
   val jdbcdslogVersion = "1.0.6.2"
