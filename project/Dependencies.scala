@@ -61,7 +61,7 @@ object Dependencies {
 //      "is.cir"     %% "ciris-core"       % cirisVersion,
       "is.cir"     %% "ciris-enumeratum" % "1.2.1",
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.9.16"
+      "eu.timepit" %% "refined"          % "0.9.17"
     )
   )
 
