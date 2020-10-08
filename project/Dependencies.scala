@@ -2,9 +2,9 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
-  val AwsSdkVersion    = "1.11.850"
-  val cirisVersion     = "1.2.0"
-  val doobieVersion    = "0.9.0"
+  val AwsSdkVersion    = "1.11.877"
+  val cirisVersion     = "1.2.1"
+  val doobieVersion    = "0.9.2"
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
@@ -19,7 +19,7 @@ object Dependencies {
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
       "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.2"       % Test, // ApacheV2
-      "com.dimafeng"      %% "testcontainers-scala" % "0.38.1"      % Test,
+      "com.dimafeng"      %% "testcontainers-scala" % "0.38.4"      % Test,
       "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
       "org.mockito"        % "mockito-core"         % "3.5.7"       % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
@@ -62,7 +62,7 @@ object Dependencies {
 //      "is.cir"     %% "ciris-core"       % cirisVersion,
       "is.cir"     %% "ciris-enumeratum" % "1.2.1",
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.9.15"
+      "eu.timepit" %% "refined"          % "0.9.17"
     )
   )
 
