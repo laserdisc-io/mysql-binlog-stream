@@ -36,8 +36,8 @@ package object stream {
   ): F[Unit] =
     if (transactionPackage.events.size >= 1000)
       for {
-        distro <- Sync[F].delay(transactionPackage.events.groupBy(_.table).map {
-                    case (k, v) => k -> v.size
+        distro <- Sync[F].delay(transactionPackage.events.groupBy(_.table).map { case (k, v) =>
+                    k -> v.size
                   })
         _ <- SelfAwareStructuredLogger[F].warn(s"""Transaction has > then 1000 elements in it with
                                  |following distribution $distro

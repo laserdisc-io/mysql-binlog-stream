@@ -29,8 +29,8 @@ package object json {
       new Json.Folder[List[String]] with (Json => List[String]) {
         def apply(v: Json): List[String] = v.foldWith(this)
         def onObject(v: JsonObject) =
-          v.toList.flatMap {
-            case (k, v) => List(k.trim ++ ":" ++ v.foldWith(this).mkString(","))
+          v.toList.flatMap { case (k, v) =>
+            List(k.trim ++ ":" ++ v.foldWith(this).mkString(","))
           }
         def onArray(v: Vector[Json]) =
           v.flatMap(j => j.foldWith(this)).toList.sorted

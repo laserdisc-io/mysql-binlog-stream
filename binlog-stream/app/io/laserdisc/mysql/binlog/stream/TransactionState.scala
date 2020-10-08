@@ -165,17 +165,16 @@ object TransactionState {
       tableName <- toTableName(tableId)
       tableMeta <- transactionState.schemaMetadata.tables.get(tableName)
     } yield beforeAfter
-      .map {
-        case (before, after) =>
-          convertToJson(
-            tableMeta,
-            timestamp,
-            "update",
-            transactionState.fileName,
-            offset,
-            includedColumns,
-            (Some(nullsToOptions(before)), Some(nullsToOptions(after)))
-          )
+      .map { case (before, after) =>
+        convertToJson(
+          tableMeta,
+          timestamp,
+          "update",
+          transactionState.fileName,
+          offset,
+          includedColumns,
+          (Some(nullsToOptions(before)), Some(nullsToOptions(after)))
+        )
       }).getOrElse(Nil)
 
     (
