@@ -8,7 +8,7 @@ object Dependencies {
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
-  val fs2AwsVersion    = "3.0.1"
+  val fs2AwsVersion    = "3.0.2"
   val fs2JmsVersion    = "0.0.2"
   val cormorantVersion = "0.2.0-M2"
   val sshjVersion      = "0.26.0"
@@ -23,7 +23,8 @@ object Dependencies {
       "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
       "org.mockito"        % "mockito-core"         % "3.5.7"       % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test
+      "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
+      "org.testcontainers" % "testcontainers"       % "1.15.0-rc2"  % Test
     )
   )
 
