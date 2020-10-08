@@ -61,21 +61,20 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
         override def onConnect(client: BinaryLogClient): Unit =
           control.Exception.allCatch.opt {
             xaResource
-              .use {
-                xa =>
-                  for {
-                    _ <- (Sku.truncate.run *> Sku.insert(5, "sku5").run *>
-                             Sku.insert(2, "sku2").run).transact(xa)
+              .use { xa =>
+                for {
+                  _ <- (Sku.truncate.run *> Sku.insert(5, "sku5").run *>
+                         Sku.insert(2, "sku2").run).transact(xa)
 
-                    _ <- (Sku.insert(6, "sku6").run *> Sku.truncate.run *>
-                             Sku.insert(2, "sku2").run).transact(xa)
+                  _ <- (Sku.insert(6, "sku6").run *> Sku.truncate.run *>
+                         Sku.insert(2, "sku2").run).transact(xa)
 
-                    _ <- (Sku.insert(5, "sku5").run *>
-                             Sku.insert(7, "sku7").run *> Sku.truncate.run)
-                           .transact(xa)
+                  _ <- (Sku.insert(5, "sku5").run *>
+                         Sku.insert(7, "sku7").run *> Sku.truncate.run)
+                         .transact(xa)
 
-                    _ <- Sku.truncate.run.transact(xa)
-                  } yield ()
+                  _ <- Sku.truncate.run.transact(xa)
+                } yield ()
               }
               .unsafeRunSync()
           }

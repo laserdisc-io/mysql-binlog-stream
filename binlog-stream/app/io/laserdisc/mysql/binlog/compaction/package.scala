@@ -11,28 +11,27 @@ import io.laserdisc.mysql.json
 package object compaction {
   def compact(transaction: Seq[EventMessage]): Seq[EventMessage] =
     transaction
-      .foldLeft(mutable.LinkedHashMap.empty[String, EventMessage]) {
-        case (acc, evt) =>
-          val emId = calcIdentity(evt)
-          acc
-            .get(emId)
-            .fold[Unit](acc.put(emId, evt)) { latest =>
-              mkNewEvent(evt)
-                .andThen(finalizeNewEvent)
-                .run(latest) match {
-                case Some(ne) =>
-                  acc.remove(emId);
-                  acc.put(emId, ne)
-                case None => acc.remove(emId)
-              }
+      .foldLeft(mutable.LinkedHashMap.empty[String, EventMessage]) { case (acc, evt) =>
+        val emId = calcIdentity(evt)
+        acc
+          .get(emId)
+          .fold[Unit](acc.put(emId, evt)) { latest =>
+            mkNewEvent(evt)
+              .andThen(finalizeNewEvent)
+              .run(latest) match {
+              case Some(ne) =>
+                acc.remove(emId);
+                acc.put(emId, ne)
+              case None => acc.remove(emId)
             }
-          //TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
+          }
+        //TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
 //          acc.updateWith(evt.pk) {
 //            case Some(latest) =>
 //              mkNewEvent(evt).andThen(finalizeNewEvent).run(latest)
 //            case None => Some(evt)
 //          }
-          acc
+        acc
       }
       .values
       .toSeq

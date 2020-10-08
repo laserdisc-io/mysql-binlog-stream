@@ -15,8 +15,8 @@ object BinaryLogs {
     implicit ev: Bracket[F, Throwable]
   ): F[Long] =
     showLogs[F].map { logs =>
-      logs.dropWhile(log => log.fileName != fileName).foldLeft(0L) {
-        case (sum, l) => sum + l.size
+      logs.dropWhile(log => log.fileName != fileName).foldLeft(0L) { case (sum, l) =>
+        sum + l.size
       } - pos
     }
 }

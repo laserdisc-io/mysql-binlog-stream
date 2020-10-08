@@ -54,22 +54,21 @@ object SchemaMetadata {
   def metaToSchema(metadata: List[Metadata]): SchemaMetadata = {
     val tables = metadata
       .groupBy(m => m.table_name)
-      .map {
-        case (tableName, tableInfo) =>
-          val columns = tableInfo.map(columnInfo =>
-            ColumnMetadata(
-              columnInfo.column_name,
-              columnInfo.data_type,
-              columnInfo.ordinal_position,
-              columnInfo.is_pk
-            )
+      .map { case (tableName, tableInfo) =>
+        val columns = tableInfo.map(columnInfo =>
+          ColumnMetadata(
+            columnInfo.column_name,
+            columnInfo.data_type,
+            columnInfo.ordinal_position,
+            columnInfo.is_pk
           )
-          tableName -> TableMetadata(
-            tableInfo.head.table_name,
-            columns.groupBy(_.ordinal).map {
-              case (ord, columns) => ord -> columns.head
-            }
-          )
+        )
+        tableName -> TableMetadata(
+          tableInfo.head.table_name,
+          columns.groupBy(_.ordinal).map { case (ord, columns) =>
+            ord -> columns.head
+          }
+        )
       }
     SchemaMetadata(tables, mutable.Map.empty)
   }
