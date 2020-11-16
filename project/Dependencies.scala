@@ -20,8 +20,8 @@ object Dependencies {
       "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.2"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.4"      % Test,
-      "org.testcontainers" % "mysql"                % "1.14.3"      % Test,
       "org.mockito"        % "mockito-core"         % "3.5.15"      % Test,
+      "org.testcontainers" % "mysql"                % "1.15.0"      % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
       "org.testcontainers" % "testcontainers"       % "1.15.0-rc2"  % Test
@@ -84,7 +84,7 @@ object Dependencies {
       "org.tpolecat"      %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
       "org.tpolecat"      %% "doobie-scalatest"            % doobieVersion, // Support for doobie scalatest
       "com.googlecode.usc" % "jdbcdslog"                   % jdbcdslogVersion,
-      "mysql"              % "mysql-connector-java"        % "8.0.21",
+      "mysql"              % "mysql-connector-java"        % "8.0.22",
       "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.21.0"
     )
   )
