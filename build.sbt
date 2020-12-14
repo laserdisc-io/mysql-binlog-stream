@@ -19,7 +19,17 @@ def commonOptions(scalaVersion: String) =
   }
 
 lazy val commonSettings = Seq(
-  organization             := "io.laserdisc",
+  organization := "io.laserdisc",
+  developers := List(
+    Developer(
+      "semenodm",
+      "Dmytro Semenov",
+      "sdo.semenov@gmail.com",
+      url("https://github.com/semenodm")
+    )
+  ),
+  licenses                ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
+  homepage                 := Some(url("https://github.com/laserdisc-io/fs2-aws")),
   sources                  in (Compile, doc) := Seq(),
   scalaSource              in Compile        := baseDirectory.value / "app",
   scalaSource              in Test           := baseDirectory.value / "test",
@@ -118,28 +128,3 @@ lazy val `binlog-stream-models` = (project in file("binlog-stream-models"))
     Dependencies.XML
   )
   .dependsOn(`mysql-binlog-stream-shared` % "compile->compile;test->test")
-
-inThisBuild(
-  List(
-    licenses := Seq(
-      "MIT" -> url("https://raw.githubusercontent.com/laserdisc-io/fs2-aws/master/LICENSE")
-    ),
-    homepage := Some(url("https://github.com/laserdisc-io/mysql-binlog-stream/")),
-    developers := List(
-      Developer("semenodm", "Dmytro Semenov", "", url("https://github.com/semenodm"))
-    ),
-    scmInfo := Some(
-      ScmInfo(
-        url("https://github.com/laserdisc-io/mysql-binlog-stream/tree/master"),
-        "scm:git:git@github.com:laserdisc-io/mysql-binlog-stream.git",
-        "scm:git:git@github.com:laserdisc-io/mysql-binlog-stream.git"
-      )
-    ),
-    publishMavenStyle      := true,
-    Test / publishArtifact := true,
-    pomIncludeRepository   := (_ => false),
-    pgpPublicRing          := file(".travis/local.pubring.asc"),
-    pgpSecretRing          := file(".travis/local.secring.asc"),
-    releaseEarlyWith       := SonatypePublisher
-  )
-)

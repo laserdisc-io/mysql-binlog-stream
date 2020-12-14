@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
   val AwsSdkVersion    = "1.11.877"
   val cirisVersion     = "1.2.1"
-  val doobieVersion    = "0.9.2"
+  val doobieVersion    = "0.9.4"
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
@@ -17,14 +17,14 @@ object Dependencies {
   val TestLib = Seq(
     libraryDependencies ++= Seq(
       "io.github.sullis"  %% "jms-testkit"          % "0.2.8"       % Test, // ApacheV2
-      "org.scalamock"     %% "scalamock"            % "5.1.0"       % Test,
-      "org.scalatest"     %% "scalatest"            % "3.2.2"       % Test, // ApacheV2
-      "com.dimafeng"      %% "testcontainers-scala" % "0.38.4"      % Test,
+      "org.scalamock"     %% "scalamock"            % "5.0.0"       % Test,
+      "org.scalatest"     %% "scalatest"            % "3.2.3"       % Test, // ApacheV2
+      "com.dimafeng"      %% "testcontainers-scala" % "0.38.7"      % Test,
       "org.mockito"        % "mockito-core"         % "3.5.15"      % Test,
       "org.testcontainers" % "mysql"                % "1.15.0"      % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
-      "org.testcontainers" % "testcontainers"       % "1.15.0-rc2"  % Test
+      "org.testcontainers" % "testcontainers"       % "1.15.0"  % Test
     )
   )
 
@@ -62,7 +62,7 @@ object Dependencies {
 //      "is.cir"     %% "ciris-core"       % cirisVersion,
       "is.cir"     %% "ciris-enumeratum" % "1.2.1",
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.9.17"
+      "eu.timepit" %% "refined"          % "0.9.19"
     )
   )
 
@@ -121,8 +121,8 @@ object Dependencies {
   val XML = Seq(
     libraryDependencies ++= Seq(
       "javax.xml.bind"   % "jaxb-api"   % "2.3.1",
-      "com.sun.xml.bind" % "jaxb-core"  % "2.3.0.1",
-      "com.sun.xml.bind" % "jaxb-impl"  % "2.3.3",
+      "com.sun.xml.bind" % "jaxb-impl"  % "3.0.0",
+      "com.sun.xml.bind" % "jaxb-core"  % "3.0.0",
       "javax.activation" % "activation" % "1.1.1"
     )
   )
