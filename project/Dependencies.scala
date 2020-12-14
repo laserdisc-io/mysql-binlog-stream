@@ -24,7 +24,7 @@ object Dependencies {
       "org.testcontainers" % "mysql"                % "1.15.0"      % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
-      "org.testcontainers" % "testcontainers"       % "1.15.0-rc2"  % Test
+      "org.testcontainers" % "testcontainers"       % "1.15.0"  % Test
     )
   )
 
