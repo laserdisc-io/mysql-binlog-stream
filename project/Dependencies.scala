@@ -2,7 +2,7 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
-  val AwsSdkVersion    = "1.11.877"
+  val AwsSdkVersion    = "1.11.915"
   val cirisVersion     = "1.2.1"
   val doobieVersion    = "0.9.4"
   val jdbcdslogVersion = "1.0.6.2"
@@ -20,7 +20,7 @@ object Dependencies {
       "org.scalamock"     %% "scalamock"            % "5.1.0"       % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.3"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.7"      % Test,
-      "org.mockito"        % "mockito-core"         % "3.5.15"      % Test,
+      "org.mockito"        % "mockito-core"         % "3.6.28"      % Test,
       "org.testcontainers" % "mysql"                % "1.15.0"      % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
