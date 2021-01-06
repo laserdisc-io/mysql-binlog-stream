@@ -20,7 +20,7 @@ object Dependencies {
       "org.scalamock"     %% "scalamock"            % "5.1.0"       % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.3"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.7"      % Test,
-      "org.mockito"        % "mockito-core"         % "3.6.28"      % Test,
+      "org.mockito"        % "mockito-core"         % "3.7.0"      % Test,
       "org.testcontainers" % "mysql"                % "1.15.0"      % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
