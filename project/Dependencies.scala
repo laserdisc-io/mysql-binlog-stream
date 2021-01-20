@@ -8,7 +8,7 @@ object Dependencies {
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
-  val fs2AwsVersion    = "3.0.2"
+  val fs2AwsVersion    = "3.0.7"
   val fs2JmsVersion    = "0.0.2"
   val cormorantVersion = "0.2.0-M2"
   val sshjVersion      = "0.26.0"
