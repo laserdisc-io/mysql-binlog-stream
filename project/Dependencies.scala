@@ -21,10 +21,10 @@ object Dependencies {
       "org.scalatest"     %% "scalatest"            % "3.2.3"       % Test, // ApacheV2
       "com.dimafeng"      %% "testcontainers-scala" % "0.38.7"      % Test,
       "org.mockito"        % "mockito-core"         % "3.6.28"      % Test,
-      "org.testcontainers" % "mysql"                % "1.15.0"      % Test,
+      "org.testcontainers" % "mysql"                % "1.15.1"      % Test,
       "io.laserdisc"      %% "fs2-aws-testkit"      % fs2AwsVersion % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.35.0"      % Test,
-      "org.testcontainers" % "testcontainers"       % "1.15.0"  % Test
+      "org.testcontainers" % "testcontainers"       % "1.15.1"  % Test
     )
   )
 
@@ -62,7 +62,7 @@ object Dependencies {
 //      "is.cir"     %% "ciris-core"       % cirisVersion,
       "is.cir"     %% "ciris-enumeratum" % "1.2.1",
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.9.19"
+      "eu.timepit" %% "refined"          % "0.9.20"
     )
   )
 
@@ -84,7 +84,7 @@ object Dependencies {
       "org.tpolecat"      %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
       "org.tpolecat"      %% "doobie-scalatest"            % doobieVersion, // Support for doobie scalatest
       "com.googlecode.usc" % "jdbcdslog"                   % jdbcdslogVersion,
-      "mysql"              % "mysql-connector-java"        % "8.0.22",
+      "mysql"              % "mysql-connector-java"        % "8.0.23",
       "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.21.0"
     )
   )
