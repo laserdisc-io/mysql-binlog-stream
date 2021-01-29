@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
   val AwsSdkVersion    = "1.11.915"
   val cirisVersion     = "1.2.1"
-  val doobieVersion    = "0.9.4"
+  val doobieVersion    = "0.10.0"
   val jdbcdslogVersion = "1.0.6.2"
   val circeVersion     = "0.13.0"
   val Http4sVersion    = "0.20.19"
@@ -84,7 +84,7 @@ object Dependencies {
       "org.tpolecat"      %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
       "org.tpolecat"      %% "doobie-scalatest"            % doobieVersion, // Support for doobie scalatest
       "com.googlecode.usc" % "jdbcdslog"                   % jdbcdslogVersion,
-      "mysql"              % "mysql-connector-java"        % "8.0.22",
+      "mysql"              % "mysql-connector-java"        % "8.0.23",
       "com.github.shyiko"  % "mysql-binlog-connector-java" % "0.21.0"
     )
   )
