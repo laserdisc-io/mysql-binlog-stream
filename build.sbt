@@ -87,7 +87,6 @@ lazy val `mysql-binlog-stream-examples` = (project in file("mysql-binlog-stream-
     commonSettings,
     dockerPublishSettings,
     noPublishSettings,
-    Dependencies.Logging,
     Dependencies.Config,
     Dependencies.XML
   )
@@ -97,11 +96,9 @@ lazy val `mysql-binlog-stream-examples` = (project in file("mysql-binlog-stream-
 lazy val `mysql-binlog-stream-shared` = (project in file("mysql-binlog-stream-shared"))
   .settings(
     commonSettings,
-    Dependencies.Persistence,
     Dependencies.TestLib,
     Dependencies.Circe,
-    Dependencies.Config,
-    Dependencies.Logging
+    Dependencies.Cats
   )
 
 addCommandAlias("build", ";checkFormat;clean;test;coverage")
@@ -112,9 +109,7 @@ lazy val `binlog-stream` = (project in file("binlog-stream"))
   .settings(
     commonSettings,
     Dependencies.TestLib,
-    Dependencies.Logging,
-    Dependencies.Config,
-    Dependencies.XML
+    Dependencies.Logging
   )
   .dependsOn(`mysql-binlog-stream-shared` % "compile->compile;test->test")
   .dependsOn(`binlog-stream-models`)
@@ -123,8 +118,6 @@ lazy val `binlog-stream-models` = (project in file("binlog-stream-models"))
   .settings(
     commonSettings,
     Dependencies.TestLib,
-    Dependencies.Logging,
-    Dependencies.Config,
-    Dependencies.XML
+    Dependencies.Persistence
   )
   .dependsOn(`mysql-binlog-stream-shared` % "compile->compile;test->test")

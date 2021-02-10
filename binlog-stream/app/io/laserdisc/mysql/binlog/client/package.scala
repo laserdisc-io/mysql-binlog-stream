@@ -5,13 +5,13 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer.CompatibilityMode
 import com.github.shyiko.mysql.binlog.network.SSLMode
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
+import io.chrisdavenport.log4cats.Logger
 import cats.implicits._
 import io.laserdisc.mysql.binlog.checkpoint.BinlogOffset
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 
 package object client {
-  def createBinLogClient[F[_]: Sync: SelfAwareStructuredLogger](offset: F[Option[BinlogOffset]])(
+  def createBinLogClient[F[_]: Sync: Logger](offset: F[Option[BinlogOffset]])(
     implicit binLogConfig: BinLogConfig
   ): F[BinaryLogClient] =
     for {
@@ -44,7 +44,7 @@ package object client {
              )
            )
       _ <-
-        SelfAwareStructuredLogger[F].info(
+        Logger[F].info(
           s"Binlog client created with offset ${client.getBinlogFilename} ${client.getBinlogPosition}"
         )
     } yield client

@@ -5,9 +5,9 @@ import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import fs2.concurrent.Queue
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
+import io.chrisdavenport.log4cats.Logger
 
-class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: SelfAwareStructuredLogger](
+class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: Logger](
   binlogClient: BinaryLogClient,
   queue: Queue[F, Option[Event]]
 ) {
@@ -17,31 +17,23 @@ class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: SelfAwareStructuredLogg
     }
     binlogClient.registerLifecycleListener(new BinaryLogClient.LifecycleListener {
       override def onConnect(client: BinaryLogClient): Unit =
-        ConcurrentEffect[F]
-          .toIO(SelfAwareStructuredLogger[F].info("Connected"))
-          .unsafeRunSync
+        ConcurrentEffect[F].toIO(Logger[F].info("Connected")).unsafeRunSync
 
       override def onCommunicationFailure(client: BinaryLogClient, ex: Exception): Unit =
         ConcurrentEffect[F]
           .toIO(
-            SelfAwareStructuredLogger[F].error(ex)("communication failed with") >> queue
+            Logger[F].error(ex)("communication failed with") >> queue
               .enqueue1(None)
           )
           .unsafeRunSync
       override def onEventDeserializationFailure(client: BinaryLogClient, ex: Exception): Unit =
         ConcurrentEffect[F]
-          .toIO(
-            SelfAwareStructuredLogger[F].error(ex)("failed to deserialize event") >> queue
-              .enqueue1(None)
-          )
+          .toIO(Logger[F].error(ex)("failed to deserialize event") >> queue.enqueue1(None))
           .unsafeRunSync
 
       override def onDisconnect(client: BinaryLogClient): Unit =
         ConcurrentEffect[F]
-          .toIO(
-            SelfAwareStructuredLogger[F].error("Disconnected") >> queue
-              .enqueue1(None)
-          )
+          .toIO(Logger[F].error("Disconnected") >> queue.enqueue1(None))
           .unsafeRunSync
     })
     binlogClient.connect()
@@ -49,7 +41,7 @@ class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: SelfAwareStructuredLogg
 }
 
 object MysqlBinlogStream {
-  def rawEvents[F[_]: ConcurrentEffect: SelfAwareStructuredLogger: ContextShift](
+  def rawEvents[F[_]: ConcurrentEffect: Logger: ContextShift](
     client: BinaryLogClient
   ): fs2.Stream[F, Event] =
     for {
