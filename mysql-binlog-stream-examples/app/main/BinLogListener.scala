@@ -6,7 +6,7 @@ import ciris._
 import ciris.refined._
 import eu.timepit.refined.auto._
 import eu.timepit.refined.types.string.TrimmedString
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
+import io.chrisdavenport.log4cats.Logger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.database.DbConfig
@@ -37,8 +37,7 @@ object BinLogListener extends IOApp {
       implicit val bc = binLogConfig
       database.transactor[IO](dbConfig).use { implicit xa =>
         for {
-          implicit0(logger: SelfAwareStructuredLogger[IO]) <- Slf4jLogger
-                                                                .fromName[IO]("application")
+          implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
           //Here we do not provide binlog offset, client will be initialized with default file and offset
           binlogClient   <- client.createBinLogClient[IO](IO.pure(None))
           schemaMetadata <- SchemaMetadata.buildSchemaMetadata(binLogConfig.schema)

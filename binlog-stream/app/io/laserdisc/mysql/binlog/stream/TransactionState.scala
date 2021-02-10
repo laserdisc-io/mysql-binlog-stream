@@ -1,8 +1,5 @@
 package io.laserdisc.mysql.binlog.stream
 
-import java.io.Serializable
-import java.math.BigDecimal
-
 import cats.data.State
 import cats.effect.Sync
 import cats.effect.concurrent.Ref
@@ -15,22 +12,13 @@ import com.github.shyiko.mysql.binlog.event.{
   EventType,
   EventHeaderV4 => JEventHeaderV4
 }
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
+import io.chrisdavenport.log4cats.Logger
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
-import io.laserdisc.mysql.binlog.models.{
-  ColumnMetadata,
-  DeleteRowsEventData,
-  EventHeaderV4,
-  QueryEventData,
-  RotateEventData,
-  SchemaMetadata,
-  TableMapEventData,
-  TableMetadata,
-  UpdateRowsEventData,
-  WriteRowsEventData,
-  XidEventData
-}
+import io.laserdisc.mysql.binlog.models._
+
+import java.io.Serializable
+import java.math.BigDecimal
 import scala.collection.immutable.Queue
 
 case class TransactionState(
@@ -379,7 +367,7 @@ object TransactionState {
 
   def nullsToOptions(row: Array[Serializable]): Row = row.map(Option(_))
 
-  def createTransactionState[F[_]: Sync: SelfAwareStructuredLogger](
+  def createTransactionState[F[_]: Sync: Logger](
     schemaMetadata: SchemaMetadata,
     binlogClient: BinaryLogClient
   ): F[Ref[F, TransactionState]] =
@@ -393,9 +381,6 @@ object TransactionState {
           timestamp = 0
         )
       )
-      .flatMap(v =>
-        SelfAwareStructuredLogger[F]
-          .info("created transaction state") >> Sync[F].pure(v)
-      )
+      .flatMap(v => Logger[F].info("created transaction state") >> Sync[F].pure(v))
 
 }
