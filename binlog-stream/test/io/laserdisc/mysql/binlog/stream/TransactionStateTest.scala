@@ -69,6 +69,15 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
     new Event(header, data)
   }
 
+  def createPreviousGTIDsEvent(): Event = {
+    val header = new EventHeaderV4()
+    header.setEventType(EventType.PREVIOUS_GTIDS)
+    header.setTimestamp(System.currentTimeMillis())
+    val data = new XidEventData()
+    data.setXid(122345)
+    new Event(header, data)
+  }
+
   "Transaction State" should {
     "start transaction on BEGIN event" in {
       TransactionState
@@ -108,6 +117,7 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
         _      <- TransactionState.nextState(createInsertEvent())
         _      <- TransactionState.nextState(createTableMapEvent())
         _      <- TransactionState.nextState(createInsertEvent())
+        _      <- TransactionState.nextState(createPreviousGTIDsEvent()) // should be ignored
         events <- TransactionState.nextState(createXAEvent())
       } yield events
       res
