@@ -105,6 +105,9 @@ object TransactionState {
 
         case (EventHeaderV4(EventType.QUERY | EventType.ANONYMOUS_GTID, _, _), _) =>
           (transactionState, None)
+
+        case _ =>
+          (transactionState, None)
       }
     }
 
