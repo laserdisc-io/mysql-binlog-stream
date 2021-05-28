@@ -3,7 +3,7 @@ import sbt._
 
 object Dependencies {
   val cirisVersion  = "1.2.1"
-  val doobieVersion = "0.10.0"
+  val doobieVersion = "0.13.4"
   val circeVersion  = "0.13.0"
   val catsVersion   = "2.3.1"
 
