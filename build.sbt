@@ -1,21 +1,16 @@
-import com.typesafe.sbt.packager.docker.ExecCmd
 import sbt.Keys.scalaSource
 
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-lazy val scala212               = "2.12.11"
-lazy val scala213               = "2.13.2"
-lazy val supportedScalaVersions = List(scala212, scala213)
-
-scalaVersion       in ThisBuild := scala213
-crossScalaVersions in ThisBuild := supportedScalaVersions
+ThisBuild / scalaVersion := "2.13.6"
 
 def commonOptions(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, 12)) =>
-      Seq("-Ypartial-unification")
-    case _ => Seq.empty
+      Seq("-Ypartial-unification", "-Xlint")
+    case _ =>
+      Seq("-Xlint:_,-byname-implicit")
   }
 
 lazy val commonSettings = Seq(
@@ -28,15 +23,14 @@ lazy val commonSettings = Seq(
       url("https://github.com/semenodm")
     )
   ),
-  licenses                ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  homepage                 := Some(url("https://github.com/laserdisc-io/fs2-aws")),
-  sources                  in (Compile, doc) := Seq(),
-  scalaSource              in Compile        := baseDirectory.value / "app",
-  scalaSource              in Test           := baseDirectory.value / "test",
-  resourceDirectory        in Compile        := baseDirectory.value / "conf",
-  resourceDirectory        in Test           := baseDirectory.value / "test_resources",
-  Test / parallelExecution := false,
-  fork                     in Test           := true,
+  licenses                   ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
+  homepage                    := Some(url("https://github.com/laserdisc-io/fs2-aws")),
+  Compile / scalaSource       := baseDirectory.value / "app",
+  Compile / resourceDirectory := baseDirectory.value / "conf",
+  Test / scalaSource          := baseDirectory.value / "test",
+  Test / resourceDirectory    := baseDirectory.value / "test_resources",
+  Test / parallelExecution    := false,
+  Test / fork                 := true,
   scalacOptions ++= commonOptions(scalaVersion.value) ++ Seq(
     "-encoding",
     "UTF-8",                         // source files are in UTF-8
@@ -45,10 +39,10 @@ lazy val commonSettings = Seq(
     "-feature",                      // warn about misused language features
     "-language:higherKinds",         // allow higher kinded types without `import scala.language.higherKinds`
     "-language:implicitConversions", // allow use of implicit conversions
-    "-language:postfixOps",
-    "-Xlint",             // enable handy linter warnings
-    "-Xfatal-warnings",   // turn compiler warnings into errors
-    "-Ywarn-macros:after" // allows the compiler to resolve implicit imports being flagged as unused
+    "-language:postfixOps",          // enable postfix ops
+    "-Xlint:_,-byname-implicit",     // enable handy linter warnings
+    "-Xfatal-warnings",              // turn compiler warnings into errors
+    "-Ywarn-macros:after"            // allows the compiler to resolve implicit imports being flagged as unused
   ),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 )
@@ -60,11 +54,11 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val dockerPublishSettings = Seq(
-  maintainer         in Docker     := "Dmytro Semenov <sdo.semenov@gmail.com>",
-  dockerBaseImage    := "openjdk:11",
-  dockerExposedPorts in Docker     := Seq(),
-  dockerUpdateLatest := true,
-  javaOptions        in Universal ++= Seq(
+  Docker / maintainer         := "Dmytro Semenov <sdo.semenov@gmail.com>",
+  Docker / dockerExposedPorts := Seq(),
+  dockerBaseImage             := "openjdk:11",
+  dockerUpdateLatest          := true,
+  Universal / javaOptions ++= Seq(
     "-J-XX:InitialRAMPercentage=70",
     "-J-XX:MaxRAMPercentage=85"
   )
@@ -82,16 +76,17 @@ lazy val root = project
     `mysql-binlog-stream-examples`
   )
 
-lazy val `mysql-binlog-stream-examples` = (project in file("mysql-binlog-stream-examples"))
-  .settings(
-    commonSettings,
-    dockerPublishSettings,
-    noPublishSettings,
-    Dependencies.Config,
-    Dependencies.XML
-  )
-  .dependsOn(`binlog-stream`)
-  .enablePlugins(JavaAppPackaging)
+lazy val `mysql-binlog-stream-examples` =
+  (project in file("mysql-binlog-stream-examples"))
+    .settings(
+      commonSettings,
+      dockerPublishSettings,
+      noPublishSettings,
+      Dependencies.Config,
+      Dependencies.XML
+    )
+    .dependsOn(`binlog-stream`)
+    .enablePlugins(JavaAppPackaging)
 
 lazy val `mysql-binlog-stream-shared` = (project in file("mysql-binlog-stream-shared"))
   .settings(
@@ -102,8 +97,8 @@ lazy val `mysql-binlog-stream-shared` = (project in file("mysql-binlog-stream-sh
   )
 
 addCommandAlias("build", ";checkFormat;clean;test;coverage")
-addCommandAlias("format", ";scalafmt;test:scalafmt;scalafmtSbt")
-addCommandAlias("checkFormat", ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck")
+addCommandAlias("format", ";scalafmtAll;scalafmtSbt")
+addCommandAlias("checkFormat", ";scalafmtCheckAll;scalafmtSbtCheck")
 
 lazy val `binlog-stream` = (project in file("binlog-stream"))
   .settings(

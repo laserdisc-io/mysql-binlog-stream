@@ -1,8 +1,11 @@
 package db
-import cats.effect.IO
+import cats.effect.{ ContextShift, IO }
 import com.dimafeng.testcontainers.{ ForAllTestContainer, SingleContainer }
+import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.testcontainers.containers.MySQLContainer
 
+import java.net.URI
+import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits
 import scala.language.existentials
 
@@ -16,11 +19,27 @@ trait MySqlContainer {
   mySqlContainer.withInitScript("init.sql")
   mySqlContainer.withPassword("")
 
-  override val container = new SingleContainer[MySQLContainer[_]] {
-    implicit override val container: MySQLContainer[_] = mySqlContainer
+  override val container: SingleContainer[MySQLContainer[_]] =
+    new SingleContainer[MySQLContainer[_]] {
+      implicit override val container: MySQLContainer[_] = mySqlContainer
+    }
+
+  implicit val ec: ExecutionContext = Implicits.global
+  implicit val cs: ContextShift[IO] = IO.contextShift(ec)
+
+  def containerBinlogConfig: BinLogConfig = {
+
+    val cleanURI = mySqlContainer.getJdbcUrl.substring(5)
+    val uri      = URI.create(cleanURI)
+
+    BinLogConfig(
+      uri.getHost,
+      uri.getPort,
+      mySqlContainer.getUsername,
+      mySqlContainer.getPassword,
+      mySqlContainer.getDatabaseName,
+      useSSL = false,
+      poolSize = 3
+    )
   }
-
-  implicit val ec = Implicits.global
-  implicit val cs = IO.contextShift(ec)
-
 }

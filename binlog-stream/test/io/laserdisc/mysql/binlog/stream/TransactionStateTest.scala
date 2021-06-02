@@ -1,16 +1,15 @@
 package io.laserdisc.mysql.binlog.stream
 
-import java.{ io, util }
-
 import _root_.io.circe.optics.JsonPath._
-import org.scalatest.OptionValues
-
-import scala.collection.immutable.Queue
-import scala.collection.mutable
 import _root_.io.laserdisc.mysql.binlog._
 import com.github.shyiko.mysql.binlog.event._
+import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import java.{ io, util }
+import scala.collection.immutable.Queue
+import scala.collection.mutable
 
 class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
 
@@ -131,17 +130,12 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
           )
         )
         .value match {
-        case (state, transactionPackage) =>
-          state.isTransaction             should be(false)
-          state.transactionEvents         should be(empty)
-          transactionPackage.value.events should have size 2
-          transactionPackage.value.events
-            .forall(_.fileName == "file.123") should be(true)
-          transactionPackage.value.events.toArray match {
-            case Array(first, last) =>
-              first.endOfTransaction should be(false)
-              last.endOfTransaction  should be(true)
-          }
+        case (state, txnPackage) =>
+          state.isTransaction                                      should be(false)
+          state.transactionEvents                                  should be(empty)
+          txnPackage.value.events                                  should have size 2
+          txnPackage.value.events.forall(_.fileName == "file.123") should be(true)
+          txnPackage.value.events.map(_.endOfTransaction)          should be(List(false, true))
       }
     }
 

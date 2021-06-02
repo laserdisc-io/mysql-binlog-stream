@@ -3,18 +3,21 @@ package io.laserdisc.mysql.binlog
 import cats.effect._
 import doobie._
 import doobie.hikari.HikariTransactor
+import io.laserdisc.mysql.binlog.config.BinLogConfig
 
 package object database {
-  def transactor[F[_]: Async: ContextShift](dbConfig: DbConfig): Resource[F, HikariTransactor[F]] =
+  def transactor[F[_]: Async: ContextShift](
+    config: BinLogConfig
+  ): Resource[F, HikariTransactor[F]] =
     for {
       ce <- ExecutionContexts.fixedThreadPool[F](32) // our connect EC
       te <- Blocker[F] // our transaction EC
-      _  <- Resource.liftF(Sync[F].delay(Class.forName(dbConfig.className)))
+      _  <- Resource.liftF(Sync[F].delay(Class.forName(config.driverClass)))
       xa <- HikariTransactor.newHikariTransactor[F](
-              dbConfig.className,
-              dbConfig.url,
-              dbConfig.user,
-              dbConfig.password,
+              config.driverClass,
+              config.connectionURL,
+              config.user,
+              config.password,
               ce,
               te
             )

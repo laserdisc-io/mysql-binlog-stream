@@ -11,9 +11,9 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "org.scalamock"     %% "scalamock"            % "5.1.0"  % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.3"  % Test, // ApacheV2
-      "com.dimafeng"      %% "testcontainers-scala" % "0.38.8" % Test,
-      "org.testcontainers" % "mysql"                % "1.15.1" % Test,
-      "org.testcontainers" % "testcontainers"       % "1.15.1" % Test
+      "com.dimafeng"      %% "testcontainers-scala" % "0.39.5" % Test,
+      "org.testcontainers" % "mysql"                % "1.15.3" % Test,
+      "org.testcontainers" % "testcontainers"       % "1.15.3" % Test
     )
   )
 

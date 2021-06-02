@@ -10,7 +10,7 @@
         <appender-ref ref="STDOUT" />
     </appender>
 
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="ASYNCSTDOUT" />
     </root>
 
@@ -20,6 +20,6 @@
     <logger name="org.apache.http" level="ERROR" />
     <logger name="ch.qos.logback" level="ERROR" />
     <logger name="o.a.h.i.c." level="ERROR" />
-    <logger name="testing" level="DEBUG"/>
+    <logger name="testing" level="WARN"/>
     <logger name="org.jdbcdslog" level="INFO"/>
 </configuration>

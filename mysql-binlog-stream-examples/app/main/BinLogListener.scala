@@ -9,7 +9,6 @@ import eu.timepit.refined.types.string.TrimmedString
 import io.chrisdavenport.log4cats.Logger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.config.BinLogConfig
-import io.laserdisc.mysql.binlog.database.DbConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import io.laserdisc.mysql.binlog.stream.{ streamEvents, MysqlBinlogStream, TransactionState }
 import io.laserdisc.mysql.binlog.{ client, database }
@@ -17,30 +16,35 @@ import io.laserdisc.mysql.binlog.{ client, database }
 object BinLogListener extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val confs =
+    val conf =
       (
         env("DB_HOST").as[TrimmedString],
         env("DB_PORT").as[Int],
         env("DB_USER").as[TrimmedString],
         env("DB_PASSWORD"),
-        env("DB_URL"),
+        env("DB_URL").option,
         env("DB_SCHEMA"),
         env("USE_SSL").as[Boolean]
       ).mapN { case (host, port, user, password, url, schema, useSSL) =>
-        (
-          BinLogConfig(host, user, password, schema, port = port, useSSL = useSSL),
-          DbConfig(user, password, url, 1)
+        BinLogConfig(
+          host,
+          port,
+          user,
+          password,
+          schema,
+          poolSize = 1,
+          useSSL = useSSL,
+          urlOverride = url
         )
       }.load[IO]
 
-    confs.flatMap { case (binLogConfig, dbConfig) =>
-      implicit val bc = binLogConfig
-      database.transactor[IO](dbConfig).use { implicit xa =>
+    conf.flatMap { config =>
+      database.transactor[IO](config).use { implicit xa =>
         for {
           implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
           //Here we do not provide binlog offset, client will be initialized with default file and offset
-          binlogClient   <- client.createBinLogClient[IO](IO.pure(None))
-          schemaMetadata <- SchemaMetadata.buildSchemaMetadata(binLogConfig.schema)
+          binlogClient   <- client.createBinLogClient[IO](config)
+          schemaMetadata <- SchemaMetadata.buildSchemaMetadata(config.schema)
           transactionState <- TransactionState
                                 .createTransactionState[IO](schemaMetadata, binlogClient)
           _ <- MysqlBinlogStream
