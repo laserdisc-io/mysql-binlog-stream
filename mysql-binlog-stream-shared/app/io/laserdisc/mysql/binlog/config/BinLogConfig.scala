@@ -14,4 +14,6 @@ case class BinLogConfig(
   def connectionURL: String =
     urlOverride.getOrElse(s"jdbc:mysql://$host:$port/$schema${if (useSSL) "?useSSL=true" else ""}")
 
+  override def toString: String =
+    s"BinLogConfig(host=$host,port=$port,user=$user,password=**redacted**,schema=$schema,useSSL=$useSSL,driverClass=$driverClass,urlOverride=$urlOverride,poolSize=$poolSize)"
 }

@@ -18,6 +18,7 @@ import scala.language.reflectiveCalls
 import scala.util.control
 
 class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with MySqlContainer {
+
   def fixture =
     new {
 
@@ -30,8 +31,8 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
 
   "Binlog Events Stream" should {
     "handle truncate table as separate transaction" in {
-      implicit val (client, xaResource) =
-        (fixture.client, fixture.testTransactor)
+      val (client, xaResource) = (fixture.client, fixture.testTransactor)
+
       client.registerLifecycleListener(new BinaryLogClient.AbstractLifecycleListener {
         override def onConnect(client: BinaryLogClient): Unit =
           control.Exception.allCatch.opt {

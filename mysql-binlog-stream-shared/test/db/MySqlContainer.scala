@@ -41,6 +41,5 @@ trait MySqlContainer {
       useSSL = false,
       poolSize = 3
     )
-
   }
 }
