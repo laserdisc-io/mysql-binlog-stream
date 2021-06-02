@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v12
       - name: Cache SBT
         uses: actions/cache@v2
         with:
@@ -17,4 +17,4 @@ jobs:
             ~/.sbt
           key: sbt-${{ hashFiles('**/build.sbt') }}
       - name: Run tests
-        run: csbt +clean +test
+        run: sbt +clean +test

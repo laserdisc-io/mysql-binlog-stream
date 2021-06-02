@@ -17,7 +17,7 @@ class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: Logger](
     }
     binlogClient.registerLifecycleListener(new BinaryLogClient.LifecycleListener {
       override def onConnect(client: BinaryLogClient): Unit =
-        ConcurrentEffect[F].toIO(Logger[F].info("Connected")).unsafeRunSync
+        ConcurrentEffect[F].toIO(Logger[F].info("Connected")).unsafeRunSync()
 
       override def onCommunicationFailure(client: BinaryLogClient, ex: Exception): Unit =
         ConcurrentEffect[F]
@@ -25,16 +25,16 @@ class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: Logger](
             Logger[F].error(ex)("communication failed with") >> queue
               .enqueue1(None)
           )
-          .unsafeRunSync
+          .unsafeRunSync()
       override def onEventDeserializationFailure(client: BinaryLogClient, ex: Exception): Unit =
         ConcurrentEffect[F]
           .toIO(Logger[F].error(ex)("failed to deserialize event") >> queue.enqueue1(None))
-          .unsafeRunSync
+          .unsafeRunSync()
 
       override def onDisconnect(client: BinaryLogClient): Unit =
         ConcurrentEffect[F]
           .toIO(Logger[F].error("Disconnected") >> queue.enqueue1(None))
-          .unsafeRunSync
+          .unsafeRunSync()
     })
     binlogClient.connect()
   }

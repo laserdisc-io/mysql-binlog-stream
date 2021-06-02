@@ -1,20 +1,15 @@
 package io.laserdisc.mysql.binlog.stream
 
-import java.net.URI
-
 import cats.effect.{ IO, Resource }
 import cats.implicits._
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer
-import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer.CompatibilityMode
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
 import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.database
-import io.laserdisc.mysql.binlog.database.DbConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -25,34 +20,14 @@ import scala.util.control
 class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with MySqlContainer {
   def fixture =
     new {
-      val testTransactor: Resource[IO, HikariTransactor[IO]] =
-        database.transactor[IO](
-          DbConfig(
-            mySqlContainer.getUsername,
-            mySqlContainer.getPassword,
-            s"${mySqlContainer.getJdbcUrl}?useSSL=false",
-            3
-          )
-        )
-      val cleanURI = mySqlContainer.getJdbcUrl.substring(5)
-      val tmp      = mySqlContainer.getJdbcUrl
-      val uri      = URI.create(cleanURI)
-      val client = {
-        val c = new BinaryLogClient(
-          uri.getHost,
-          uri.getPort,
-          mySqlContainer.getUsername,
-          mySqlContainer.getPassword
-        )
-        val eventDeserializer = new EventDeserializer()
-        eventDeserializer.setCompatibilityMode(
-          CompatibilityMode.DATE_AND_TIME_AS_LONG_MICRO,
-          CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
-        )
-        c.setEventDeserializer(eventDeserializer)
-        c
-      }
+
+      val cfg = containerBinlogConfig
+
+      val testTransactor: Resource[IO, HikariTransactor[IO]] = database.transactor[IO](cfg)
+
+      val client = cfg.mkBinaryLogClient()
     }
+
   "Binlog Events Stream" should {
     "handle truncate table as separate transaction" in {
       implicit val (client, xaResource) =
