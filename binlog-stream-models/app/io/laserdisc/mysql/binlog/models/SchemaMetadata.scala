@@ -1,6 +1,6 @@
 package io.laserdisc.mysql.binlog.models
 
-import cats.effect.IO
+import cats.effect.Bracket
 import doobie._
 import doobie.implicits._
 
@@ -48,7 +48,9 @@ object SchemaMetadata {
       |WHERE COLUMNS.TABLE_SCHEMA = $schema
       |ORDER BY TABLE_NAME, ORDINAL_POSITION""".stripMargin.query[Metadata]
 
-  def buildSchemaMetadata(schema: String)(implicit xa: Transactor[IO]): IO[SchemaMetadata] =
+  def buildSchemaMetadata[F[_]](
+    schema: String
+  )(implicit xa: Transactor[F], ev: Bracket[F, Throwable]): F[SchemaMetadata] =
     getMetadata(schema).to[List].map(metaToSchema).transact(xa)
 
   def metaToSchema(metadata: List[Metadata]): SchemaMetadata = {
