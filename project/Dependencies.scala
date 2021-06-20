@@ -29,8 +29,8 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "ch.qos.logback"     % "logback-classic" % "1.2.3", // logging
       "ch.qos.logback"     % "logback-core"    % "1.2.3", // logging
-      "org.slf4j"          % "jcl-over-slf4j"  % "1.7.30",
-      "org.slf4j"          % "jul-to-slf4j"    % "1.7.30",
+      "org.slf4j"          % "jcl-over-slf4j"  % "1.7.31",
+      "org.slf4j"          % "jul-to-slf4j"    % "1.7.31",
       "io.chrisdavenport" %% "log4cats-slf4j"  % "1.1.1"
     )
   )
