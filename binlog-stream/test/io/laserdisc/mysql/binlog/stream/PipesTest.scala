@@ -7,8 +7,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.database
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import org.scalatest.matchers.should.Matchers
@@ -59,9 +59,8 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
       val events = xaResource
         .use { implicit xa =>
           for {
-            implicit0(logger: SelfAwareStructuredLogger[IO]) <- Slf4jLogger
-                                                                  .fromName[IO]("testing")
-            schemaMetadata <- SchemaMetadata.buildSchemaMetadata("test")
+            implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("testing")
+            schemaMetadata                <- SchemaMetadata.buildSchemaMetadata("test")
             transactionState <- TransactionState
                                   .createTransactionState[IO](schemaMetadata, client)
             actions <- MysqlBinlogStream

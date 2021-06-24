@@ -4,7 +4,7 @@ import cats.effect.concurrent.Ref
 import cats.effect.{ ConcurrentEffect, Sync }
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.event.Event
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import io.laserdisc.mysql.binlog.event.EventMessage
 
 package object stream {

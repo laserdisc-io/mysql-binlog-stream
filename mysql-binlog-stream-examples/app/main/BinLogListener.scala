@@ -6,8 +6,8 @@ import ciris._
 import ciris.refined._
 import eu.timepit.refined.auto._
 import eu.timepit.refined.types.string.TrimmedString
-import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import io.laserdisc.mysql.binlog.stream.{ streamEvents, MysqlBinlogStream, TransactionState }
@@ -25,7 +25,7 @@ object BinLogListener extends IOApp {
         env("DB_URL").option,
         env("DB_SCHEMA"),
         env("USE_SSL").as[Boolean]
-      ).mapN { case (host, port, user, password, url, schema, useSSL) =>
+      ).parMapN { case (host, port, user, password, url, schema, useSSL) =>
         BinLogConfig(
           host,
           port,

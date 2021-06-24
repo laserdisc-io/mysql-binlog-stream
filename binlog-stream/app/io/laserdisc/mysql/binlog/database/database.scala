@@ -12,7 +12,7 @@ package object database {
     for {
       ce <- ExecutionContexts.fixedThreadPool[F](32) // our connect EC
       te <- Blocker[F] // our transaction EC
-      _  <- Resource.liftF(Sync[F].delay(Class.forName(config.driverClass)))
+      _  <- Resource.eval(Sync[F].delay(Class.forName(config.driverClass)))
       xa <- HikariTransactor.newHikariTransactor[F](
               config.driverClass,
               config.connectionURL,

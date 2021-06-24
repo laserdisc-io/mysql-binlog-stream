@@ -3,7 +3,7 @@ package io.laserdisc.mysql.binlog
 import cats.effect.Sync
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import io.laserdisc.mysql.binlog.checkpoint.BinlogOffset
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 

@@ -12,7 +12,7 @@ import com.github.shyiko.mysql.binlog.event.{
   EventType,
   EventHeaderV4 => JEventHeaderV4
 }
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
 import io.laserdisc.mysql.binlog.models._
