@@ -7,8 +7,8 @@ import com.github.shyiko.mysql.binlog.event.{ EventHeaderV4, EventType }
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import cats.implicits._
 import io.laserdisc.mysql.binlog.database
 import org.scalatest.matchers.should.Matchers
@@ -49,7 +49,7 @@ class MysqlBinlogStreamTest
       })
 
       val s = for {
-        implicit0(logger: SelfAwareStructuredLogger[IO]) <-
+        implicit0(logger: Logger[IO]) <-
           fs2.Stream.eval(
             Slf4jLogger.fromName[IO]("application")
           )

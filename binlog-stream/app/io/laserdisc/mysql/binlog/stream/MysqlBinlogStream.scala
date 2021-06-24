@@ -5,7 +5,7 @@ import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import fs2.concurrent.Queue
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 
 class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: Logger](
   binlogClient: BinaryLogClient,
