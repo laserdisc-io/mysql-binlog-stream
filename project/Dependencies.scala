@@ -2,10 +2,15 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
+
   val cirisVersion  = "1.2.1"
   val doobieVersion = "0.13.4"
   val circeVersion  = "0.14.1"
   val catsVersion   = "2.5.1"
+
+  val AwsSdkV1Version = "1.12.21"
+  val fs2AwsVersion   = "3.1.1"
+  val ScanamoVersion  = "1.0.0-M15"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
@@ -56,9 +61,7 @@ object Dependencies {
   )
 
   val Cats = Seq(
-    libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % catsVersion
-    )
+    libraryDependencies += "org.typelevel" %% "cats-effect" % catsVersion
   )
 
   val XML = Seq(
@@ -69,4 +72,22 @@ object Dependencies {
       "javax.activation" % "activation" % "1.1.1"
     )
   )
+
+  val `fs2-aws` = Seq(
+    libraryDependencies ++= Seq(
+      "io.laserdisc" %% "fs2-aws" % fs2AwsVersion,
+      /* Although fs2-aws is mostly based on the V2 of the AWS SDKs, the latest version of the
+       * amazon-kinesis-producer  (which it also uses) is still stuck on the v1 SDKs:
+       * https://github.com/awslabs/amazon-kinesis-producer/blob/master/java/amazon-kinesis-producer/pom.xml#L60
+       * which means that if we want to be able to fetch OIDC creds from an EKS node, we need the v1 sts lib:
+       * https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-minimum-sdk.html
+       */
+      "com.amazonaws" % "aws-java-sdk-sts" % AwsSdkV1Version % "runtime"
+    )
+  )
+
+  val Scanamo = Seq(
+    libraryDependencies += "org.scanamo" %% "scanamo-cats-effect" % ScanamoVersion
+  )
+
 }

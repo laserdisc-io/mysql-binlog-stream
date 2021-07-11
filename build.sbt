@@ -16,15 +16,11 @@ def commonOptions(scalaVersion: String) =
 lazy val commonSettings = Seq(
   organization := "io.laserdisc",
   developers := List(
-    Developer(
-      "semenodm",
-      "Dmytro Semenov",
-      "sdo.semenov@gmail.com",
-      url("https://github.com/semenodm")
-    )
+    Developer("semenodm", "Dmytro Semenov", "", url("https://github.com/semenodm")),
+    Developer("barryoneill", "Barry O'Neill", "", url("https://github.com/barryoneill"))
   ),
   licenses                   ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  homepage                    := Some(url("https://github.com/laserdisc-io/fs2-aws")),
+  homepage                    := Some(url("https://github.com/laserdisc-io/mysql-binlog-stream")),
   Compile / scalaSource       := baseDirectory.value / "app",
   Compile / resourceDirectory := baseDirectory.value / "conf",
   Test / scalaSource          := baseDirectory.value / "test",
@@ -73,6 +69,7 @@ lazy val root = project
     `mysql-binlog-stream-shared`,
     `binlog-stream-models`,
     `binlog-stream`,
+    `binlog-aws`,
     `mysql-binlog-stream-examples`
   )
 
@@ -96,17 +93,12 @@ lazy val `mysql-binlog-stream-shared` = (project in file("mysql-binlog-stream-sh
     Dependencies.Cats
   )
 
-addCommandAlias("build", ";checkFormat;clean;test;coverage")
-addCommandAlias("format", ";scalafmtAll;scalafmtSbt")
-addCommandAlias("checkFormat", ";scalafmtCheckAll;scalafmtSbtCheck")
-
 lazy val `binlog-stream` = (project in file("binlog-stream"))
   .settings(
     commonSettings,
     Dependencies.TestLib,
     Dependencies.Logging
   )
-  .dependsOn(`mysql-binlog-stream-shared` % "compile->compile;test->test")
   .dependsOn(`binlog-stream-models`)
 
 lazy val `binlog-stream-models` = (project in file("binlog-stream-models"))
@@ -116,3 +108,15 @@ lazy val `binlog-stream-models` = (project in file("binlog-stream-models"))
     Dependencies.Persistence
   )
   .dependsOn(`mysql-binlog-stream-shared` % "compile->compile;test->test")
+
+lazy val `binlog-aws` = (project in file("mysql-binlog-aws"))
+  .settings(
+    commonSettings,
+    Dependencies.`fs2-aws`,
+    Dependencies.Scanamo
+  )
+  .dependsOn(`binlog-stream` % "compile->compile;test->test")
+
+addCommandAlias("build", ";checkFormat;clean;test;coverage")
+addCommandAlias("format", ";scalafmtAll;scalafmtSbt")
+addCommandAlias("checkFormat", ";scalafmtCheckAll;scalafmtSbtCheck")
