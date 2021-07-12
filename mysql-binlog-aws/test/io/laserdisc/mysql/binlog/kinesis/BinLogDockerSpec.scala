@@ -1,18 +1,14 @@
 package io.laserdisc.mysql.binlog.kinesis
 
-import cats.effect.concurrent.Ref
-import cats.effect.{ ContextShift, IO }
-import io.circe.generic.auto._
+//import cats.implicits._
+import cats.effect.Async
 import com.dimafeng.testcontainers.{ Container, ForAllTestContainer, MultipleContainers }
-import db.MySqlContainer
-import fs2.aws.testkit.TestKinesisProducerClient
-import io.laserdisc.mysql.binlog.client.createBinLogClient
-import io.laserdisc.mysql.binlog.event.EventMessage
-import io.laserdisc.mysql.binlog.kinesis.container.DynamoDBContainer
-import io.laserdisc.mysql.binlog.kinesis.utils.BinlogOps.toSingleContainer
+import fs2.aws.internal.KinesisProducerClient
+import io.laserdisc.mysql.binlog.kinesis.container.{ DynamoDBContainer, HikariMysqlContainer }
 import org.scalatest.wordspec.AnyWordSpec
 import org.typelevel.log4cats.Logger
 import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 
 import scala.concurrent.duration.DurationInt
 
@@ -20,42 +16,28 @@ abstract class BinLogDockerSpec
     extends AnyWordSpec
     with ForAllTestContainer
     with DynamoDBContainer
-    with MySqlContainer {
+    with HikariMysqlContainer {
 
-  override val container: Container =
-    MultipleContainers(ddbContainer, toSingleContainer(mySqlContainer))
+  override val container: Container = MultipleContainers(ddbContainer, singleMySQLContainer)
 
   override def afterStart(): Unit =
     createDDBOffsetTestTable()
 
-  def mkTestContext(produced: Ref[IO, List[EventMessage]])(
-    implicit cs: ContextShift[IO],
-    logger: Logger[IO]
-  ): IO[BinlogListenerContext[IO]] = {
-
-    val appConfig = KinesisPublisherConfig(
+  def mkTestConfig[F[_]: Async](kpc: KinesisProducerClient[F]): PublisherConfig[F] =
+    new PublisherConfig[F](
       binlogConfig = containerBinlogConfig,
-      checkpointAppName = "dev",
+      checkpointAppName = "testApp",
       checkpointEvery = 3.seconds,
-      checkpointTableName = "foo-bar-woof",
+      checkpointTableName = TestOffsetTableName,
       checkpointTableRegion = Region.US_EAST_1,
-      kinesisOutputStream = "foo-bar-woof-k",
+      kinesisOutputStream = "some-test-stream",
       kinesisRegion = Region.US_EAST_1
-    )
+    ) {
 
-    for {
-      dynamoClient     <- containerDDBClient
-      offset           <- Checkpointing.fetchOffset[IO](dynamoClient, appConfig)
-      binlogClient     <- createBinLogClient[IO](containerBinlogConfig, offset)
-      transactionState <- makeTransactionState(containerBinlogConfig, binlogClient)
+      override def createDynamoDBClient: F[DynamoDbAsyncClient] = Async[F].delay(containerDDBClient)
 
-    } yield BinlogListenerContext(
-      appConfig,
-      dynamoClient,
-      binlogClient,
-      transactionState,
-      TestKinesisProducerClient[IO, EventMessage](produced)
-    )
-  }
+      override def createKinesisProducer(implicit logger: Logger[F]): F[KinesisProducerClient[F]] =
+        Async[F].delay(kpc)
+    }
 
 }

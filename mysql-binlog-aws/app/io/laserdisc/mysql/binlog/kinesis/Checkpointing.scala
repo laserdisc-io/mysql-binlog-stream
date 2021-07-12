@@ -11,14 +11,13 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 
 object Checkpointing {
 
-  def fetchOffset[F[_]: Async](
+  def getOffsetCheckpoint[F[_]: Async](
     dynamoDBClient: DynamoDbAsyncClient,
-    appConfig: KinesisPublisherConfig
+    config: PublisherConfig[F]
   ): F[Option[BinlogOffset]] = {
-    val offsets = Table[BinlogOffset](appConfig.checkpointTableName)
-    println(s"LOADING OFFSETS FROM $offsets")
+    val offsets = Table[BinlogOffset](config.checkpointTableName)
     ScanamoCats[F](dynamoDBClient)
-      .exec(offsets.get("appName" === appConfig.checkpointAppName))
+      .exec(offsets.get("appName" === config.checkpointAppName))
       .flatMap {
         case Some(value) =>
           value
@@ -29,16 +28,16 @@ object Checkpointing {
       }
   }
 
-  def checkpoint[F[_]: Async](
+  def saveOffsetCheckpoint[F[_]: Async](
     dynamoDBClient: DynamoDbAsyncClient,
-    appConfig: KinesisPublisherConfig
+    config: PublisherConfig[F]
   )(implicit logger: Logger[F]): Pipe[F, BinlogOffset, BinlogOffset] = {
-    val offsets = Table[BinlogOffset](appConfig.checkpointTableName)
-    _.evalTap(binLogOffset => logger.info(s"CHECKPOINT offset=$binLogOffset"))
-      .evalMap(binLogOffset =>
-        ScanamoCats[F](dynamoDBClient)
-          .exec(offsets.put(binLogOffset))
-          .as(binLogOffset)
+    val offsetTbl = Table[BinlogOffset](config.checkpointTableName)
+    _.evalTap(binLogOffset =>
+      logger.info(
+        s"CHECKPOINT-SAVE offset=$binLogOffset table:${offsetTbl.name} appName:${config.checkpointAppName}"
       )
+    ).evalMap(o => ScanamoCats[F](dynamoDBClient).exec(offsetTbl.put(o)).as(o))
   }
+
 }

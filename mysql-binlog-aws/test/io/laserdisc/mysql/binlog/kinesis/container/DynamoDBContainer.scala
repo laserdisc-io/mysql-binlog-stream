@@ -1,6 +1,5 @@
 package io.laserdisc.mysql.binlog.kinesis.container
 
-import cats.effect.IO
 import com.dimafeng.testcontainers.GenericContainer
 import org.scanamo.LocalDynamoDB
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
@@ -10,6 +9,8 @@ import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType._
 
 trait DynamoDBContainer {
 
+  val TestOffsetTableName: String = "test-offsets"
+
   val ddbContainer: GenericContainer = new GenericContainer(
     "amazon/dynamodb-local",
     waitStrategy = Some(new HttpWaitStrategy().forPath("/shell"))
@@ -17,10 +18,9 @@ trait DynamoDBContainer {
 
   private[this] def localDDBClient = LocalDynamoDB.client(ddbContainer.mappedPort(8000))
 
-  def containerDDBClient: IO[DynamoDbAsyncClient] = IO.delay(localDDBClient)
+  def containerDDBClient: DynamoDbAsyncClient = localDDBClient
 
   def createDDBOffsetTestTable(): CreateTableResponse = {
-    println("creating binlogger-offset-dev")
-    LocalDynamoDB.createTable(localDDBClient)("binlogger-offset-dev")("appName" -> S)
+    LocalDynamoDB.createTable(localDDBClient)(TestOffsetTableName)("appName" -> S)
   }
 }

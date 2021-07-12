@@ -99,6 +99,7 @@ lazy val `binlog-stream` = (project in file("binlog-stream"))
     Dependencies.TestLib,
     Dependencies.Logging
   )
+  .dependsOn(`mysql-binlog-stream-shared` % "compile->compile;test->test")
   .dependsOn(`binlog-stream-models`)
 
 lazy val `binlog-stream-models` = (project in file("binlog-stream-models"))

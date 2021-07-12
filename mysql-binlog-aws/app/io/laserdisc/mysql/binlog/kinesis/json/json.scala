@@ -12,8 +12,6 @@ package object json {
 
   implicit val regionEnc: Encoder[Region] = (r: Region) => Json.fromString(r.id)
 
-  implicit val appConfigEnc: Encoder[KinesisPublisherConfig] = deriveEncoder
-
   implicit val binlogConfigEnc: Encoder[BinLogConfig] = deriveEncoder
 
   implicit final val finiteDurationEncoder: Encoder[FiniteDuration] = (fd: FiniteDuration) =>

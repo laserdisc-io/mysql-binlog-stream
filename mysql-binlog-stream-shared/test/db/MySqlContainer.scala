@@ -1,6 +1,6 @@
 package db
 import cats.effect.{ ContextShift, IO }
-import com.dimafeng.testcontainers.{ ForAllTestContainer, SingleContainer }
+import com.dimafeng.testcontainers.{ Container, ForAllTestContainer, SingleContainer }
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.testcontainers.containers.MySQLContainer
 
@@ -19,10 +19,12 @@ trait MySqlContainer {
   mySqlContainer.withInitScript("init.sql")
   mySqlContainer.withPassword("")
 
-  override val container: SingleContainer[MySQLContainer[_]] =
+  def singleMySQLContainer: SingleContainer[MySQLContainer[_]] =
     new SingleContainer[MySQLContainer[_]] {
       implicit override val container: MySQLContainer[_] = mySqlContainer
     }
+
+  override val container: Container = singleMySQLContainer
 
   implicit val ec: ExecutionContext = Implicits.global
   implicit val cs: ContextShift[IO] = IO.contextShift(ec)

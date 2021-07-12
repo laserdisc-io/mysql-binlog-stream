@@ -8,7 +8,7 @@ object Dependencies {
   val circeVersion  = "0.14.1"
   val catsVersion   = "2.5.1"
 
-  val AwsSdkV1Version = "1.12.21"
+  val AwsSdkV1Version = "1.12.22"
   val fs2AwsVersion   = "3.1.1"
   val ScanamoVersion  = "1.0.0-M15"
 
@@ -31,13 +31,7 @@ object Dependencies {
   )
 
   val Logging = Seq(
-    libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.2.3", // logging
-      "ch.qos.logback" % "logback-core"    % "1.2.3", // logging
-      "org.slf4j"      % "jcl-over-slf4j"  % "1.7.31",
-      "org.slf4j"      % "jul-to-slf4j"    % "1.7.31",
-      "org.typelevel" %% "log4cats-slf4j"  % "1.3.1"
-    )
+    libraryDependencies += "org.typelevel" %% "log4cats-slf4j" % "1.3.1"
   )
 
   val Persistence = Seq(

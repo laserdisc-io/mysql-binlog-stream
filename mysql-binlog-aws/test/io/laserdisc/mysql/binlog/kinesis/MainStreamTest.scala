@@ -1,11 +1,12 @@
 package io.laserdisc.mysql.binlog.kinesis
 
-import cats.effect.concurrent.Ref
+import io.circe.generic.auto._
 import cats.effect.{ IO, Timer }
 import cats.implicits._
 import doobie.hikari.HikariTransactor
 import fs2.concurrent.SignallingRef
 import io.laserdisc.mysql.binlog.event.EventMessage
+import io.laserdisc.mysql.binlog.kinesis.utils.TestProducer
 import org.scalatest.matchers.should.Matchers
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -32,11 +33,11 @@ class MainStreamTest extends BinLogDockerSpec with Matchers {
   def runTest(transactions: Int, offset: Int): IO[List[EventMessage]] =
     for {
       implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
-      produced                      <- Ref[IO].of(List.empty[EventMessage])
-      context                       <- mkTestContext(produced)
+      producer                      <- TestProducer[IO, EventMessage]
+      context                        = mkTestConfig[IO](producer)
       transactor                    <- mkTransactor
       signal                        <- SignallingRef[IO, Boolean](false)
-      stream                        <- kinesisPublisherStream[IO].run(context)
+      stream                         = kinesisPublisherStream[IO](context)
       _ <-
         transactor.use { xa =>
           stream
@@ -45,8 +46,8 @@ class MainStreamTest extends BinLogDockerSpec with Matchers {
             .compile
             .drain
         }
-      producedMsgs <- produced.get
-    } yield producedMsgs
+      producedMsgs <- producer.getPutRecords
+    } yield producedMsgs.map(_.data)
 
   def generateLoad(
     transactions: Int,
