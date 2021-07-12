@@ -1,13 +1,13 @@
-package io.laserdisc.mysql.binlog.kinesis.binlog.container
+package io.laserdisc.mysql.binlog.kinesis.container
 
-import cats.effect.{ContextShift, IO, Resource}
+import cats.effect.{ ContextShift, IO, Resource }
 import cats.implicits._
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
 import doobie.util.transactor.Transactor
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.database
-import models.TestTableModel
+import io.laserdisc.mysql.binlog.kinesis.models.TestTableModel
 import org.testcontainers.containers.MySQLContainer
 
 import java.net.URI
@@ -42,7 +42,7 @@ trait MySqlContainer {
     )
   }
 
-  val mkTransactor: IO[Resource[IO, HikariTransactor[IO]]] =
+  def mkTransactor: IO[Resource[IO, HikariTransactor[IO]]] =
     IO.delay(database.transactor[IO](containerBinlogConfig))
 
   def inserts(tx_id: Int, offset: Int, itemsPerTx: Int, xa: Transactor[IO]): IO[Unit] = {

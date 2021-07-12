@@ -1,9 +1,24 @@
 package io.laserdisc.mysql.binlog.kinesis
 
 import io.circe._
+import io.circe.generic.semiauto._
 import io.circe.parser._
+import io.laserdisc.mysql.binlog.config.BinLogConfig
+import software.amazon.awssdk.regions.Region
+
+import scala.concurrent.duration.FiniteDuration
 
 package object json {
+
+  implicit val regionEnc: Encoder[Region] = (r: Region) => Json.fromString(r.id)
+
+  implicit val appConfigEnc: Encoder[KinesisPublisherConfig] = deriveEncoder
+
+  implicit val binlogConfigEnc: Encoder[BinLogConfig] = deriveEncoder
+
+  implicit final val finiteDurationEncoder: Encoder[FiniteDuration] = (fd: FiniteDuration) =>
+    Json.fromString(fd.toString())
+
   def flatHash(doc: String, removeKey: String = ""): Either[Exception, String] =
     flatten(doc) match {
       case Left(e) => Left(e)
@@ -26,8 +41,8 @@ package object json {
   def flatUnsorted(json: Json): List[String] = json.foldWith(
     new Json.Folder[List[String]] with (Json => List[String]) {
       def apply(v: Json): List[String] = v.foldWith(this)
-      def onObject(v: JsonObject) = v.toList.flatMap {
-        case (k, v) => List(k.trim ++ ":" ++ v.foldWith(this).mkString(","))
+      def onObject(v: JsonObject) = v.toList.flatMap { case (k, v) =>
+        List(k.trim ++ ":" ++ v.foldWith(this).mkString(","))
       }
       def onArray(v: Vector[Json]) =
         v.flatMap(j => j.foldWith(this)).toList.sorted

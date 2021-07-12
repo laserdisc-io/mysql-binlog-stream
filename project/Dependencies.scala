@@ -75,7 +75,8 @@ object Dependencies {
 
   val `fs2-aws` = Seq(
     libraryDependencies ++= Seq(
-      "io.laserdisc" %% "fs2-aws" % fs2AwsVersion,
+      "io.laserdisc" %% "fs2-aws"         % fs2AwsVersion,
+      "io.laserdisc" %% "fs2-aws-testkit" % fs2AwsVersion % Test,
       /* Although fs2-aws is mostly based on the V2 of the AWS SDKs, the latest version of the
        * amazon-kinesis-producer  (which it also uses) is still stuck on the v1 SDKs:
        * https://github.com/awslabs/amazon-kinesis-producer/blob/master/java/amazon-kinesis-producer/pom.xml#L60
@@ -87,7 +88,10 @@ object Dependencies {
   )
 
   val Scanamo = Seq(
-    libraryDependencies += "org.scanamo" %% "scanamo-cats-effect" % ScanamoVersion
+    libraryDependencies ++= Seq(
+      "org.scanamo" %% "scanamo-cats-effect" % ScanamoVersion,
+      "org.scanamo" %% "scanamo-testkit"     % ScanamoVersion % Test
+    )
   )
 
 }

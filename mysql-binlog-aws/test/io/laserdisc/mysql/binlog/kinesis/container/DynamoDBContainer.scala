@@ -1,4 +1,4 @@
-package io.laserdisc.mysql.binlog.kinesis.binlog.container
+package io.laserdisc.mysql.binlog.kinesis.container
 
 import cats.effect.IO
 import com.dimafeng.testcontainers.GenericContainer

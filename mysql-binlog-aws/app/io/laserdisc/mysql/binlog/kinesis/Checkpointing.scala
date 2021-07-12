@@ -1,25 +1,24 @@
-package io.laserdisc.mysql.binlog.kinesis.binlog
+package io.laserdisc.mysql.binlog.kinesis
 import cats.effect.{ Async, Sync }
-import config.BinLogKinesisConfig
-import fs2.Pipe
 import cats.implicits._
-import org.typelevel.log4cats.Logger
+import fs2.Pipe
 import io.laserdisc.mysql.binlog.checkpoint.BinlogOffset
-import org.scanamo.syntax._
 import org.scanamo.generic.auto._
+import org.scanamo.syntax._
 import org.scanamo.{ DynamoReadError, ScanamoCats, Table }
+import org.typelevel.log4cats.Logger
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 
 object Checkpointing {
 
   def fetchOffset[F[_]: Async](
     dynamoDBClient: DynamoDbAsyncClient,
-    appConfig: BinLogKinesisConfig
+    appConfig: KinesisPublisherConfig
   ): F[Option[BinlogOffset]] = {
-    val offsets = Table[BinlogOffset](appConfig.ddbOffsetTable)
+    val offsets = Table[BinlogOffset](appConfig.checkpointTableName)
     println(s"LOADING OFFSETS FROM $offsets")
     ScanamoCats[F](dynamoDBClient)
-      .exec(offsets.get("appName" === appConfig.appName))
+      .exec(offsets.get("appName" === appConfig.checkpointAppName))
       .flatMap {
         case Some(value) =>
           value
@@ -32,9 +31,9 @@ object Checkpointing {
 
   def checkpoint[F[_]: Async](
     dynamoDBClient: DynamoDbAsyncClient,
-    appConfig: BinLogKinesisConfig
+    appConfig: KinesisPublisherConfig
   )(implicit logger: Logger[F]): Pipe[F, BinlogOffset, BinlogOffset] = {
-    val offsets = Table[BinlogOffset](appConfig.ddbOffsetTable)
+    val offsets = Table[BinlogOffset](appConfig.checkpointTableName)
     _.evalTap(binLogOffset => logger.info(s"CHECKPOINT offset=$binLogOffset"))
       .evalMap(binLogOffset =>
         ScanamoCats[F](dynamoDBClient)

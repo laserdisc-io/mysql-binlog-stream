@@ -1,19 +1,18 @@
-package io.laserdisc.mysql.binlog.kinesis.binlog
+package io.laserdisc.mysql.binlog.kinesis
 
-import binlog.container.{ DynamoDBContainer, MySqlContainer }
 import cats.effect.concurrent.Ref
 import cats.effect.{ ContextShift, IO }
-import com.dimafeng.testcontainers.{ Container, ForAllTestContainer, MultipleContainers }
-import config.BinLogKinesisConfig
-import config.SDLCEnvironment.SDLCEnvironment.dev
-import context.BinlogListenerContext
-import fs2.aws.testkit.TestKinesisProducerClient
-import org.typelevel.log4cats.Logger
 import io.circe.generic.auto._
+import com.dimafeng.testcontainers.{ Container, ForAllTestContainer, MultipleContainers }
+import db.MySqlContainer
+import fs2.aws.testkit.TestKinesisProducerClient
 import io.laserdisc.mysql.binlog.client.createBinLogClient
 import io.laserdisc.mysql.binlog.event.EventMessage
+import io.laserdisc.mysql.binlog.kinesis.container.DynamoDBContainer
+import io.laserdisc.mysql.binlog.kinesis.utils.BinlogOps.toSingleContainer
 import org.scalatest.wordspec.AnyWordSpec
-import utils.BinlogOps.toSingleContainer
+import org.typelevel.log4cats.Logger
+import software.amazon.awssdk.regions.Region
 
 import scala.concurrent.duration.DurationInt
 
@@ -34,11 +33,14 @@ abstract class BinLogDockerSpec
     logger: Logger[IO]
   ): IO[BinlogListenerContext[IO]] = {
 
-    val appConfig = AppConfig(
-      appName = "dev",
-      env = dev,
+    val appConfig = KinesisPublisherConfig(
+      binlogConfig = containerBinlogConfig,
+      checkpointAppName = "dev",
       checkpointEvery = 3.seconds,
-      binlogConfig = containerBinlogConfig
+      checkpointTableName = "foo-bar-woof",
+      checkpointTableRegion = Region.US_EAST_1,
+      kinesisOutputStream = "foo-bar-woof-k",
+      kinesisRegion = Region.US_EAST_1
     )
 
     for {

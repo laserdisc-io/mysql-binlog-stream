@@ -1,7 +1,7 @@
-package io.laserdisc.mysql.binlog.kinesis.binlog
+package io.laserdisc.mysql.binlog.kinesis
 
 import cats.effect.concurrent.Ref
-import cats.effect.{IO, Timer}
+import cats.effect.{ IO, Timer }
 import cats.implicits._
 import doobie.hikari.HikariTransactor
 import fs2.concurrent.SignallingRef
@@ -36,14 +36,15 @@ class MainStreamTest extends BinLogDockerSpec with Matchers {
       context                       <- mkTestContext(produced)
       transactor                    <- mkTransactor
       signal                        <- SignallingRef[IO, Boolean](false)
-      stream                        <- binlogStream[IO].run(context)
+      stream                        <- kinesisPublisherStream[IO].run(context)
       _ <-
-        transactor.use{ xa =>
-        stream
+        transactor.use { xa =>
+          stream
             .interruptWhen(signal)
             .concurrently(generateLoad(transactions, offset, xa, signal))
             .compile
-            .drain }
+            .drain
+        }
       producedMsgs <- produced.get
     } yield producedMsgs
 

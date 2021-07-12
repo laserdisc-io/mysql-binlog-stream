@@ -1,4 +1,5 @@
-package io.laserdisc.mysql.binlog.kinesis.destination
+package io.laserdisc.mysql.binlog.kinesis
+
 import io.circe.generic.auto._
 import io.circe.jawn.CirceSupportParser
 import io.laserdisc.mysql.binlog.event.EventMessage
@@ -37,7 +38,7 @@ class KinesisDestinationTest extends AnyWordSpec with Matchers with OptionValues
         .toEither
         .flatMap(_.as[EventMessage]) match {
         case Left(v)  => fail(s"Failed to parse $raw as an EventMessage", v)
-        case Right(e) => KinesisDestination.calculateKey(e)
+        case Right(e) => calculateKey(e)
       }
 
       actual should be("triggered_queue_items|action:1|id:8177515")
