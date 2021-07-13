@@ -20,11 +20,9 @@
     <!-- turn a few off that make the logs too verbose-->
     <logger name="com.amazonaws" level="ERROR" />
     <logger name="software.amazon" level="ERROR" />
-
-    <!-- don't need to see anything about logger setup -->
     <logger name="ch.qos.logback" level="ERROR" />
-
-    <!-- http related logging -->
+    <logger name="io.netty" level="WARN" />
+    <logger name="org.testcontainers" level="WARN" />
     <logger name="org.apache.http" level="ERROR" />
     <logger name="o.a.h.i.c." level="ERROR" />
 

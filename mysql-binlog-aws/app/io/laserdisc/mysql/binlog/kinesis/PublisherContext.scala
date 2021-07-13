@@ -25,21 +25,21 @@ case class PublisherContext[F[_]](
 
 object PublisherContext {
 
-  def apply[F[_]: Async](appConfig: PublisherConfig[F])(
+  def apply[F[_]: Async](config: PublisherConfig[F])(
     implicit cs: ContextShift[F],
     logger: Logger[F]
   ): F[PublisherContext[F]] =
     for {
       _        <- logger.info("PUBLISHER-INIT-START")
-      ddb      <- appConfig.createDynamoDBClient
-      kinesis  <- appConfig.createKinesisProducer
-      offset   <- Checkpointing.getOffsetCheckpoint[F](ddb, appConfig)
-      binlog   <- createBinLogClient[F](appConfig.binlogConfig, offset)
-      txnState <- makeTransactionState(appConfig.binlogConfig, binlog)
+      ddb      <- config.createDynamoDBClient
+      kinesis  <- config.createKinesisProducer
+      offset   <- Checkpointing.getOffsetCheckpoint[F](ddb, config)
+      binlog   <- createBinLogClient[F](config.binlogConfig, offset)
+      txnState <- makeTransactionState(config.binlogConfig, binlog)
       _        <- logger.info("PUBLISHER-INIT-COMPLETE")
-    } yield PublisherContext[F](appConfig, ddb, kinesis, binlog, txnState)
+    } yield PublisherContext[F](config, ddb, kinesis, binlog, txnState)
 
-  def makeTransactionState[F[_]: Async](
+  private[this] def makeTransactionState[F[_]: Async](
     config: BinLogConfig,
     binlogClient: BinaryLogClient
   )(

@@ -1,5 +1,3 @@
-use test;
-
 create table sku
 (
   id  int primary key,
@@ -12,4 +10,3 @@ create table variant
   color varchar(10)
 );
 
-insert into sku (id, sku) VALUES (1, '123');

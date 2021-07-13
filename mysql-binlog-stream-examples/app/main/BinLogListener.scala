@@ -3,24 +3,22 @@ package main
 import cats.effect.{ ExitCode, IO, IOApp }
 import cats.implicits._
 import ciris._
-import ciris.refined._
-import eu.timepit.refined.auto._
-import eu.timepit.refined.types.string.TrimmedString
-import org.typelevel.log4cats.Logger
-import org.typelevel.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import io.laserdisc.mysql.binlog.stream.{ streamEvents, MysqlBinlogStream, TransactionState }
 import io.laserdisc.mysql.binlog.{ client, database }
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object BinLogListener extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val conf =
+
+    val conf: IO[BinLogConfig] =
       (
-        env("DB_HOST").as[TrimmedString],
+        env("DB_HOST").as[String],
         env("DB_PORT").as[Int],
-        env("DB_USER").as[TrimmedString],
+        env("DB_USER").as[String],
         env("DB_PASSWORD"),
         env("DB_URL").option,
         env("DB_SCHEMA"),
@@ -42,7 +40,7 @@ object BinLogListener extends IOApp {
       database.transactor[IO](config).use { implicit xa =>
         for {
           implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
-          //Here we do not provide binlog offset, client will be initialized with default file and offset
+          // Here we do not provide binlog offset, client will be initialized with default file and offset
           binlogClient   <- client.createBinLogClient[IO](config)
           schemaMetadata <- SchemaMetadata.buildSchemaMetadata(config.schema)
           transactionState <- TransactionState

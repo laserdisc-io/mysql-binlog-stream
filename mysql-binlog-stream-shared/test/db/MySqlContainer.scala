@@ -14,10 +14,18 @@ trait MySqlContainer {
   type OTCContainer = MySQLContainer[T] forSome {
     type T <: MySQLContainer[T]
   }
-  val mySqlContainer: OTCContainer = new MySQLContainer("mysql:5.7").withUsername("root")
-  mySqlContainer.withCommand("mysqld --log-bin --server-id=1 --binlog-format=ROW")
-  mySqlContainer.withInitScript("init.sql")
-  mySqlContainer.withPassword("")
+
+  def initSQLPath: String = "init.sql"
+
+  val mySqlContainer: OTCContainer = {
+
+    val otc: OTCContainer = new MySQLContainer("mysql:5.7")
+    otc
+      .withUsername("root")
+      .withPassword("")
+      .withInitScript(initSQLPath)
+      .withCommand("mysqld --log-bin --server-id=1 --binlog-format=ROW")
+  }
 
   def singleMySQLContainer: SingleContainer[MySQLContainer[_]] =
     new SingleContainer[MySQLContainer[_]] {

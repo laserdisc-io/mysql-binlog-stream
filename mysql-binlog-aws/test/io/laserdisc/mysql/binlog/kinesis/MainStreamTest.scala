@@ -1,10 +1,10 @@
 package io.laserdisc.mysql.binlog.kinesis
 
-import io.circe.generic.auto._
 import cats.effect.{ IO, Timer }
 import cats.implicits._
 import doobie.hikari.HikariTransactor
 import fs2.concurrent.SignallingRef
+import io.circe.generic.auto._
 import io.laserdisc.mysql.binlog.event.EventMessage
 import io.laserdisc.mysql.binlog.kinesis.utils.TestProducer
 import org.scalatest.matchers.should.Matchers
@@ -14,7 +14,7 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-class MainStreamTest extends BinLogDockerSpec with Matchers {
+class MainStreamTest extends BaseKinesisPublisherSpec with Matchers {
 
   implicit val t: Timer[IO] = IO.timer(ExecutionContext.global)
 
@@ -33,20 +33,19 @@ class MainStreamTest extends BinLogDockerSpec with Matchers {
   def runTest(transactions: Int, offset: Int): IO[List[EventMessage]] =
     for {
       implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
-      producer                      <- TestProducer[IO, EventMessage]
-      context                        = mkTestConfig[IO](producer)
-      transactor                    <- mkTransactor
+      kinesis                       <- TestProducer[IO, EventMessage]
+      publisherCtx                  <- PublisherContext(mkTestConfig[IO](kinesis))
+      transactor                    <- localMySQLTransactor
       signal                        <- SignallingRef[IO, Boolean](false)
-      stream                         = kinesisPublisherStream[IO](context)
       _ <-
         transactor.use { xa =>
-          stream
+          kinesisPublisherStream[IO](publisherCtx)
             .interruptWhen(signal)
             .concurrently(generateLoad(transactions, offset, xa, signal))
             .compile
             .drain
         }
-      producedMsgs <- producer.getPutRecords
+      producedMsgs <- kinesis.getPutRecords
     } yield producedMsgs.map(_.data)
 
   def generateLoad(

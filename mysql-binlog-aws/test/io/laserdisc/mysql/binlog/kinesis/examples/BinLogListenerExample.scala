@@ -10,8 +10,8 @@ object BinLogListenerExample extends IOApp {
   override def run(args: List[String]): IO[ExitCode] =
     for {
       implicit0(log: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
-      appConfig                  <- IO.delay(???)
-      _                          <- kinesisPublisherStream[IO](appConfig).compile.drain
+      config                     <- IO.delay(???)
+      _                          <- kinesisPublisherStream[IO](config).compile.drain
 
     } yield ExitCode.Success
 

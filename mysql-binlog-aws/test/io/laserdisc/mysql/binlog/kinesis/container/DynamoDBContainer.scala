@@ -20,7 +20,6 @@ trait DynamoDBContainer {
 
   def containerDDBClient: DynamoDbAsyncClient = localDDBClient
 
-  def createDDBOffsetTestTable(): CreateTableResponse = {
+  def createDDBOffsetTestTable(): CreateTableResponse =
     LocalDynamoDB.createTable(localDDBClient)(TestOffsetTableName)("appName" -> S)
-  }
 }
