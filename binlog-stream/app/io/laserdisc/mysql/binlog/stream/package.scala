@@ -1,11 +1,11 @@
 package io.laserdisc.mysql.binlog
 
-import cats.effect.concurrent.Ref
 import cats.effect.{ ConcurrentEffect, Sync }
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.event.Event
 import org.typelevel.log4cats.Logger
 import io.laserdisc.mysql.binlog.event.EventMessage
+import cats.effect.Ref
 
 package object stream {
   def streamEvents[F[_]: ConcurrentEffect: Logger](

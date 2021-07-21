@@ -1,11 +1,12 @@
 package io.laserdisc.mysql.binlog.stream
 
-import cats.effect.{ Blocker, ConcurrentEffect, ContextShift, Sync }
+import cats.effect.{ ConcurrentEffect, Sync }
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import fs2.concurrent.Queue
 import org.typelevel.log4cats.Logger
+import cats.effect.Resource
 
 class MysSqlBinlogEventProcessor[F[_]: ConcurrentEffect: Logger](
   binlogClient: BinaryLogClient,
@@ -48,7 +49,7 @@ object MysqlBinlogStream {
       q         <- fs2.Stream.eval(Queue.bounded[F, Option[Event]](10000))
       processor <- fs2.Stream.eval(Sync[F].delay(new MysSqlBinlogEventProcessor[F](client, q)))
       event <- q.dequeue.unNoneTerminate concurrently fs2.Stream.eval(
-                 Blocker[F].use(b => b.delay(processor.run()))
+                 Resource.unit[F].use(b => Sync[F].blocking(processor.run()))
                ) onFinalize Sync[F].delay(client.disconnect())
     } yield event
 }

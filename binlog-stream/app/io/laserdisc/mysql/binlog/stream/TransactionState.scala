@@ -2,7 +2,6 @@ package io.laserdisc.mysql.binlog.stream
 
 import cats.data.State
 import cats.effect.Sync
-import cats.effect.concurrent.Ref
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.EventType.{ EXT_UPDATE_ROWS, UPDATE_ROWS }
@@ -20,6 +19,7 @@ import io.laserdisc.mysql.binlog.models._
 import java.io.Serializable
 import java.math.BigDecimal
 import scala.collection.immutable.Queue
+import cats.effect.Ref
 
 case class TransactionState(
   transactionEvents: Queue[EventMessage],

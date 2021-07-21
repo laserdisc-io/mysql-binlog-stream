@@ -1,5 +1,5 @@
 package db
-import cats.effect.{ ContextShift, IO }
+import cats.effect.IO
 import com.dimafeng.testcontainers.{ ForAllTestContainer, SingleContainer }
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.testcontainers.containers.MySQLContainer
