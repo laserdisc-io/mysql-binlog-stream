@@ -1,14 +1,13 @@
 package io.laserdisc.mysql.binlog.stream
 
-import cats.effect.kernel.Async
-import cats.effect.{ Concurrent, Sync }
+import cats.effect.Async
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import cats.effect.std.{ Dispatcher, Queue }
 import org.typelevel.log4cats.Logger
 
-class MysSqlBinlogEventProcessor[F[_]: Concurrent: Async: Logger](
+class MysSqlBinlogEventProcessor[F[_]: Async: Logger](
   binlogClient: BinaryLogClient,
   queue: Queue[F, Option[Event]],
   dispatcher: Dispatcher[F]
@@ -23,9 +22,9 @@ class MysSqlBinlogEventProcessor[F[_]: Concurrent: Async: Logger](
 
       override def onCommunicationFailure(client: BinaryLogClient, ex: Exception): Unit =
         dispatcher.unsafeRunSync(
-          Logger[F].error(ex)("communication failed with") >> queue
-            .offer(None)
+          Logger[F].error(ex)("communication failed with") >> queue.offer(None)
         )
+
       override def onEventDeserializationFailure(client: BinaryLogClient, ex: Exception): Unit =
         dispatcher.unsafeRunSync(
           Logger[F].error(ex)("failed to deserialize event") >> queue.offer(None)
@@ -39,21 +38,21 @@ class MysSqlBinlogEventProcessor[F[_]: Concurrent: Async: Logger](
 }
 
 object MysqlBinlogStream {
-  def rawEvents[F[_]: Concurrent: Logger: Async](
-    client: BinaryLogClient,
-    dispatcher: Dispatcher[F]
+  def rawEvents[F[_]: Async: Logger](
+    client: BinaryLogClient
   ): fs2.Stream[F, Event] =
     for {
-      q: Queue[F, Option[Event]] <- fs2.Stream.eval(Queue.bounded[F, Option[Event]](10000))
-      processor: MysSqlBinlogEventProcessor[F] <-
-        fs2.Stream.eval(Sync[F].delay(new MysSqlBinlogEventProcessor[F](client, q, dispatcher)))
+      q          <- fs2.Stream.eval(Queue.bounded[F, Option[Event]](10000))
+      dispatcher <- fs2.Stream.resource(Dispatcher[F])
+      processor <-
+        fs2.Stream.eval(Async[F].delay(new MysSqlBinlogEventProcessor[F](client, q, dispatcher)))
       event <- fs2.Stream
                  .eval(q.take)
                  .unNoneTerminate
                  .concurrently(
                    fs2.Stream
-                     .eval(Sync[F].blocking(processor.run()))
-                     .onFinalize(Sync[F].delay(client.disconnect()))
+                     .eval(Async[F].blocking(processor.run()))
+                     .onFinalize(Async[F].delay(client.disconnect()))
                  )
     } yield event
 }

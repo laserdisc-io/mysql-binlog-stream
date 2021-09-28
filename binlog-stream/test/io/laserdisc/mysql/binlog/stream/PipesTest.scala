@@ -1,6 +1,6 @@
 package io.laserdisc.mysql.binlog.stream
 
-import cats.effect.std.Dispatcher
+import cats.effect.unsafe.implicits.global
 import cats.effect.{ IO, Resource }
 import cats.implicits._
 import com.dimafeng.testcontainers.ForAllTestContainer
@@ -14,7 +14,6 @@ import io.laserdisc.mysql.binlog.database
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import cats.effect.unsafe.implicits.global
 
 import scala.language.reflectiveCalls
 import scala.util.control
@@ -65,10 +64,8 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
             schemaMetadata                <- SchemaMetadata.buildSchemaMetadata("test")
             transactionState <- TransactionState
                                   .createTransactionState[IO](schemaMetadata, client)
-            actions <- (for {
-                         dispatcher <- fs2.Stream.resource(Dispatcher[IO])
-                         event      <- MysqlBinlogStream.rawEvents[IO](client, dispatcher)
-                       } yield event)
+            actions <- MysqlBinlogStream
+                         .rawEvents[IO](client)
                          .through(streamEvents(transactionState))
                          .map(_.action)
                          .take(10)

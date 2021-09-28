@@ -1,10 +1,9 @@
 package io.laserdisc.mysql.binlog.stream
 
-import cats.effect.std.Dispatcher
 import cats.effect.{ IO, Resource }
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import com.github.shyiko.mysql.binlog.event.{ Event, EventHeaderV4, EventType }
+import com.github.shyiko.mysql.binlog.event.{ EventHeaderV4, EventType }
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
@@ -50,10 +49,9 @@ class MysqlBinlogStreamTest
             .unsafeRunSync()
       })
 
-      val s: fs2.Stream[IO, Event] = for {
+      val s = for {
         implicit0(logger: Logger[IO]) <- fs2.Stream.eval(Slf4jLogger.fromName[IO]("application"))
-        dispatcher                    <- fs2.Stream.resource(Dispatcher[IO])
-        event                         <- MysqlBinlogStream.rawEvents[IO](client, dispatcher)
+        event                         <- MysqlBinlogStream.rawEvents[IO](client)
         _                             <- fs2.Stream.eval(logger.info(s"event received $event"))
       } yield event
 
