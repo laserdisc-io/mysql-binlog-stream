@@ -14,24 +14,24 @@ class MysSqlBinlogEventProcessor[F[_]: Async: Logger](
 ) {
   def run(): Unit = {
     binlogClient.registerEventListener { event =>
-      dispatcher.unsafeRunSync(queue.offer(Some(event)))
+      dispatcher.unsafeRunAndForget(queue.offer(Some(event)))
     }
     binlogClient.registerLifecycleListener(new BinaryLogClient.LifecycleListener {
       override def onConnect(client: BinaryLogClient): Unit =
-        dispatcher.unsafeRunSync(Logger[F].info("Connected"))
+        dispatcher.unsafeRunAndForget(Logger[F].info("Connected"))
 
       override def onCommunicationFailure(client: BinaryLogClient, ex: Exception): Unit =
-        dispatcher.unsafeRunSync(
+        dispatcher.unsafeRunAndForget(
           Logger[F].error(ex)("communication failed with") >> queue.offer(None)
         )
 
       override def onEventDeserializationFailure(client: BinaryLogClient, ex: Exception): Unit =
-        dispatcher.unsafeRunSync(
+        dispatcher.unsafeRunAndForget(
           Logger[F].error(ex)("failed to deserialize event") >> queue.offer(None)
         )
 
       override def onDisconnect(client: BinaryLogClient): Unit =
-        dispatcher.unsafeRunSync(Logger[F].error("Disconnected") >> queue.offer(None))
+        dispatcher.unsafeRunAndForget(Logger[F].error("Disconnected") >> queue.offer(None))
     })
     binlogClient.connect()
   }
