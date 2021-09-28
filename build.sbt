@@ -3,7 +3,8 @@ import sbt.Keys.scalaSource
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-ThisBuild / scalaVersion := "2.13.6"
+ThisBuild / scalaVersion  := "2.13.6"
+ThisBuild / scalacOptions += "-P:semanticdb:synthetics:on"
 
 def commonOptions(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {

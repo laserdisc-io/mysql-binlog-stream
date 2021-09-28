@@ -2,10 +2,10 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
-  val cirisVersion  = "1.2.1"
-  val doobieVersion = "0.13.4"
-  val circeVersion  = "0.14.1"
-  val catsVersion   = "2.5.3"
+  val cirisVersion      = "2.1.1"
+  val doobieVersion     = "1.0.0-RC1"
+  val circeVersion      = "0.14.1"
+  val catsEffectVersion = "3.2.8"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
@@ -27,11 +27,11 @@ object Dependencies {
 
   val Logging = Seq(
     libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.2.5", // logging
-      "ch.qos.logback" % "logback-core"    % "1.2.5", // logging
+      "ch.qos.logback" % "logback-classic" % "1.2.6", // logging
+      "ch.qos.logback" % "logback-core"    % "1.2.6", // logging
       "org.slf4j"      % "jcl-over-slf4j"  % "1.7.32",
       "org.slf4j"      % "jul-to-slf4j"    % "1.7.32",
-      "org.typelevel" %% "log4cats-slf4j"  % "1.3.1"
+      "org.typelevel" %% "log4cats-slf4j"  % "2.1.1"
     )
   )
 
@@ -57,7 +57,7 @@ object Dependencies {
 
   val Cats = Seq(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % catsVersion
+      "org.typelevel" %% "cats-effect" % catsEffectVersion
     )
   )
 
