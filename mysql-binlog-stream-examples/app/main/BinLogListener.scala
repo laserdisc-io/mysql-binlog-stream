@@ -1,5 +1,6 @@
 package main
 
+import cats.effect.std.Dispatcher
 import cats.effect.{ ExitCode, IO, IOApp }
 import cats.implicits._
 import ciris._
@@ -45,15 +46,17 @@ object BinLogListener extends IOApp {
           //Here we do not provide binlog offset, client will be initialized with default file and offset
           binlogClient   <- client.createBinLogClient[IO](config)
           schemaMetadata <- SchemaMetadata.buildSchemaMetadata(config.schema)
-          transactionState <- TransactionState
-                                .createTransactionState[IO](schemaMetadata, binlogClient)
-          _ <- MysqlBinlogStream
-                 .rawEvents[IO](binlogClient)
-                 .through(streamEvents[IO](transactionState))
-                 .evalTap(msg => logger.info(s"received $msg"))
-                 //Here you should do the checkpoint
-                 .compile
-                 .drain
+          transactionState <-
+            TransactionState.createTransactionState[IO](schemaMetadata, binlogClient)
+          _ <- Dispatcher[IO].use(dispatcher =>
+                 MysqlBinlogStream
+                   .rawEvents[IO](binlogClient, dispatcher)
+                   .through(streamEvents[IO](transactionState))
+                   .evalTap(msg => logger.info(s"received $msg"))
+                   //Here you should do the checkpoint
+                   .compile
+                   .drain
+               )
         } yield (ExitCode.Success)
       }
     }

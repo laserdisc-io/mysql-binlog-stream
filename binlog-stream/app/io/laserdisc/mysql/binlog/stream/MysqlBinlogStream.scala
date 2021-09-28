@@ -47,11 +47,13 @@ object MysqlBinlogStream {
       q: Queue[F, Option[Event]] <- fs2.Stream.eval(Queue.bounded[F, Option[Event]](10000))
       processor: MysSqlBinlogEventProcessor[F] <-
         fs2.Stream.eval(Sync[F].delay(new MysSqlBinlogEventProcessor[F](client, q, dispatcher)))
-//      event <- q.dequeue.unNoneTerminate concurrently fs2.Stream.eval(
-//        Resource.unit[F].use(b => Sync[F].blocking(processor.run()))
-//      ) onFinalize Sync[F].delay(client.disconnect())
-      event <- q.dequeue.unNoneTerminate concurrently fs2.Stream.eval(
-                 Sync[F].blocking(processor.run())
-               ) onFinalize Sync[F].delay(client.disconnect())
+      event <- fs2.Stream
+                 .eval(q.take)
+                 .unNoneTerminate
+                 .concurrently(
+                   fs2.Stream
+                     .eval(Sync[F].blocking(processor.run()))
+                     .onFinalize(Sync[F].delay(client.disconnect()))
+                 )
     } yield event
 }

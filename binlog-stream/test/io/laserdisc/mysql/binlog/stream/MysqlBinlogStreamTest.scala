@@ -1,9 +1,10 @@
 package io.laserdisc.mysql.binlog.stream
 
+import cats.effect.std.Dispatcher
 import cats.effect.{ IO, Resource }
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import com.github.shyiko.mysql.binlog.event.{ EventHeaderV4, EventType }
+import com.github.shyiko.mysql.binlog.event.{ Event, EventHeaderV4, EventType }
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
@@ -13,6 +14,7 @@ import cats.implicits._
 import io.laserdisc.mysql.binlog.database
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import cats.effect.unsafe.implicits.global
 
 import scala.language.reflectiveCalls
 
@@ -48,13 +50,11 @@ class MysqlBinlogStreamTest
             .unsafeRunSync()
       })
 
-      val s = for {
-        implicit0(logger: Logger[IO]) <-
-          fs2.Stream.eval(
-            Slf4jLogger.fromName[IO]("application")
-          )
-        event <- MysqlBinlogStream.rawEvents[IO](client)
-        _     <- fs2.Stream.eval(logger.info(s"event received $event"))
+      val s: fs2.Stream[IO, Event] = for {
+        implicit0(logger: Logger[IO]) <- fs2.Stream.eval(Slf4jLogger.fromName[IO]("application"))
+        dispatcher                    <- fs2.Stream.resource(Dispatcher[IO])
+        event                         <- MysqlBinlogStream.rawEvents[IO](client, dispatcher)
+        _                             <- fs2.Stream.eval(logger.info(s"event received $event"))
       } yield event
 
       val updates = s

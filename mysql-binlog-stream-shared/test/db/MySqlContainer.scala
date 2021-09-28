@@ -1,5 +1,5 @@
 package db
-import cats.effect.IO
+
 import com.dimafeng.testcontainers.{ ForAllTestContainer, SingleContainer }
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.testcontainers.containers.MySQLContainer
@@ -25,7 +25,6 @@ trait MySqlContainer {
     }
 
   implicit val ec: ExecutionContext = Implicits.global
-  implicit val cs: ContextShift[IO] = IO.contextShift(ec)
 
   def containerBinlogConfig: BinLogConfig = {
 
