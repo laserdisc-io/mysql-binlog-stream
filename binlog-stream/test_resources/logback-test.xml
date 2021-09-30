@@ -2,7 +2,7 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%date |-%level %logger [%thread] %message%n%xException</pattern>
+            <pattern>%date %highlight(%level) %logger{3} [%thread] %message%n%xException</pattern>
         </encoder>
     </appender>
 
@@ -10,7 +10,7 @@
         <appender-ref ref="STDOUT" />
     </appender>
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="ASYNCSTDOUT" />
     </root>
 
@@ -20,6 +20,7 @@
     <logger name="org.apache.http" level="ERROR" />
     <logger name="ch.qos.logback" level="ERROR" />
     <logger name="o.a.h.i.c." level="ERROR" />
-    <logger name="testing" level="WARN"/>
+    <logger name="com.github.dockerjava.zerodep.shaded" level="ERROR" />
+    <logger name="testing" level="DEBUG"/>
     <logger name="org.jdbcdslog" level="INFO"/>
 </configuration>

@@ -7,7 +7,7 @@ import com.github.shyiko.mysql.binlog.event.{ EventHeaderV4, EventType }
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
-import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.{ Logger, SelfAwareStructuredLogger }
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import cats.implicits._
 import io.laserdisc.mysql.binlog.database
@@ -15,6 +15,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import cats.effect.unsafe.implicits.global
 
+import scala.concurrent.duration.DurationInt
 import scala.language.reflectiveCalls
 
 class MysqlBinlogStreamTest
@@ -33,6 +34,8 @@ class MysqlBinlogStreamTest
 
     }
 
+  implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
+
   "Binlog stream" should {
 
     "emit events from mysql" in {
@@ -49,18 +52,15 @@ class MysqlBinlogStreamTest
             .unsafeRunSync()
       })
 
-      val s = for {
-        implicit0(logger: Logger[IO]) <- fs2.Stream.eval(Slf4jLogger.fromName[IO]("application"))
-        event                         <- MysqlBinlogStream.rawEvents[IO](client)
-        _                             <- fs2.Stream.eval(logger.info(s"event received $event"))
-      } yield event
-
-      val updates = s
-        .takeWhile(e => e.getHeader[EventHeaderV4]().getEventType != EventType.XID)
-        .filter(e => e.getHeader[EventHeaderV4]().getEventType == EventType.EXT_WRITE_ROWS)
+      val updates = MysqlBinlogStream
+        .rawEvents[IO](client)
+        .takeWhile(_.getHeader[EventHeaderV4]().getEventType != EventType.XID)
+        .filter(_.getHeader[EventHeaderV4]().getEventType == EventType.EXT_WRITE_ROWS)
+        .evalTap(e => logger.error(s"emitting ${e.getHeader[EventHeaderV4]()}"))
         .compile
         .toList
         .unsafeRunSync()
+
       updates should have size 3
     }
   }
