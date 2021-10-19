@@ -41,7 +41,7 @@ object Dependencies {
       "org.tpolecat" %% "doobie-hikari"               % doobieVersion, // HikariCP transactor.
       "org.tpolecat" %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
       "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test, // Support for doobie scalatest
-      "mysql"         % "mysql-connector-java"        % "8.0.26",
+      "mysql"         % "mysql-connector-java"        % "8.0.27",
       "com.zendesk"   % "mysql-binlog-connector-java" % "0.25.3"
     )
   )
