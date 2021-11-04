@@ -11,9 +11,9 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "org.scalamock"     %% "scalamock"            % "5.1.0"  % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.10" % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.39.8" % Test,
-      "org.testcontainers" % "mysql"                % "1.16.0" % Test,
-      "org.testcontainers" % "testcontainers"       % "1.16.0" % Test
+      "com.dimafeng"      %% "testcontainers-scala" % "0.39.9" % Test,
+      "org.testcontainers" % "mysql"                % "1.16.2" % Test,
+      "org.testcontainers" % "testcontainers"       % "1.16.2" % Test
     )
   )
 
@@ -27,8 +27,8 @@ object Dependencies {
 
   val Logging = Seq(
     libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.2.6", // logging
-      "ch.qos.logback" % "logback-core"    % "1.2.6", // logging
+      "ch.qos.logback" % "logback-classic" % "1.2.6",
+      "ch.qos.logback" % "logback-core"    % "1.2.6",
       "org.slf4j"      % "jcl-over-slf4j"  % "1.7.32",
       "org.slf4j"      % "jul-to-slf4j"    % "1.7.32",
       "org.typelevel" %% "log4cats-slf4j"  % "2.1.1"
@@ -41,8 +41,8 @@ object Dependencies {
       "org.tpolecat" %% "doobie-hikari"               % doobieVersion, // HikariCP transactor.
       "org.tpolecat" %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
       "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test, // Support for doobie scalatest
-      "mysql"         % "mysql-connector-java"        % "8.0.26",
-      "com.zendesk"   % "mysql-binlog-connector-java" % "0.25.3"
+      "mysql"         % "mysql-connector-java"        % "8.0.27",
+      "com.zendesk"   % "mysql-binlog-connector-java" % "0.25.4"
     )
   )
 
