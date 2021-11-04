@@ -6,7 +6,6 @@ import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import fs2.Stream
-import fs2.concurrent.SignallingRef
 import org.typelevel.log4cats.Logger
 
 class MysSqlBinlogEventProcessor[F[_]: Async: Logger](
