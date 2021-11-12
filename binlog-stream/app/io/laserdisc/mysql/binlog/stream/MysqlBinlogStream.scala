@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog.stream
 
 import cats.effect.std.{ Dispatcher, Queue }
-import cats.effect.{ Async, Sync }
+import cats.effect.{ Async, IO, LiftIO }
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
@@ -13,10 +13,13 @@ class MysSqlBinlogEventProcessor[F[_]: Async: Logger](
   queue: Queue[F, Option[Event]],
   dispatcher: Dispatcher[F]
 ) {
+
   def run(): Unit = {
+
     binlogClient.registerEventListener { event =>
       dispatcher.unsafeRunAndForget(queue.offer(Some(event)))
     }
+
     binlogClient.registerLifecycleListener(new BinaryLogClient.LifecycleListener {
       override def onConnect(client: BinaryLogClient): Unit =
         dispatcher.unsafeRunAndForget(Logger[F].info("Connected"))
@@ -31,72 +34,38 @@ class MysSqlBinlogEventProcessor[F[_]: Async: Logger](
           Logger[F].error(ex)("failed to deserialize event") >> queue.offer(None)
         )
 
-      override def onDisconnect(client: BinaryLogClient): Unit = {
-        println("LifecycleListener.onDisconnect - start")
+      override def onDisconnect(client: BinaryLogClient): Unit =
         dispatcher.unsafeRunAndForget(Logger[F].error("Disconnected") >> queue.offer(None))
-        println("LifecycleListener.onDisconnect - end")
-      }
     })
-    println("binlogClient.connect() - start")
+
     binlogClient.connect()
-    println("binlogClient.connect() - end")
   }
 }
 
 object MysqlBinlogStream {
 
-  def rawEvents[F[_]: Async: Logger](
+  def rawEvents[F[_]: Async: Logger: LiftIO](
     client: BinaryLogClient
   ): Stream[F, Event] =
     for {
-      dispatcher <- Stream.resource(Dispatcher[F])
-      q          <- Stream.eval(Queue.bounded[F, Option[Event]](10000))
-      processor <-
-        Stream.eval(Sync[F].delay(new MysSqlBinlogEventProcessor[F](client, q, dispatcher)))
-      event <- Stream
-                 .fromQueueNoneTerminated(q)
-                 .onFinalize(Logger[F].error("shutting down main stream"))
-                 .concurrently {
-                   val eff: F[Unit] = Sync[F].interruptible(many = false)(processor.run())
-                   Stream
-                     .eval(Logger[F].warn("starting processor"))
-                     .onFinalize(Logger[F].error("REQ SHUTDOWN"))
-                     .evalMap(_ => eff)
-                     .evalTap(_ => Logger[F].warn("elem"))
-                     .onFinalize(
-                       Logger[F].error("shutting down") >>
-                         Sync[F].delay(client.disconnect())
+      d   <- Stream.resource(Dispatcher[F])
+      q   <- Stream.eval(Queue.bounded[F, Option[Event]](10000))
+      proc = new MysSqlBinlogEventProcessor[F](client, q, d)
+      /* some difficulties here during the cats3 migration.  Basically, we would have used:
+       * .eval(Async[F].interruptible(many = true)(proc.run()))
+       * instead of the below code to start `proc`.  Unfortunately, the binlogger library uses SocketStream.read
+       * which blocks and can't be terminated normally.  See https://github.com/typelevel/fs2/issues/2362
+       */
+      procStream = Stream
+                     .eval(
+                       LiftIO[F].liftIO(
+                         IO.delay[Unit](proc.run()).start.flatMap(_.joinWithNever)
+                       )
                      )
-                 }
-    } yield event
-
-  /*
-   def rawEvents[F[_]: ConcurrentEffect: Logger: ContextShift](client: BinaryLogClient): fs2.Stream[F, Event] =
-    for {
-      q         <- fs2.Stream.eval(Queue.bounded[F, Option[Event]](10000))
-      processor <- fs2.Stream.eval(Sync[F].delay(new MysSqlBinlogEventProcessor[F](client, q)))
-      event <- q.dequeue.unNoneTerminate concurrently fs2.Stream.eval(
-                 Blocker[F].use(b => b.delay(processor.run()))
-               ) onFinalize Sync[F].delay(client.disconnect())
-    } yield event
-   */
-
-  def szilard[F[_]: Async: Logger](
-    client: BinaryLogClient
-  ): Stream[F, Event] =
-    for {
-      q          <- Stream.eval(Queue.bounded[F, Option[Event]](10000))
-      dispatcher <- Stream.resource(Dispatcher[F])
-      processor <-
-        Stream.eval(Async[F].delay(new MysSqlBinlogEventProcessor[F](client, q, dispatcher)))
-      event <- Stream
-                 .eval(q.take)
-                 .unNoneTerminate
-                 .concurrently(
-                   // this is not stopping when the calling stream terminates
-                   Stream
-                     .eval(Async[F].blocking(processor.run()))
+      evtStream <- Stream
+                     .fromQueueNoneTerminated(q)
+                     .concurrently(procStream)
                      .onFinalize(Async[F].delay(client.disconnect()))
-                 )
-    } yield event
+    } yield evtStream
+
 }

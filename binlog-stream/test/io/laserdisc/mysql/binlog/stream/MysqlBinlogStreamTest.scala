@@ -1,5 +1,6 @@
 package io.laserdisc.mysql.binlog.stream
 
+import cats.effect.unsafe.implicits.global
 import cats.effect.{ IO, Resource }
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
@@ -7,15 +8,12 @@ import com.github.shyiko.mysql.binlog.event.{ EventHeaderV4, EventType }
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
-import org.typelevel.log4cats.{ Logger, SelfAwareStructuredLogger }
-import org.typelevel.log4cats.slf4j.Slf4jLogger
-import cats.implicits._
 import io.laserdisc.mysql.binlog.database
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import cats.effect.unsafe.implicits.global
+import org.typelevel.log4cats.SelfAwareStructuredLogger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
-import scala.concurrent.duration.DurationInt
 import scala.language.reflectiveCalls
 
 class MysqlBinlogStreamTest
@@ -45,18 +43,21 @@ class MysqlBinlogStreamTest
         override def onConnect(client: BinaryLogClient): Unit =
           xaResource
             .use(xa =>
-              (Sku.insert(2, "sku2").run >>
-                Sku.insert(3, "sku3").run >>
-                Sku.insert(4, "sku4").run).transact(xa)
+              Sku
+                .insertMany(
+                  Sku(2, "two"),
+                  Sku(3, "three"),
+                  Sku(4, "four")
+                )
+                .transact(xa)
             )
             .unsafeRunSync()
       })
 
       val updates = MysqlBinlogStream
         .rawEvents[IO](client)
-        .takeWhile(_.getHeader[EventHeaderV4]().getEventType != EventType.XID)
-        .filter(_.getHeader[EventHeaderV4]().getEventType == EventType.EXT_WRITE_ROWS)
-        .evalTap(e => logger.error(s"emitting ${e.getHeader[EventHeaderV4]()}"))
+        .takeWhile(_.getHeader[EventHeaderV4]().getEventType != EventType.XID)         // COMMIT
+        .filter(_.getHeader[EventHeaderV4]().getEventType == EventType.EXT_WRITE_ROWS) // INSERT
         .compile
         .toList
         .unsafeRunSync()
