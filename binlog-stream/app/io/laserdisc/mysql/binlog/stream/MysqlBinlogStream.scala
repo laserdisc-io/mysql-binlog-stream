@@ -17,7 +17,7 @@ class MysSqlBinlogEventProcessor[F[_]: Async: Logger](
   def run(): Unit = {
 
     binlogClient.registerEventListener { event =>
-      dispatcher.unsafeRunAndForget(queue.offer(Some(event)))
+      dispatcher.unsafeRunSync(queue.offer(Some(event)))
     }
 
     binlogClient.registerLifecycleListener(new BinaryLogClient.LifecycleListener {
@@ -54,8 +54,7 @@ object MysqlBinlogStream {
       /* some difficulties here during the cats3 migration.  Basically, we would have used:
        * .eval(Async[F].interruptible(many = true)(proc.run()))
        * instead of the below code to start `proc`.  Unfortunately, the binlogger library uses SocketStream.read
-       * which blocks and can't be terminated normally.  See https://github.com/typelevel/fs2/issues/2362
-       */
+       * which blocks and can't be terminated normally.  See https://github.com/typelevel/fs2/issues/2362 */
       procStream = Stream
                      .eval(
                        LiftIO[F].liftIO(
