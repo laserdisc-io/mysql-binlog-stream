@@ -21,6 +21,12 @@ lazy val commonSettings = Seq(
       "Dmytro Semenov",
       "sdo.semenov@gmail.com",
       url("https://github.com/semenodm")
+    ),
+    Developer(
+      "barryoneill",
+      "Barry O'Neill",
+      "",
+      url("https://github.com/semenodm")
     )
   ),
   licenses                   ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
@@ -41,8 +47,8 @@ lazy val commonSettings = Seq(
     "-language:implicitConversions", // allow use of implicit conversions
     "-language:postfixOps",          // enable postfix ops
     "-Xlint:_,-byname-implicit",     // enable handy linter warnings
-//    "-Xfatal-warnings",              // turn compiler warnings into errors
-    "-Ywarn-macros:after" // allows the compiler to resolve implicit imports being flagged as unused
+    "-Xfatal-warnings",              // turn compiler warnings into errors
+    "-Ywarn-macros:after"            // allows the compiler to resolve implicit imports being flagged as unused
   ),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 )
