@@ -1,10 +1,10 @@
 package io.laserdisc.mysql.binlog.models
 
-import cats.effect.Bracket
 import doobie._
 import doobie.implicits._
 
 import scala.collection.mutable
+import cats.effect.MonadCancel
 
 case class Metadata(
   table_name: String,
@@ -50,7 +50,7 @@ object SchemaMetadata {
 
   def buildSchemaMetadata[F[_]](
     schema: String
-  )(implicit xa: Transactor[F], ev: Bracket[F, Throwable]): F[SchemaMetadata] =
+  )(implicit xa: Transactor[F], ev: MonadCancel[F, Throwable]): F[SchemaMetadata] =
     getMetadata(schema).to[List].map(metaToSchema).transact(xa)
 
   def metaToSchema(metadata: List[Metadata]): SchemaMetadata = {

@@ -21,6 +21,12 @@ lazy val commonSettings = Seq(
       "Dmytro Semenov",
       "sdo.semenov@gmail.com",
       url("https://github.com/semenodm")
+    ),
+    Developer(
+      "barryoneill",
+      "Barry O'Neill",
+      "",
+      url("https://github.com/semenodm")
     )
   ),
   licenses                   ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),

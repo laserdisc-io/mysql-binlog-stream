@@ -1,5 +1,6 @@
 package io.laserdisc.mysql.binlog.stream
 
+import cats.effect.unsafe.implicits.global
 import cats.effect.{ IO, Resource }
 import cats.implicits._
 import com.dimafeng.testcontainers.ForAllTestContainer

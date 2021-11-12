@@ -2,18 +2,18 @@ import sbt.Keys.{ libraryDependencies, _ }
 import sbt._
 
 object Dependencies {
-  val cirisVersion  = "1.2.1"
-  val doobieVersion = "0.13.4"
-  val circeVersion  = "0.14.1"
-  val catsVersion   = "2.5.4"
+  val cirisVersion      = "2.2.0"
+  val doobieVersion     = "1.0.0-RC1"
+  val circeVersion      = "0.14.1"
+  val catsEffectVersion = "3.2.9"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
-      "org.scalamock"     %% "scalamock"            % "5.1.0"  % Test,
-      "org.scalatest"     %% "scalatest"            % "3.2.10" % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.39.9" % Test,
-      "org.testcontainers" % "mysql"                % "1.16.2" % Test,
-      "org.testcontainers" % "testcontainers"       % "1.16.2" % Test
+      "org.scalamock"     %% "scalamock"            % "5.1.0"   % Test,
+      "org.scalatest"     %% "scalatest"            % "3.2.10"  % Test,
+      "com.dimafeng"      %% "testcontainers-scala" % "0.39.11" % Test,
+      "org.testcontainers" % "mysql"                % "1.16.2"  % Test,
+      "org.testcontainers" % "testcontainers"       % "1.16.2"  % Test
     )
   )
 
@@ -31,7 +31,7 @@ object Dependencies {
       "ch.qos.logback" % "logback-core"    % "1.2.6",
       "org.slf4j"      % "jcl-over-slf4j"  % "1.7.32",
       "org.slf4j"      % "jul-to-slf4j"    % "1.7.32",
-      "org.typelevel" %% "log4cats-slf4j"  % "1.3.1"
+      "org.typelevel" %% "log4cats-slf4j"  % "2.1.1"
     )
   )
 
@@ -57,7 +57,7 @@ object Dependencies {
 
   val Cats = Seq(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % catsVersion
+      "org.typelevel" %% "cats-effect" % catsEffectVersion
     )
   )
 
