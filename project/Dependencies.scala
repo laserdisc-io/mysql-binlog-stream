@@ -5,7 +5,7 @@ object Dependencies {
   val cirisVersion      = "2.2.0"
   val doobieVersion     = "1.0.0-RC1"
   val circeVersion      = "0.14.1"
-  val catsEffectVersion = "3.2.9"
+  val catsEffectVersion = "3.3.13"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
