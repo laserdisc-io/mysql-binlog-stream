@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
   val cirisVersion      = "2.2.0"
   val doobieVersion     = "1.0.0-RC1"
-  val circeVersion      = "0.14.1"
+  val circeVersion      = "0.14.2"
   val catsEffectVersion = "3.2.9"
 
   val TestLib = Seq(
