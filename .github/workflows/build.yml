@@ -6,15 +6,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK
-        uses: olafurpg/setup-scala@v12
+        uses: olafurpg/setup-scala@v13
+        with:
+          java-version: openjdk@1.11
       - name: Cache SBT
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/coursier/v1
             ~/.sbt
           key: sbt-${{ hashFiles('**/build.sbt') }}
       - name: Run tests
-        run: sbt +clean +test
+        run: sbt clean test
