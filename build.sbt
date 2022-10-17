@@ -3,15 +3,7 @@ import sbt.Keys.scalaSource
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-ThisBuild / scalaVersion := "2.13.6"
-
-def commonOptions(scalaVersion: String) =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, 12)) =>
-      Seq("-Ypartial-unification", "-Xlint")
-    case _ =>
-      Seq("-Xlint:_,-byname-implicit")
-  }
+ThisBuild / scalaVersion := "2.13.9"
 
 lazy val commonSettings = Seq(
   organization := "io.laserdisc",
@@ -37,7 +29,7 @@ lazy val commonSettings = Seq(
   Test / resourceDirectory    := baseDirectory.value / "test_resources",
   Test / parallelExecution    := false,
   Test / fork                 := true,
-  scalacOptions ++= commonOptions(scalaVersion.value) ++ Seq(
+  scalacOptions ++= Seq(
     "-encoding",
     "UTF-8",                         // source files are in UTF-8
     "-deprecation",                  // warn about use of deprecated APIs
