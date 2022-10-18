@@ -14,14 +14,14 @@ package object config {
 
       val blc = new BinaryLogClient(v.host, v.port, v.user, v.password)
 
-      blc.setEventDeserializer({
+      blc.setEventDeserializer {
         val ed = new EventDeserializer()
         ed.setCompatibilityMode(
           CompatibilityMode.DATE_AND_TIME_AS_LONG_MICRO,
           CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         )
         ed
-      })
+      }
 
       blc.setSSLMode(if (v.useSSL) SSLMode.VERIFY_IDENTITY else SSLMode.DISABLED)
 

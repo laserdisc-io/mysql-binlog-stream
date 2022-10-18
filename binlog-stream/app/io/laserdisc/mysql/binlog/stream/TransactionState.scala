@@ -4,13 +4,8 @@ import cats.data.State
 import cats.effect.Sync
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import com.github.shyiko.mysql.binlog.event.EventType.{ EXT_UPDATE_ROWS, UPDATE_ROWS }
-import com.github.shyiko.mysql.binlog.event.{
-  Event,
-  EventData,
-  EventType,
-  EventHeaderV4 => JEventHeaderV4
-}
+import com.github.shyiko.mysql.binlog.event.EventType.{EXT_UPDATE_ROWS, UPDATE_ROWS}
+import com.github.shyiko.mysql.binlog.event.{Event, EventData, EventHeaderV4 => JEventHeaderV4, EventType}
 import org.typelevel.log4cats.Logger
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
@@ -22,13 +17,13 @@ import scala.collection.immutable.Queue
 import cats.effect.Ref
 
 case class TransactionState(
-  transactionEvents: Queue[EventMessage],
-  start: Long = 0,
-  end: Long = 0,
-  timestamp: Long,
-  fileName: String,
-  offset: Long,
-  schemaMetadata: SchemaMetadata
+    transactionEvents: Queue[EventMessage],
+    start: Long = 0,
+    end: Long = 0,
+    timestamp: Long,
+    fileName: String,
+    offset: Long,
+    schemaMetadata: SchemaMetadata
 ) {
   def assemblePackage: TransactionPackage =
     TransactionPackage(
@@ -43,9 +38,9 @@ case class TransactionState(
 }
 
 case class TransactionPackage(
-  events: List[EventMessage],
-  offset: Long,
-  transactionDuration: Long
+    events: List[EventMessage],
+    offset: Long,
+    transactionDuration: Long
 )
 
 object TransactionState {
@@ -112,11 +107,11 @@ object TransactionState {
     }
 
   def handleCreate(
-    tableId: Long,
-    offset: Long,
-    timestamp: Long,
-    rows: List[Array[Serializable]],
-    includedColumns: Array[Int]
+      tableId: Long,
+      offset: Long,
+      timestamp: Long,
+      rows: List[Array[Serializable]],
+      includedColumns: Array[Int]
   )(implicit transactionState: TransactionState): (TransactionState, Option[TransactionPackage]) = {
 
     val jsonRows = (for {
@@ -143,13 +138,13 @@ object TransactionState {
   }
 
   def handleUpdate(
-    tableId: Long,
-    offset: Long,
-    timestamp: Long,
-    beforeAfter: List[(Array[Serializable], Array[Serializable])],
-    includedColumns: Array[Int]
+      tableId: Long,
+      offset: Long,
+      timestamp: Long,
+      beforeAfter: List[(Array[Serializable], Array[Serializable])],
+      includedColumns: Array[Int]
   )(
-    implicit transactionState: TransactionState
+      implicit transactionState: TransactionState
   ): (TransactionState, Option[TransactionPackage]) = {
 
     val jsonRows = (for {
@@ -179,13 +174,13 @@ object TransactionState {
   }
 
   def handleDelete(
-    tableId: Long,
-    offset: Long,
-    timestamp: Long,
-    rows: List[Array[Serializable]],
-    includedColumns: Array[Int]
+      tableId: Long,
+      offset: Long,
+      timestamp: Long,
+      rows: List[Array[Serializable]],
+      includedColumns: Array[Int]
   )(
-    implicit transactionState: TransactionState
+      implicit transactionState: TransactionState
   ): (TransactionState, Option[TransactionPackage]) = {
     val jsonRows = (for {
       tableName <- toTableName(tableId)
@@ -213,12 +208,12 @@ object TransactionState {
   }
 
   def handleDdl(
-    table: String,
-    timestamp: Long,
-    offset: Long,
-    sqlAction: String
+      table: String,
+      timestamp: Long,
+      offset: Long,
+      sqlAction: String
   )(
-    implicit transactionState: TransactionState
+      implicit transactionState: TransactionState
   ): (TransactionState, Option[TransactionPackage]) = {
     val ddlEvent = Queue(
       EventMessage(
@@ -254,10 +249,10 @@ object TransactionState {
   }
 
   def handleCommit(
-    transactionState: TransactionState,
-    offset: Long,
-    timestamp: Long,
-    xaId: Option[Long]
+      transactionState: TransactionState,
+      offset: Long,
+      timestamp: Long,
+      xaId: Option[Long]
   ): (TransactionState, Option[TransactionPackage]) = {
     val marked = (transactionState.transactionEvents match {
       case xs :+ x => xs :+ x.copy(endOfTransaction = true, offset = offset)
@@ -280,13 +275,13 @@ object TransactionState {
   }
 
   def convertToJson(
-    tableMeta: TableMetadata,
-    timestamp: Long,
-    action: String,
-    fileName: String,
-    offset: Long,
-    includedColumns: Array[Int],
-    record: (Option[Row], Option[Row])
+      tableMeta: TableMetadata,
+      timestamp: Long,
+      action: String,
+      fileName: String,
+      offset: Long,
+      includedColumns: Array[Int],
+      record: (Option[Row], Option[Row])
   ): EventMessage = {
 
     val ba = record match {
@@ -329,9 +324,9 @@ object TransactionState {
   }
 
   def extractPk(
-    metadata: TableMetadata,
-    columns: Array[Int],
-    row: Array[Option[Serializable]]
+      metadata: TableMetadata,
+      columns: Array[Int],
+      row: Array[Option[Serializable]]
   ): Array[(String, Json)] =
     columns
       .map(i => metadata.columns(i + 1))
@@ -343,9 +338,9 @@ object TransactionState {
     transactionState.schemaMetadata.idToTable.get(tableId).map(_.name)
 
   def recordToJson(
-    tableMetadata: TableMetadata,
-    includedColumns: Array[Int],
-    record: Array[Option[Serializable]]
+      tableMetadata: TableMetadata,
+      includedColumns: Array[Int],
+      record: Array[Option[Serializable]]
   ): Iterable[(String, Json)] =
     includedColumns
       .map(i => tableMetadata.columns(i + 1))
@@ -371,8 +366,8 @@ object TransactionState {
   def nullsToOptions(row: Array[Serializable]): Row = row.map(Option(_))
 
   def createTransactionState[F[_]: Sync: Logger](
-    schemaMetadata: SchemaMetadata,
-    binlogClient: BinaryLogClient
+      schemaMetadata: SchemaMetadata,
+      binlogClient: BinaryLogClient
   ): F[Ref[F, TransactionState]] =
     Ref[F]
       .of(

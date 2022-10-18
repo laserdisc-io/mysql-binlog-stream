@@ -1,6 +1,6 @@
 package db
 
-import com.dimafeng.testcontainers.{ ForAllTestContainer, SingleContainer }
+import com.dimafeng.testcontainers.{ForAllTestContainer, SingleContainer}
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.testcontainers.containers.MySQLContainer
 
@@ -21,7 +21,7 @@ trait MySqlContainer {
 
   override val container: SingleContainer[MySQLContainer[_]] =
     new SingleContainer[MySQLContainer[_]] {
-      implicit override val container: MySQLContainer[_] = mySqlContainer
+      override implicit val container: MySQLContainer[_] = mySqlContainer
     }
 
   implicit val ec: ExecutionContext = Implicits.global

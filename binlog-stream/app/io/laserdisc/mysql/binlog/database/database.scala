@@ -7,18 +7,18 @@ import io.laserdisc.mysql.binlog.config.BinLogConfig
 
 package object database {
   def transactor[F[_]: Async](
-    config: BinLogConfig
+      config: BinLogConfig
   ): Resource[F, HikariTransactor[F]] =
     for {
       ce <- ExecutionContexts.fixedThreadPool[F](32) // our connect EC
       _  <- Resource.eval(Sync[F].delay(Class.forName(config.driverClass)))
       xa <- HikariTransactor.newHikariTransactor[F](
-              config.driverClass,
-              config.connectionURL,
-              config.user,
-              config.password,
-              ce
-            )
+        config.driverClass,
+        config.connectionURL,
+        config.user,
+        config.password,
+        ce
+      )
     } yield xa
 
 }

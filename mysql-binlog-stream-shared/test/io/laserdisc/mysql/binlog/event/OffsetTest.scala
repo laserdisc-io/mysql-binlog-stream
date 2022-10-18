@@ -13,8 +13,8 @@ object OffsetTest {
 class OffsetTest extends AnyWordSpec with Matchers {
 
   case class Foo(
-    override val fileName: String,
-    override val offset: Long
+      override val fileName: String,
+      override val offset: Long
   ) extends Offset
 
   "OrderedBinLogOffset" should {

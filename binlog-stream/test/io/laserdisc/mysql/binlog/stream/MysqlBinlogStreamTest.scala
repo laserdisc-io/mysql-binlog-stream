@@ -1,10 +1,10 @@
 package io.laserdisc.mysql.binlog.stream
 
 import cats.effect.unsafe.implicits.global
-import cats.effect.{ IO, Resource }
+import cats.effect.{IO, Resource}
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import com.github.shyiko.mysql.binlog.event.{ EventHeaderV4, EventType }
+import com.github.shyiko.mysql.binlog.event.{EventHeaderV4, EventType}
 import db.MySqlContainer
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
@@ -16,11 +16,7 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.language.reflectiveCalls
 
-class MysqlBinlogStreamTest
-    extends AnyWordSpec
-    with ForAllTestContainer
-    with MySqlContainer
-    with Matchers {
+class MysqlBinlogStreamTest extends AnyWordSpec with ForAllTestContainer with MySqlContainer with Matchers {
 
   def fixture =
     new {

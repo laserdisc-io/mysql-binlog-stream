@@ -7,7 +7,7 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import java.{ io, util }
+import java.{io, util}
 import scala.collection.immutable.Queue
 import scala.collection.mutable
 
@@ -93,7 +93,7 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
         .value match {
         case (state, None) =>
           state.transactionEvents should have size 0
-          state.isTransaction     should be(true)
+          state.isTransaction should be(true)
         case res => fail(s"Assertion failed with $res")
       }
     }
@@ -131,11 +131,11 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
         )
         .value match {
         case (state, txnPackage) =>
-          state.isTransaction                                      should be(false)
-          state.transactionEvents                                  should be(empty)
-          txnPackage.value.events                                  should have size 2
+          state.isTransaction should be(false)
+          state.transactionEvents should be(empty)
+          txnPackage.value.events should have size 2
           txnPackage.value.events.forall(_.fileName == "file.123") should be(true)
-          txnPackage.value.events.map(_.endOfTransaction)          should be(List(false, true))
+          txnPackage.value.events.map(_.endOfTransaction) should be(List(false, true))
       }
     }
 
@@ -172,11 +172,11 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
       val _pk  = root.id.int
       val _id  = root.after.id.int
       val _sku = root.after.sku.string
-      json.table                     should be("sku")
-      json.timestamp                 should be(12345L)
-      _id.getOption(json.row).value  should be(1)
+      json.table should be("sku")
+      json.timestamp should be(12345L)
+      _id.getOption(json.row).value should be(1)
       _sku.getOption(json.row).value should be("sku1")
-      _pk.getOption(json.pk).value   should be(1)
+      _pk.getOption(json.pk).value should be(1)
     }
 
     "extract 'truncated table sku' from SQL" in {
