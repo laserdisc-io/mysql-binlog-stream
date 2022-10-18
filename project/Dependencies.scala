@@ -1,4 +1,4 @@
-import sbt.Keys.{ libraryDependencies, _ }
+import sbt.Keys.{libraryDependencies, _}
 import sbt._
 
 object Dependencies {

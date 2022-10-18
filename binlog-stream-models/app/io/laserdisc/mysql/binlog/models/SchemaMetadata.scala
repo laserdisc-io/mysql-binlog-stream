@@ -7,20 +7,20 @@ import scala.collection.mutable
 import cats.effect.MonadCancel
 
 case class Metadata(
-  table_name: String,
-  column_name: String,
-  data_type: String,
-  character_set_name: Option[String],
-  ordinal_position: Int,
-  column_type: String,
-  datetime_precision: Option[Long],
-  column_key: String,
-  is_pk: Boolean
+    table_name: String,
+    column_name: String,
+    data_type: String,
+    character_set_name: Option[String],
+    ordinal_position: Int,
+    column_type: String,
+    datetime_precision: Option[Long],
+    column_key: String,
+    is_pk: Boolean
 )
 
 case class SchemaMetadata(
-  tables: Map[String, TableMetadata],
-  idToTable: mutable.Map[Long, TableMetadata]
+    tables: Map[String, TableMetadata],
+    idToTable: mutable.Map[Long, TableMetadata]
 )
 
 case class ColumnMetadata(name: String, dataType: String, ordinal: Int, isPk: Boolean)
@@ -49,7 +49,7 @@ object SchemaMetadata {
       |ORDER BY TABLE_NAME, ORDINAL_POSITION""".stripMargin.query[Metadata]
 
   def buildSchemaMetadata[F[_]](
-    schema: String
+      schema: String
   )(implicit xa: Transactor[F], ev: MonadCancel[F, Throwable]): F[SchemaMetadata] =
     getMetadata(schema).to[List].map(metaToSchema).transact(xa)
 

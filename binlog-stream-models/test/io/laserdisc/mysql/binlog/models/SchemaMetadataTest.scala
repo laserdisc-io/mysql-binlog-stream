@@ -9,11 +9,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import cats.effect.unsafe.implicits.global
 
-class SchemaMetadataTest
-    extends AnyWordSpec
-    with ForAllTestContainer
-    with MySqlContainer
-    with Matchers {
+class SchemaMetadataTest extends AnyWordSpec with ForAllTestContainer with MySqlContainer with Matchers {
 
   "Schema Metadata" should {
 
@@ -28,7 +24,7 @@ class SchemaMetadataTest
       val schemaState =
         SchemaMetadata.buildSchemaMetadata("test").unsafeRunSync()
 
-      schemaState.tables                should have size 2
+      schemaState.tables should have size 2
       schemaState.tables("sku").columns should have size 2
       schemaState
         .tables("sku")
@@ -36,7 +32,7 @@ class SchemaMetadataTest
         .values
         .filter(_.isPk)
         .head
-        .name                               should be("id")
+        .name should be("id")
       schemaState.tables("variant").columns should have size 2
       schemaState
         .tables("variant")

@@ -2,7 +2,7 @@ package io.laserdisc.mysql.binlog.models
 
 import java.io.Serializable
 
-import com.github.shyiko.mysql.binlog.event.{ WriteRowsEventData => JWriteRowsEventData }
+import com.github.shyiko.mysql.binlog.event.{WriteRowsEventData => JWriteRowsEventData}
 
 import scala.jdk.CollectionConverters._
 

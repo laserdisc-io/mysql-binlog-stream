@@ -10,8 +10,8 @@ import io.laserdisc.mysql.binlog.config.BinLogConfig
 package object client {
 
   def createBinLogClient[F[_]: Sync: Logger](
-    config: BinLogConfig,
-    offset: Option[BinlogOffset] = None
+      config: BinLogConfig,
+      offset: Option[BinlogOffset] = None
   ): F[BinaryLogClient] =
     for {
       client <- Sync[F].delay(config.mkBinaryLogClient(offset))

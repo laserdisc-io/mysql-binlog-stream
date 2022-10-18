@@ -3,25 +3,15 @@ import sbt.Keys.scalaSource
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-ThisBuild / scalaVersion := "2.13.9"
+ThisBuild / scalaVersion := "2.13.10"
 
 lazy val commonSettings = Seq(
   organization := "io.laserdisc",
   developers := List(
-    Developer(
-      "semenodm",
-      "Dmytro Semenov",
-      "sdo.semenov@gmail.com",
-      url("https://github.com/semenodm")
-    ),
-    Developer(
-      "barryoneill",
-      "Barry O'Neill",
-      "",
-      url("https://github.com/semenodm")
-    )
+    Developer("semenodm", "Dmytro Semenov", "sdo.semenov@gmail.com", url("https://github.com/semenodm")),
+    Developer("barryoneill", "Barry O'Neill", "", url("https://github.com/barryoneill"))
   ),
-  licenses                   ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
+  licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   homepage                    := Some(url("https://github.com/laserdisc-io/fs2-aws")),
   Compile / scalaSource       := baseDirectory.value / "app",
   Compile / resourceDirectory := baseDirectory.value / "conf",

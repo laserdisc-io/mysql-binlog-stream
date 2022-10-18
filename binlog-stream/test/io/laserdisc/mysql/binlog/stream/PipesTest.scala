@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog.stream
 
 import cats.effect.unsafe.implicits.global
-import cats.effect.{ IO, Resource }
+import cats.effect.{IO, Resource}
 import cats.implicits._
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
@@ -41,14 +41,14 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
               .use { xa =>
                 for {
                   _ <- (Sku.truncate.run *> Sku.insert(5, "sku5").run *>
-                         Sku.insert(2, "sku2").run).transact(xa)
+                    Sku.insert(2, "sku2").run).transact(xa)
 
                   _ <- (Sku.insert(6, "sku6").run *> Sku.truncate.run *>
-                         Sku.insert(2, "sku2").run).transact(xa)
+                    Sku.insert(2, "sku2").run).transact(xa)
 
                   _ <- (Sku.insert(5, "sku5").run *>
-                         Sku.insert(7, "sku7").run *> Sku.truncate.run)
-                         .transact(xa)
+                    Sku.insert(7, "sku7").run *> Sku.truncate.run)
+                    .transact(xa)
 
                   _ <- Sku.truncate.run.transact(xa)
                 } yield ()
@@ -63,14 +63,14 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
             implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("testing")
             schemaMetadata                <- SchemaMetadata.buildSchemaMetadata("test")
             transactionState <- TransactionState
-                                  .createTransactionState[IO](schemaMetadata, client)
+              .createTransactionState[IO](schemaMetadata, client)
             actions <- MysqlBinlogStream
-                         .rawEvents[IO](client)
-                         .through(streamEvents(transactionState))
-                         .map(_.action)
-                         .take(10)
-                         .compile
-                         .toList
+              .rawEvents[IO](client)
+              .through(streamEvents(transactionState))
+              .map(_.action)
+              .take(10)
+              .compile
+              .toList
           } yield actions
         }
         .unsafeRunSync()
