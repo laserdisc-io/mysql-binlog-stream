@@ -49,7 +49,7 @@ object BinLogListener extends IOApp {
             .createTransactionState[IO](schemaMetadata, binlogClient)
           _ <- MysqlBinlogStream
             .rawEvents[IO](binlogClient)
-            .through(streamEvents[IO](transactionState))
+            .through(streamEvents[IO](transactionState, config.schema))
             .evalTap(msg => logger.info(s"received $msg"))
             // Here you should do the checkpoint
             .compile
