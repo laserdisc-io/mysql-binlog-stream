@@ -21,7 +21,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "is.cir"     %% "ciris-enumeratum" % cirisVersion,
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.10.1"
+      "eu.timepit" %% "refined"          % "0.10.2"
     )
   )
 
