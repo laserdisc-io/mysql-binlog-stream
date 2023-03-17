@@ -46,7 +46,7 @@ case class TransactionPackage(
 object TransactionState {
   type Row = Array[Option[Serializable]]
 
-  def nextState(event: Event, schema: String): State[TransactionState, Option[TransactionPackage]] =
+  def nextState(event: Event, schema: String = null): State[TransactionState, Option[TransactionPackage]] =
     State[TransactionState, Option[TransactionPackage]] { implicit transactionState =>
       (event.getHeader[JEventHeaderV4], event.getData[EventData]) match {
         case (EventHeaderV4(EventType.FORMAT_DESCRIPTION, _, offset), _) =>
