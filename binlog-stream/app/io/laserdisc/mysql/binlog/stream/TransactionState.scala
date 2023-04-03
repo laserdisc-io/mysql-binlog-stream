@@ -352,11 +352,11 @@ object TransactionState {
   def mapRawToMeta: ((ColumnMetadata, Option[Serializable])) => (String, Json) = {
     case (metadata, Some(value)) =>
       val jsonValue = metadata.dataType match {
-        case "bigint"            => Json.fromLong(value.asInstanceOf[Long])
-        case "int" | "tinyint"   => Json.fromInt(value.asInstanceOf[Int])
-        case "date" | "datetime" => Json.fromLong(value.asInstanceOf[Long])
-        case "decimal"           => Json.fromBigDecimal(value.asInstanceOf[BigDecimal])
-        case "float"             => Json.fromFloat(value.asInstanceOf[Float]).get
+        case "bigint" => Json.fromLong(value.asInstanceOf[Long])
+        case "int" | "tinyint" => Json.fromInt(value.asInstanceOf[Int])
+        case "date" | "datetime" | "time" => Json.fromLong(value.asInstanceOf[Long])
+        case "decimal" => Json.fromBigDecimal(value.asInstanceOf[BigDecimal])
+        case "float" => Json.fromFloat(value.asInstanceOf[Float]).get
         case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" =>
           Json.fromString(new String(value.asInstanceOf[Array[Byte]]))
         case _ => Json.fromString(value.toString)
