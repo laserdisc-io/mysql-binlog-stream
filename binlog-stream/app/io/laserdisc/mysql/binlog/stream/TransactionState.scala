@@ -5,7 +5,7 @@ import cats.effect.Sync
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.EventType.{EXT_UPDATE_ROWS, UPDATE_ROWS}
-import com.github.shyiko.mysql.binlog.event.{Event, EventData, EventHeaderV4 => JEventHeaderV4, EventType}
+import com.github.shyiko.mysql.binlog.event.{Event, EventData, EventType, EventHeaderV4 => JEventHeaderV4}
 import org.typelevel.log4cats.Logger
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
@@ -15,6 +15,7 @@ import java.io.Serializable
 import java.math.BigDecimal
 import scala.collection.immutable.Queue
 import cats.effect.Ref
+import com.github.shyiko.mysql.binlog.event.deserialization.json.JsonBinary
 
 case class TransactionState(
     transactionEvents: Queue[EventMessage],
@@ -357,6 +358,8 @@ object TransactionState {
         case "float"             => Json.fromFloat(value.asInstanceOf[Float]).get
         case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" =>
           Json.fromString(new String(value.asInstanceOf[Array[Byte]]))
+        case "json" =>
+          Json.fromString(JsonBinary.parseAsString(value.asInstanceOf[Array[Byte]]))
         case _ => Json.fromString(value.toString)
       }
       metadata.name -> jsonValue
