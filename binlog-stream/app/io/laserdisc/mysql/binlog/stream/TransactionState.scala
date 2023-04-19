@@ -353,10 +353,10 @@ object TransactionState {
       val jsonValue = metadata.dataType match {
         case "bigint"            => Json.fromLong(value.asInstanceOf[Long])
         case "int" | "tinyint"   => Json.fromInt(value.asInstanceOf[Int])
-        case "date" | "datetime" => Json.fromLong(value.asInstanceOf[Long])
+        case "date" | "datetime" | "time" => Json.fromLong(value.asInstanceOf[Long])
         case "decimal"           => Json.fromBigDecimal(value.asInstanceOf[BigDecimal])
         case "float"             => Json.fromFloat(value.asInstanceOf[Float]).get
-        case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" =>
+        case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar | "char" =>
           Json.fromString(new String(value.asInstanceOf[Array[Byte]]))
         case "json" =>
           Json.fromString(JsonBinary.parseAsString(value.asInstanceOf[Array[Byte]]))
