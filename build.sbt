@@ -3,7 +3,7 @@ import sbt.Keys.scalaSource
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-ThisBuild / scalaVersion := "2.13.10"
+ThisBuild / scalaVersion := "2.13.11"
 
 lazy val commonSettings = Seq(
   organization := "io.laserdisc",
