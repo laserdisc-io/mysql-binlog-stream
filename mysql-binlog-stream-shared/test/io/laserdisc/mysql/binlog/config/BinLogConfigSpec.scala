@@ -16,7 +16,8 @@ class BinLogConfigSpec extends AnyWordSpec with Matchers {
       useSSL = true,
       driverClass = "com.made.up.TestDriver",
       urlOverride = None,
-      poolSize = 3
+      poolSize = 3,
+      serverId = Some(222)
     )
 
     "build correct connection URL" in {

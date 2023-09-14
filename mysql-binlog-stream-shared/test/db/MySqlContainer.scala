@@ -38,7 +38,8 @@ trait MySqlContainer {
       mySqlContainer.getPassword,
       mySqlContainer.getDatabaseName,
       useSSL = false,
-      poolSize = 3
+      poolSize = 3,
+      serverId = Some(1234)
     )
   }
 }
