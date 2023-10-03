@@ -50,7 +50,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core"   % circeVersion,
       "io.circe" %% "circe-parser" % circeVersion,
-      "io.circe" %% "circe-optics" % "0.14.1" % Test
+      "io.circe" %% "circe-optics" % "0.15.0" % Test
     )
   )
 
