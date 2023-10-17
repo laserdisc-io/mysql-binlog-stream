@@ -1,6 +1,7 @@
 package io.laserdisc.mysql.binlog.stream
 
 import _root_.io.circe.optics.JsonPath._
+``import _root_.io.circe.Json
 import _root_.io.laserdisc.mysql.binlog._
 import com.github.shyiko.mysql.binlog.event._
 import org.scalatest.OptionValues
@@ -144,7 +145,23 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
       val TableName = "all_types_table"
 
       val allTypes =
-        List("int", "tinyint", "bigint", "date", "datetime", "decimal", "float", "text", "tinytext", "mediumtext", "longtext", "varchar")
+        List(
+          "int",
+          "tinyint",
+          "bigint",
+          "date",
+          "datetime",
+          "time",
+          "decimal",
+          "float",
+          "char",
+          "varchar",
+          "text",
+          "tinytext",
+          "mediumtext",
+          "longtext",
+          "json"
+        )
 
       val columnMeta = allTypes.zipWithIndex.map { case (mType, idx) =>
         val colName = s"${mType}Col"
@@ -175,13 +192,16 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
               Some(Long.MaxValue.asInstanceOf[io.Serializable]),                          // bigint
               Some(1672531200000L.asInstanceOf[io.Serializable]),                         // date
               Some(1672567872000L.asInstanceOf[io.Serializable]),                         // datetime
+              Some(123L.asInstanceOf[io.Serializable]),                                   // time
               Some(java.math.BigDecimal.valueOf(99887766).asInstanceOf[io.Serializable]), // decimal
               Some(111.222f.asInstanceOf[io.Serializable]),                               // float
+              Some("some char".getBytes.asInstanceOf[io.Serializable]),                   // char
+              Some("some varchar".getBytes.asInstanceOf[io.Serializable]),                // varchar
               Some("some text".getBytes.asInstanceOf[io.Serializable]),                   // text
               Some("some tinytext".getBytes.asInstanceOf[io.Serializable]),               // tinytext
               Some("some mediumtext".getBytes.asInstanceOf[io.Serializable]),             // mediumtext
               Some("some longtext".getBytes.asInstanceOf[io.Serializable]),               // longtext
-              Some("a varchar".getBytes.asInstanceOf[io.Serializable])                    // varchar
+              Some("{\"some\":\"json\"}".getBytes.asInstanceOf[io.Serializable])          // json
             )
           )
         )
@@ -197,13 +217,16 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
       after.bigintCol.long.getOption(json.row).value should be(Long.MaxValue)
       after.dateCol.long.getOption(json.row).value should be(1672531200000L)
       after.datetimeCol.long.getOption(json.row).value should be(1672567872000L)
+      after.timeCol.long.getOption(json.row).value should be(123L)
       after.decimalCol.bigDecimal.getOption(json.row).value should be(BigDecimal.valueOf(99887766))
       after.floatCol.double.getOption(json.row).value should be(111.222)
+      after.charCol.string.getOption(json.row).value should be("some char")
+      after.varcharCol.string.getOption(json.row).value should be("some varchar")
       after.textCol.string.getOption(json.row).value should be("some text")
       after.tinytextCol.string.getOption(json.row).value should be("some tinytext")
       after.mediumtextCol.string.getOption(json.row).value should be("some mediumtext")
       after.longtextCol.string.getOption(json.row).value should be("some longtext")
-      after.varcharCol.string.getOption(json.row).value should be("a varchar")
+      after.jsonCol.json.getOption(json.row).value should be(Json.fromString("{\"some\":\"json\"}"))
 
     }
 
