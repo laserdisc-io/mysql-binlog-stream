@@ -14,12 +14,17 @@ class SchemaMetadataTest extends AnyWordSpec with ForAllTestContainer with MySql
   "Schema Metadata" should {
 
     "restore schema state from DB" in {
+
+      val props = new java.util.Properties()
+      props.put("user", mySqlContainer.getUsername)
+      props.put("password", mySqlContainer.getPassword)
+
       implicit val testTransactor: Aux[IO, Unit] =
         Transactor.fromDriverManager[IO](
           mySqlContainer.getDriverClassName,
           s"${mySqlContainer.getJdbcUrl}?useSSL=false",
-          mySqlContainer.getUsername,
-          mySqlContainer.getPassword
+          props,
+          None
         )
       val schemaState =
         SchemaMetadata.buildSchemaMetadata("test").unsafeRunSync()

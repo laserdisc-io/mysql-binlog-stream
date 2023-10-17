@@ -5,8 +5,11 @@ import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer.CompatibilityMode
 import com.github.shyiko.mysql.binlog.network.SSLMode
 import io.laserdisc.mysql.binlog.checkpoint.BinlogOffset
+import org.slf4j.LoggerFactory
 
 package object config {
+
+  val logger = LoggerFactory.getLogger("BinLogConfigOps")
 
   implicit class BinLogConfigOps(val v: BinLogConfig) extends AnyVal {
 
@@ -24,6 +27,15 @@ package object config {
       }
 
       blc.setSSLMode(if (v.useSSL) SSLMode.VERIFY_IDENTITY else SSLMode.DISABLED)
+
+      // ServerID should be set, (see mysql-binlog-connector-java / BinaryLogClient.setServerId for documentation)
+      v.serverId match {
+        case Some(sid) => blc.setServerId(sid)
+        case None =>
+          logger.warn(
+            s"ServerID is not provided, so ${blc.getServerId} will be the default.  This will cause issues if running multiple binlog services with this value!"
+          )
+      }
 
       offset match {
         case Some(o) =>

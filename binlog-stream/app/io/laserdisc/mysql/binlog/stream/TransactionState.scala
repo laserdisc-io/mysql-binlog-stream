@@ -1,20 +1,19 @@
 package io.laserdisc.mysql.binlog.stream
 
 import cats.data.State
-import cats.effect.Sync
+import cats.effect.{Ref, Sync}
 import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.EventType.{EXT_UPDATE_ROWS, UPDATE_ROWS}
+import com.github.shyiko.mysql.binlog.event.deserialization.json.JsonBinary
 import com.github.shyiko.mysql.binlog.event.{Event, EventData, EventHeaderV4 => JEventHeaderV4, EventType}
-import org.typelevel.log4cats.Logger
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
 import io.laserdisc.mysql.binlog.models._
+import org.typelevel.log4cats.Logger
 
-import java.io.Serializable
 import java.math.BigDecimal
 import scala.collection.immutable.Queue
-import cats.effect.Ref
 
 case class TransactionState(
     transactionEvents: Queue[EventMessage],
@@ -352,14 +351,15 @@ object TransactionState {
   def mapRawToMeta: ((ColumnMetadata, Option[Serializable])) => (String, Json) = {
     case (metadata, Some(value)) =>
       val jsonValue = metadata.dataType match {
-        case "bigint" => Json.fromLong(value.asInstanceOf[Long])
-        case "int" | "tinyint" => Json.fromInt(value.asInstanceOf[Int])
+        case "bigint"                     => Json.fromLong(value.asInstanceOf[Long])
+        case "int" | "tinyint"            => Json.fromInt(value.asInstanceOf[Int])
         case "date" | "datetime" | "time" => Json.fromLong(value.asInstanceOf[Long])
-        case "decimal" => Json.fromBigDecimal(value.asInstanceOf[BigDecimal])
-        case "float" => Json.fromFloat(value.asInstanceOf[Float]).get
-        case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" =>
+        case "decimal"                    => Json.fromBigDecimal(value.asInstanceOf[BigDecimal])
+        case "float"                      => Json.fromFloat(value.asInstanceOf[Float]).get
+        case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" | "char" =>
           Json.fromString(new String(value.asInstanceOf[Array[Byte]]))
-        case _ => Json.fromString(value.toString)
+        case "json" => Json.fromString(JsonBinary.parseAsString(value.asInstanceOf[Array[Byte]]))
+        case _      => Json.fromString(value.toString)
       }
       metadata.name -> jsonValue
     case (metadata, _) => metadata.name -> Json.Null

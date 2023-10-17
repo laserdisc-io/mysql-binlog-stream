@@ -24,8 +24,9 @@ object BinLogListener extends IOApp {
         env("DB_PASSWORD"),
         env("DB_URL").option,
         env("DB_SCHEMA"),
-        env("USE_SSL").as[Boolean]
-      ).parMapN { case (host, port, user, password, url, schema, useSSL) =>
+        env("USE_SSL").as[Boolean],
+        env("SERVER_ID").as[Int]
+      ).parMapN { case (host, port, user, password, url, schema, useSSL, sid) =>
         BinLogConfig(
           host,
           port,
@@ -34,7 +35,8 @@ object BinLogListener extends IOApp {
           schema,
           poolSize = 1,
           useSSL = useSSL,
-          urlOverride = url
+          urlOverride = url,
+          serverId = Some(sid)
         )
       }.load[IO]
 
