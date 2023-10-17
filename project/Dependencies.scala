@@ -1,19 +1,19 @@
-import sbt.Keys.{libraryDependencies, _}
-import sbt._
+import sbt.*
+import sbt.Keys.libraryDependencies
 
 object Dependencies {
-  val cirisVersion      = "3.2.0"
-  val doobieVersion     = "1.0.0-RC2"
+  val cirisVersion      = "3.3.0"
+  val doobieVersion     = "1.0.0-RC4"
   val circeVersion      = "0.14.6"
-  val catsEffectVersion = "3.5.1"
+  val catsEffectVersion = "3.5.2"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
       "org.scalamock"     %% "scalamock"            % "5.2.0"  % Test,
       "org.scalatest"     %% "scalatest"            % "3.2.17" % Test,
       "com.dimafeng"      %% "testcontainers-scala" % "0.41.0" % Test,
-      "org.testcontainers" % "mysql"                % "1.19.0" % Test,
-      "org.testcontainers" % "testcontainers"       % "1.19.0" % Test
+      "org.testcontainers" % "mysql"                % "1.19.1" % Test,
+      "org.testcontainers" % "testcontainers"       % "1.19.1" % Test
     )
   )
 
@@ -31,18 +31,18 @@ object Dependencies {
       "ch.qos.logback" % "logback-core"    % "1.4.11",
       "org.slf4j"      % "jcl-over-slf4j"  % "2.0.9",
       "org.slf4j"      % "jul-to-slf4j"    % "2.0.9",
-      "org.typelevel" %% "log4cats-slf4j"  % "2.5.0"
+      "org.typelevel" %% "log4cats-slf4j"  % "2.6.0"
     )
   )
 
   val Persistence = Seq(
     libraryDependencies ++= Seq(
       "org.tpolecat" %% "doobie-core"                 % doobieVersion,
-      "org.tpolecat" %% "doobie-hikari"               % doobieVersion, // HikariCP transactor.
-      "org.tpolecat" %% "doobie-refined"              % doobieVersion, // Postgres driver 42.1.4 + type mappings.
-      "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test, // Support for doobie scalatest
+      "org.tpolecat" %% "doobie-hikari"               % doobieVersion,
+      "org.tpolecat" %% "doobie-refined"              % doobieVersion,
+      "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test,
       "mysql"         % "mysql-connector-java"        % "8.0.33",
-      "com.zendesk"   % "mysql-binlog-connector-java" % "0.28.1"
+      "com.zendesk"   % "mysql-binlog-connector-java" % "0.28.2"
     )
   )
 
@@ -50,7 +50,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core"   % circeVersion,
       "io.circe" %% "circe-parser" % circeVersion,
-      "io.circe" %% "circe-optics" % "0.14.1" % Test
+      "io.circe" %% "circe-optics" % "0.15.0" % Test
     )
   )
 
