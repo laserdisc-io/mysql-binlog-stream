@@ -9,23 +9,26 @@ import io.laserdisc.mysql.binlog.event.EventMessage
 
 package object stream {
   def streamEvents[F[_]: Concurrent: Sync: Logger](
-      transactionState: Ref[F, TransactionState]
+      transactionState: Ref[F, TransactionState],
+      schema: String
   ): fs2.Pipe[F, Event, EventMessage] =
-    _.through(streamTransactionPackages[F](transactionState)).flatMap(pkg =>
+    _.through(streamTransactionPackages[F](transactionState, schema)).flatMap(pkg =>
       fs2.Stream.eval(warnBigTransactionPackage(pkg)) >> fs2.Stream(pkg.events: _*)
     )
 
   def streamCompactedEvents[F[_]: Concurrent: Logger](
-      transactionState: Ref[F, TransactionState]
+      transactionState: Ref[F, TransactionState],
+      schema: String
   ): fs2.Pipe[F, Event, EventMessage] =
-    _.through(streamTransactionPackages[F](transactionState)).flatMap(pkg => fs2.Stream(compaction.compact(pkg.events): _*))
+    _.through(streamTransactionPackages[F](transactionState, schema)).flatMap(pkg => fs2.Stream(compaction.compact(pkg.events): _*))
 
   def streamTransactionPackages[F[_]: Concurrent: Logger](
-      transactionState: Ref[F, TransactionState]
+      transactionState: Ref[F, TransactionState],
+      schema: String
   ): fs2.Pipe[F, Event, TransactionPackage] =
     _.evalMap(event =>
       Logger[F].debug(s"received binlog event $event") >> transactionState.modifyState(
-        TransactionState.nextState(event)
+        TransactionState.nextState(event, schema)
       )
     ).unNone
 

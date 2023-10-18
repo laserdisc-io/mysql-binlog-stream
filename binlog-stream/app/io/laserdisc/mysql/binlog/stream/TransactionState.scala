@@ -46,7 +46,7 @@ case class TransactionPackage(
 object TransactionState {
   type Row = Array[Option[Serializable]]
 
-  def nextState(event: Event): State[TransactionState, Option[TransactionPackage]] =
+  def nextState(event: Event, schema: String = null): State[TransactionState, Option[TransactionPackage]] =
     State[TransactionState, Option[TransactionPackage]] { implicit transactionState =>
       (event.getHeader[JEventHeaderV4], event.getData[EventData]) match {
         case (EventHeaderV4(EventType.FORMAT_DESCRIPTION, _, offset), _) =>
@@ -60,10 +60,12 @@ object TransactionState {
             ) =>
           (transactionState.copy(start = timestamp, offset = offset), None)
 
-        case (EventHeaderV4(EventType.TABLE_MAP, _, offset), TableMapEventData(tableId, name)) =>
-          transactionState.schemaMetadata.tables
-            .get(name)
-            .foreach(transactionState.schemaMetadata.idToTable(tableId) = _)
+        case (EventHeaderV4(EventType.TABLE_MAP, _, offset), TableMapEventData(tableId, database, name)) =>
+          if (schema == null || database == schema) {
+            transactionState.schemaMetadata.tables
+              .get(name)
+              .foreach(transactionState.schemaMetadata.idToTable(tableId) = _)
+          }
           (transactionState.copy(offset = offset), None)
 
         case (
