@@ -3,21 +3,26 @@ package db
 import com.dimafeng.testcontainers.{ForAllTestContainer, SingleContainer}
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.testcontainers.containers.MySQLContainer
+import org.testcontainers.utility.DockerImageName
 
 import java.net.URI
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits
+import scala.jdk.CollectionConverters.MapHasAsJava
 import scala.language.existentials
 
-trait MySqlContainer {
+trait MySqlContainerTest {
   this: ForAllTestContainer =>
   type OTCContainer = MySQLContainer[T] forSome {
     type T <: MySQLContainer[T]
   }
-  val mySqlContainer: OTCContainer = new MySQLContainer("mysql:5.7").withUsername("root")
-  mySqlContainer.withCommand("mysqld --log-bin --server-id=1 --binlog-format=ROW")
-  mySqlContainer.withInitScript("init.sql")
+
+  val mySqlContainer: OTCContainer = new MySQLContainer(DockerImageName.parse("mysql:5.7"))
+  mySqlContainer.withCommand("mysqld --log-bin --server-id=1 --binlog-format=ROW --explicit_defaults_for_timestamp=1")
+  mySqlContainer.withTmpFs(Map("/var/lib/mysql" -> "rw").asJava)
+  mySqlContainer.withUsername("root")
   mySqlContainer.withPassword("")
+  mySqlContainer.withInitScript("init.sql")
 
   override val container: SingleContainer[MySQLContainer[_]] =
     new SingleContainer[MySQLContainer[_]] {

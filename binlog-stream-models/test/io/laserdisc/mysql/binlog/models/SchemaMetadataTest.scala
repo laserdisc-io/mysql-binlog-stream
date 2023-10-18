@@ -2,14 +2,14 @@ package io.laserdisc.mysql.binlog.models
 
 import cats.effect.IO
 import com.dimafeng.testcontainers.ForAllTestContainer
-import db.MySqlContainer
+import db.MySqlContainerTest
 import doobie.util.transactor.Transactor
 import doobie.util.transactor.Transactor.Aux
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import cats.effect.unsafe.implicits.global
 
-class SchemaMetadataTest extends AnyWordSpec with ForAllTestContainer with MySqlContainer with Matchers {
+class SchemaMetadataTest extends AnyWordSpec with ForAllTestContainer with MySqlContainerTest with Matchers {
 
   "Schema Metadata" should {
 

@@ -14,6 +14,7 @@ import org.typelevel.log4cats.Logger
 
 import java.math.BigDecimal
 import scala.collection.immutable.Queue
+import scala.reflect.ClassTag
 
 case class TransactionState(
     transactionEvents: Queue[EventMessage],
@@ -325,15 +326,15 @@ object TransactionState {
   }
 
   def extractPk(
-      metadata: TableMetadata,
+      tableMeta: TableMetadata,
       columns: Array[Int],
       row: Array[Option[Serializable]]
   ): Array[(String, Json)] =
     columns
-      .map(i => metadata.columns(i + 1))
+      .map(i => tableMeta.columns(i + 1))
       .zip(row)
       .filter { case (meta, _) => meta.isPk }
-      .map(mapRawToMeta)
+      .map(mapRawToMeta(tableMeta))
 
   def toTableName(tableId: Long)(implicit transactionState: TransactionState): Option[String] =
     transactionState.schemaMetadata.idToTable.get(tableId).map(_.name)
@@ -346,22 +347,37 @@ object TransactionState {
     includedColumns
       .map(i => tableMetadata.columns(i + 1))
       .zip(record)
-      .map(mapRawToMeta)
+      .map(mapRawToMeta(tableMetadata))
 
-  def mapRawToMeta: ((ColumnMetadata, Option[Serializable])) => (String, Json) = {
-    case (metadata, Some(value)) =>
-      val jsonValue = metadata.dataType match {
-        case "bigint"                     => Json.fromLong(value.asInstanceOf[Long])
-        case "int" | "tinyint"            => Json.fromInt(value.asInstanceOf[Int])
-        case "date" | "datetime" | "time" => Json.fromLong(value.asInstanceOf[Long])
-        case "decimal"                    => Json.fromBigDecimal(value.asInstanceOf[BigDecimal])
-        case "float"                      => Json.fromFloat(value.asInstanceOf[Float]).get
+  def mapRawToMeta(table: TableMetadata): ((ColumnMetadata, Option[Serializable])) => (String, Json) = {
+    case (column, Some(value)) =>
+      def unsafeCast[T](implicit m: ClassTag[T]): T =
+        try
+          value match {
+            case _: T => value.asInstanceOf[T]
+            case _    => m.runtimeClass.cast(value).asInstanceOf[T]
+          }
+        catch {
+          case e: ClassCastException =>
+            throw new IllegalStateException(
+              s"""Unable to process column [schema:${table.schema}, table:${table.name}, column:${column.name}]. Failed to convert a mysql '${column.dataType}' to a ${m.runtimeClass.getCanonicalName}, but got: ${e.getMessage}""",
+              e
+            )
+        }
+
+      val jsonValue = column.dataType match {
+        case "bigint"                     => Json.fromLong(unsafeCast[Long])
+        case "int" | "tinyint"            => Json.fromInt(unsafeCast[Int])
+        case "date" | "datetime" | "time" => Json.fromLong(unsafeCast[Long])
+        case "decimal"                    => Json.fromBigDecimal(unsafeCast[BigDecimal])
+        case "float"                      => Json.fromFloat(unsafeCast[Float]).get
         case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" | "char" =>
-          Json.fromString(new String(value.asInstanceOf[Array[Byte]]))
-        case "json" => Json.fromString(JsonBinary.parseAsString(value.asInstanceOf[Array[Byte]]))
+          Json.fromString(new String(unsafeCast[Array[Byte]]))
+        case "json" => Json.fromString(JsonBinary.parseAsString(unsafeCast[Array[Byte]]))
         case _      => Json.fromString(value.toString)
       }
-      metadata.name -> jsonValue
+
+      column.name -> jsonValue
     case (metadata, _) => metadata.name -> Json.Null
   }
 
