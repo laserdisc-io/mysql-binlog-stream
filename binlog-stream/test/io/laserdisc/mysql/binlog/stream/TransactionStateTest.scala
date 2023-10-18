@@ -99,13 +99,15 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
       }
     }
     "accumulate events within transaction" in {
+
       val skuMeta =
         models.TableMetadata(
           "sku",
           Map(
             1 -> models.ColumnMetadata("id", "int", 1, isPk = true),
             2 -> models.ColumnMetadata("sku", "varchar", 2, isPk = false)
-          )
+          ),
+          schema = "testSchema"
         )
       val schemaMeta =
         models
@@ -169,7 +171,7 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
         ordinal -> models.ColumnMetadata(colName, mType, ordinal, isPk = colName == "intCol")
       }.toMap
 
-      val tableMeta = models.TableMetadata(TableName, columnMeta)
+      val tableMeta = models.TableMetadata(TableName, columnMeta, "testSchema")
 
       val schemaMeta = models.SchemaMetadata(
         tables = Map("all_types_table" -> tableMeta),

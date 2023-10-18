@@ -24,7 +24,7 @@ case class SchemaMetadata(
 )
 
 case class ColumnMetadata(name: String, dataType: String, ordinal: Int, isPk: Boolean)
-case class TableMetadata(name: String, columns: Map[Int, ColumnMetadata])
+case class TableMetadata(name: String, columns: Map[Int, ColumnMetadata], schema: String)
 
 object SchemaMetadata {
   def getMetadata(schema: String) =
@@ -51,9 +51,9 @@ object SchemaMetadata {
   def buildSchemaMetadata[F[_]](
       schema: String
   )(implicit xa: Transactor[F], ev: MonadCancel[F, Throwable]): F[SchemaMetadata] =
-    getMetadata(schema).to[List].map(metaToSchema).transact(xa)
+    getMetadata(schema).to[List].map(tblMeta => metaToSchema(schema, tblMeta)).transact(xa)
 
-  def metaToSchema(metadata: List[Metadata]): SchemaMetadata = {
+  def metaToSchema(schema: String, metadata: List[Metadata]): SchemaMetadata = {
     val tables = metadata
       .groupBy(m => m.table_name)
       .map { case (tableName, tableInfo) =>
@@ -69,7 +69,8 @@ object SchemaMetadata {
           tableInfo.head.table_name,
           columns.groupBy(_.ordinal).map { case (ord, columns) =>
             ord -> columns.head
-          }
+          },
+          schema
         )
       }
     SchemaMetadata(tables, mutable.Map.empty)
