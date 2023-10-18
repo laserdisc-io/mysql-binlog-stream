@@ -66,7 +66,7 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
               .createTransactionState[IO](schemaMetadata, client)
             actions <- MysqlBinlogStream
               .rawEvents[IO](client)
-              .through(streamEvents(transactionState))
+              .through(streamEvents(transactionState, "test"))
               .map(_.action)
               .take(10)
               .compile

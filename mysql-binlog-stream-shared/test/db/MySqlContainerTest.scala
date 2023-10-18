@@ -17,7 +17,13 @@ trait MySqlContainerTest {
     type T <: MySQLContainer[T]
   }
 
-  val mySqlContainer: OTCContainer = new MySQLContainer(DockerImageName.parse("mysql:5.7"))
+  // there's no arm image for 5.7, speed things up for local developers on mac
+  val dockerImage: DockerImageName = System.getProperty("os.arch") match {
+    case "aarch64" => DockerImageName.parse("biarms/mysql:5.7").asCompatibleSubstituteFor("mysql")
+    case _         => DockerImageName.parse("mysql:5.7")
+  }
+
+  val mySqlContainer: OTCContainer = new MySQLContainer(dockerImage)
   mySqlContainer.withCommand("mysqld --log-bin --server-id=1 --binlog-format=ROW --explicit_defaults_for_timestamp=1")
   mySqlContainer.withTmpFs(Map("/var/lib/mysql" -> "rw").asJava)
   mySqlContainer.withUsername("root")
