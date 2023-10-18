@@ -5,7 +5,7 @@ import cats.effect.{IO, Resource}
 import cats.implicits._
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
-import db.MySqlContainer
+import db.MySqlContainerTest
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
 import org.typelevel.log4cats.Logger
@@ -18,7 +18,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import scala.language.reflectiveCalls
 import scala.util.control
 
-class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with MySqlContainer {
+class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with MySqlContainerTest {
 
   def fixture =
     new {

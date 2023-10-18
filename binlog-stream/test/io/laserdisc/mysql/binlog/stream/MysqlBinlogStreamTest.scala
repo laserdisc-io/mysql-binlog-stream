@@ -5,7 +5,7 @@ import cats.effect.{IO, Resource}
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.{EventHeaderV4, EventType}
-import db.MySqlContainer
+import db.MySqlContainerTest
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
 import io.laserdisc.mysql.binlog.database
@@ -16,7 +16,7 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.language.reflectiveCalls
 
-class MysqlBinlogStreamTest extends AnyWordSpec with ForAllTestContainer with MySqlContainer with Matchers {
+class MysqlBinlogStreamTest extends AnyWordSpec with ForAllTestContainer with MySqlContainerTest with Matchers {
 
   def fixture =
     new {
