@@ -1,9 +1,13 @@
-import sbt.Keys.scalaSource
 
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
-ThisBuild / scalaVersion := "2.13.14"
+lazy val scala213               = "2.13.14"
+lazy val scala3                 = "3.4.1"
+lazy val supportedScalaVersions = List(scala213, scala3)
+
+ThisBuild / crossScalaVersions := supportedScalaVersions
+ThisBuild / scalaVersion       := scala3
 
 lazy val commonSettings = Seq(
   organization := "io.laserdisc",
@@ -13,26 +17,10 @@ lazy val commonSettings = Seq(
   ),
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   homepage                    := Some(url("https://github.com/laserdisc-io/fs2-aws")),
-  Compile / scalaSource       := baseDirectory.value / "app",
-  Compile / resourceDirectory := baseDirectory.value / "conf",
-  Test / scalaSource          := baseDirectory.value / "test",
-  Test / resourceDirectory    := baseDirectory.value / "test_resources",
   Test / parallelExecution    := false,
   Test / fork                 := true,
-  scalacOptions ++= Seq(
-    "-encoding",
-    "UTF-8",                         // source files are in UTF-8
-    "-deprecation",                  // warn about use of deprecated APIs
-    "-unchecked",                    // warn about unchecked type parameters
-    "-feature",                      // warn about misused language features
-    "-language:higherKinds",         // allow higher kinded types without `import scala.language.higherKinds`
-    "-language:implicitConversions", // allow use of implicit conversions
-    "-language:postfixOps",          // enable postfix ops
-    "-Xlint:_,-byname-implicit",     // enable handy linter warnings
-    "-Xfatal-warnings",              // turn compiler warnings into errors
-    "-Ywarn-macros:after"            // allows the compiler to resolve implicit imports being flagged as unused
-  ),
-  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
+  scalacOptions ++= BuildOptions.scalacOptions(scalaVersion.value),
+  libraryDependencies ++= BuildOptions.compilerPlugins(scalaVersion.value)
 )
 
 lazy val noPublishSettings = Seq(
