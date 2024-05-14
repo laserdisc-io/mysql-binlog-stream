@@ -2,18 +2,18 @@ import sbt.*
 import sbt.Keys.libraryDependencies
 
 object Dependencies {
-  val cirisVersion      = "3.3.0"
-  val doobieVersion     = "1.0.0-RC4"
-  val circeVersion      = "0.14.6"
-  val catsEffectVersion = "3.5.2"
+  val cirisVersion      = "3.6.0"
+  val doobieVersion     = "1.0.0-RC5"
+  val circeVersion      = "0.14.7"
+  val catsEffectVersion = "3.5.4"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
-      "org.scalamock"     %% "scalamock"            % "5.2.0"  % Test,
-      "org.scalatest"     %% "scalatest"            % "3.2.17" % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.41.0" % Test,
-      "org.testcontainers" % "mysql"                % "1.19.1" % Test,
-      "org.testcontainers" % "testcontainers"       % "1.19.1" % Test
+      "org.scalamock"     %% "scalamock"            % "6.0.0"  % Test,
+      "org.scalatest"     %% "scalatest"            % "3.2.18" % Test,
+      "com.dimafeng"      %% "testcontainers-scala" % "0.41.3" % Test,
+      "org.testcontainers" % "mysql"                % "1.19.8" % Test,
+      "org.testcontainers" % "testcontainers"       % "1.19.8" % Test
     )
   )
 
@@ -21,17 +21,17 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "is.cir"     %% "ciris-enumeratum" % cirisVersion,
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.11.0"
+      "eu.timepit" %% "refined"          % "0.11.1"
     )
   )
 
   val Logging = Seq(
     libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.4.11",
-      "ch.qos.logback" % "logback-core"    % "1.4.11",
-      "org.slf4j"      % "jcl-over-slf4j"  % "2.0.9",
-      "org.slf4j"      % "jul-to-slf4j"    % "2.0.9",
-      "org.typelevel" %% "log4cats-slf4j"  % "2.6.0"
+      "ch.qos.logback" % "logback-classic" % "1.5.6",
+      "ch.qos.logback" % "logback-core"    % "1.5.6",
+      "org.slf4j"      % "jcl-over-slf4j"  % "2.0.13",
+      "org.slf4j"      % "jul-to-slf4j"    % "2.0.13",
+      "org.typelevel" %% "log4cats-slf4j"  % "2.7.0"
     )
   )
 
@@ -42,7 +42,7 @@ object Dependencies {
       "org.tpolecat" %% "doobie-refined"              % doobieVersion,
       "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test,
       "mysql"         % "mysql-connector-java"        % "8.0.33",
-      "com.zendesk"   % "mysql-binlog-connector-java" % "0.28.2"
+      "com.zendesk"   % "mysql-binlog-connector-java" % "0.29.2"
     )
   )
 
@@ -63,8 +63,8 @@ object Dependencies {
   val XML = Seq(
     libraryDependencies ++= Seq(
       "javax.xml.bind"   % "jaxb-api"   % "2.3.1",
-      "com.sun.xml.bind" % "jaxb-impl"  % "4.0.3",
-      "com.sun.xml.bind" % "jaxb-core"  % "4.0.3",
+      "com.sun.xml.bind" % "jaxb-impl"  % "4.0.5",
+      "com.sun.xml.bind" % "jaxb-core"  % "4.0.5",
       "javax.activation" % "activation" % "1.1.1"
     )
   )
