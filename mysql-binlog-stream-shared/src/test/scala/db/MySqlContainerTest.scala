@@ -43,6 +43,12 @@ trait MySqlContainerTest extends TestContainersForAll with BeforeAndAfterEach {
     this.container.withInitScript("init.sql")
 
   }
+  protected lazy val mysqlDBCreds = {
+    val props = new java.util.Properties()
+    props.put("user", container.username)
+    props.put("password", container.password)
+    props
+  }
 
   implicit val ec: ExecutionContext = Implicits.global
 
@@ -52,11 +58,11 @@ trait MySqlContainerTest extends TestContainersForAll with BeforeAndAfterEach {
     val uri      = URI.create(cleanURI)
 
     BinLogConfig(
-      uri.getHost,
-      uri.getPort,
-      mySQLContainer.username,
-      mySQLContainer.password,
-      mySQLContainer.databaseName,
+      host = uri.getHost,
+      port = uri.getPort,
+      user = mySQLContainer.username,
+      password = mySQLContainer.password,
+      schema = mySQLContainer.databaseName,
       useSSL = false,
       poolSize = 3,
       serverId = Some(1234)
