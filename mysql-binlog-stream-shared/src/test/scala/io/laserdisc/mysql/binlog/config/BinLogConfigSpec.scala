@@ -38,7 +38,7 @@ class BinLogConfigSpec extends AnyWordSpec with Matchers {
 
     "not expose password on toString" in {
 
-      template.copy(password = "TOPSECRET").toString should not include "TOPSECRET"
+      (template.copy(password = "TOPSECRET").toString should not).include("TOPSECRET")
 
     }
 

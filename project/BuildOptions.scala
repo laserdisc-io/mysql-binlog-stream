@@ -9,6 +9,8 @@ object BuildOptions {
       case _            => Seq.empty
     })
 
+  def scalacTestOptions: Seq[String] = Scalac.Test
+
   def compilerPlugins(scalaVersion: String): Seq[sbt.ModuleID] =
     Compiler.Common ++ (CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, _)) => Compiler.Scala2x
@@ -34,6 +36,10 @@ object BuildOptions {
       "-source:future",
       "-language:adhocExtensions",
       "-Wconf:msg=`= _` has been deprecated; use `= uninitialized` instead.:s"
+    )
+
+    lazy val Test: Seq[String] = Seq(
+      "-Wconf:msg=is not declared infix:s,msg=is declared 'open':s"
     )
 
     lazy val Version2x: Seq[String] = Seq(

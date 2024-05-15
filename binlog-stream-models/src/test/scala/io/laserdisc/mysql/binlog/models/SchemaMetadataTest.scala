@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog.models
 
 import cats.effect.IO
-import com.dimafeng.testcontainers.ForAllTestContainer
+import com.dimafeng.testcontainers.{Container, ForAllTestContainer}
 import db.MySqlContainerTest
 import doobie.util.transactor.Transactor
 import doobie.util.transactor.Transactor.Aux
@@ -16,13 +16,13 @@ class SchemaMetadataTest extends AnyWordSpec with ForAllTestContainer with MySql
     "restore schema state from DB" in {
 
       val props = new java.util.Properties()
-      props.put("user", mySqlContainer.getUsername)
-      props.put("password", mySqlContainer.getPassword)
+      props.put("user", container.username)
+      props.put("password", container.username)
 
       implicit val testTransactor: Aux[IO, Unit] =
         Transactor.fromDriverManager[IO](
-          mySqlContainer.getDriverClassName,
-          s"${mySqlContainer.getJdbcUrl}?useSSL=false",
+          mySQLContainer.driverClassName,
+          s"${mySQLContainer.jdbcUrl}?useSSL=false",
           props,
           None
         )

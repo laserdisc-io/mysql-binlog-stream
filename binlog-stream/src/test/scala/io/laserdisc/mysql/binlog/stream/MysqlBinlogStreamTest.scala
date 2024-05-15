@@ -7,7 +7,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.{EventHeaderV4, EventType}
 import db.MySqlContainerTest
 import doobie.hikari.HikariTransactor
-import doobie.implicits._
+import doobie.implicits.*
+import io.laserdisc.mysql.binlog.config.BinLogConfigOps
 import io.laserdisc.mysql.binlog.database
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -18,26 +19,19 @@ import scala.language.reflectiveCalls
 
 class MysqlBinlogStreamTest extends AnyWordSpec with ForAllTestContainer with MySqlContainerTest with Matchers {
 
-  def fixture =
-    new {
-
-      val testTransactor: Resource[IO, HikariTransactor[IO]] =
-        database.transactor[IO](containerBinlogConfig)
-
-      val client: BinaryLogClient = containerBinlogConfig.mkBinaryLogClient()
-
-    }
-
   implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
 
   "Binlog stream" should {
 
     "emit events from mysql" in {
 
-      val (client, xaResource) = (fixture.client, fixture.testTransactor)
+      val testTransactor: Resource[IO, HikariTransactor[IO]] = database.transactor[IO](binlogConfig)
+
+      val client: BinaryLogClient = binlogConfig.mkBinaryLogClient()
+
       client.registerLifecycleListener(new BinaryLogClient.AbstractLifecycleListener {
         override def onConnect(client: BinaryLogClient): Unit =
-          xaResource
+          testTransactor
             .use(xa =>
               Sku
                 .insertMany(

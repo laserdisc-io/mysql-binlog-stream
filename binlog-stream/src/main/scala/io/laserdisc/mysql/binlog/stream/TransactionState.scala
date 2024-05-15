@@ -351,6 +351,13 @@ object TransactionState {
 
   def mapRawToMeta(table: TableMetadata): ((ColumnMetadata, Option[Serializable])) => (String, Json) = {
     case (column, Some(value)) =>
+      /** At some point, Scala will drop ClassTag, so we should be prepared to either drop cross compilation for 2.13,
+        * else add an alternative implementation that uses TypeTest.  At the current time, I don't want to introduce
+        * any potential bugs into _this_ at the same time that I'm introducing Scala 3..
+        */
+      @annotation.nowarn(
+        "msg=Use of `scala.reflect.ClassTag` for type testing may be unsound. Consider using `scala.reflect.TypeTest` instead."
+      )
       def unsafeCast[T](implicit m: ClassTag[T]): T =
         try
           value match {

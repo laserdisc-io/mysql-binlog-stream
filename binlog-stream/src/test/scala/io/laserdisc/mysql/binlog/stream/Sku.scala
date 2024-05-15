@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog.stream
 
 import doobie.ConnectionIO
-import doobie.implicits._
+import doobie.implicits.*
 import doobie.util.update.Update
 
 case class Sku(id: Int, sku: String)

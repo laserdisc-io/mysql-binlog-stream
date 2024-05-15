@@ -1,9 +1,8 @@
-
 organization := "io.laserdisc"
 name         := "mysql-binlog-stream"
 
 lazy val scala213               = "2.13.14"
-lazy val scala3                 = "3.4.1"
+lazy val scala3                 = "3.3.3"
 lazy val supportedScalaVersions = List(scala213, scala3)
 
 ThisBuild / crossScalaVersions := supportedScalaVersions
@@ -16,9 +15,10 @@ lazy val commonSettings = Seq(
     Developer("barryoneill", "Barry O'Neill", "", url("https://github.com/barryoneill"))
   ),
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  homepage                    := Some(url("https://github.com/laserdisc-io/fs2-aws")),
-  Test / parallelExecution    := false,
-  Test / fork                 := true,
+  homepage                 := Some(url("https://github.com/laserdisc-io/fs2-aws")),
+  Test / parallelExecution := false,
+  Test / fork              := true,
+  Test / scalacOptions ++= BuildOptions.scalacTestOptions,
   scalacOptions ++= BuildOptions.scalacOptions(scalaVersion.value),
   libraryDependencies ++= BuildOptions.compilerPlugins(scalaVersion.value)
 )

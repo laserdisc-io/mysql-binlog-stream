@@ -2,42 +2,36 @@ package io.laserdisc.mysql.binlog.stream
 
 import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
-import cats.implicits._
+import cats.implicits.*
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import db.MySqlContainerTest
 import doobie.hikari.HikariTransactor
-import doobie.implicits._
+import doobie.implicits.*
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.database
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import io.laserdisc.mysql.binlog.config.BinLogConfigOps
 
 import scala.language.reflectiveCalls
 import scala.util.control
 
 class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with MySqlContainerTest {
 
-  def fixture =
-    new {
-
-      val cfg = containerBinlogConfig
-
-      val testTransactor: Resource[IO, HikariTransactor[IO]] = database.transactor[IO](cfg)
-
-      val client = cfg.mkBinaryLogClient()
-    }
-
   "Binlog Events Stream" should {
     "handle truncate table as separate transaction" in {
-      val (client, xaResource) = (fixture.client, fixture.testTransactor)
+
+      val testTransactor: Resource[IO, HikariTransactor[IO]] = database.transactor[IO](binlogConfig)
+
+      val client: BinaryLogClient = binlogConfig.mkBinaryLogClient()
 
       client.registerLifecycleListener(new BinaryLogClient.AbstractLifecycleListener {
         override def onConnect(client: BinaryLogClient): Unit =
           control.Exception.allCatch.opt {
-            xaResource
+            testTransactor
               .use { xa =>
                 for {
                   _ <- (Sku.truncate.run *> Sku.insert(5, "sku5").run *>
@@ -57,11 +51,11 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
           }
       })
 
-      val events = xaResource
+      val events = testTransactor
         .use { implicit xa =>
+          implicit val logger: Logger[IO] = Slf4jLogger.getLoggerFromName[IO]("testing")
           for {
-            implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("testing")
-            schemaMetadata                <- SchemaMetadata.buildSchemaMetadata("test")
+            schemaMetadata <- SchemaMetadata.buildSchemaMetadata("test")
             transactionState <- TransactionState
               .createTransactionState[IO](schemaMetadata, client)
             actions <- MysqlBinlogStream

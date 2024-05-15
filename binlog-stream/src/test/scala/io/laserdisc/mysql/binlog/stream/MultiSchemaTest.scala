@@ -5,9 +5,10 @@ import cats.effect.unsafe.implicits.global
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import db.MySqlContainerTest
-import doobie.implicits._
+import doobie.implicits.*
 import io.circe.optics.JsonPath.root
 import io.laserdisc.mysql.binlog.database
+import io.laserdisc.mysql.binlog.config.BinLogConfigOps
 import io.laserdisc.mysql.binlog.event.EventMessage
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import org.scalatest.matchers.should.Matchers
@@ -28,8 +29,8 @@ class MultiSchemaTest extends AnyWordSpec with ForAllTestContainer with MySqlCon
 
   def runScenarioForSchema(schema: String): List[EventMessage] = {
 
-    val client     = containerBinlogConfig.mkBinaryLogClient()
-    val xaResource = database.transactor[IO](containerBinlogConfig)
+    val client     = binlogConfig.mkBinaryLogClient()
+    val xaResource = database.transactor[IO](binlogConfig)
 
     client.registerLifecycleListener(new BinaryLogClient.AbstractLifecycleListener {
       override def onConnect(client: BinaryLogClient): Unit =
