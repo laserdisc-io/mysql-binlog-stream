@@ -16,7 +16,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import io.laserdisc.mysql.binlog.config.BinLogConfigOps
 
-import scala.language.reflectiveCalls
 import scala.util.control
 
 class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with MySqlContainerTest {
@@ -29,7 +28,7 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
       val client: BinaryLogClient = binlogConfig.mkBinaryLogClient()
 
       client.registerLifecycleListener(new BinaryLogClient.AbstractLifecycleListener {
-        override def onConnect(client: BinaryLogClient): Unit =
+        override def onConnect(client: BinaryLogClient): Unit = {
           control.Exception.allCatch.opt {
             testTransactor
               .use { xa =>
@@ -49,6 +48,8 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
               }
               .unsafeRunSync()
           }
+          ()
+        }
       })
 
       val events = testTransactor

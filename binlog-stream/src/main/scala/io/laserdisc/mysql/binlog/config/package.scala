@@ -30,7 +30,7 @@ package object config {
 
       // ServerID should be set, (see mysql-binlog-connector-java / BinaryLogClient.setServerId for documentation)
       v.serverId match {
-        case Some(sid) => blc.setServerId(sid)
+        case Some(sid) => blc.setServerId(sid.longValue())
         case None =>
           logger.warn(
             s"ServerID is not provided, so ${blc.getServerId} will be the default.  This will cause issues if running multiple binlog services with this value!"
