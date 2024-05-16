@@ -1,12 +1,12 @@
 package io.laserdisc.mysql.binlog
 
 import cats.data.Kleisli
+import cats.implicits.*
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
+import io.laserdisc.mysql.json
 
 import scala.collection.mutable
-import cats.implicits.*
-import io.laserdisc.mysql.json
 
 package object compaction {
   def compact(transaction: Seq[EventMessage]): Seq[EventMessage] =
@@ -15,7 +15,7 @@ package object compaction {
         val emId = calcIdentity(evt)
         acc
           .get(emId)
-          .fold[Unit](acc.put(emId, evt)) { latest =>
+          .fold(acc.put(emId, evt)) { latest =>
             mkNewEvent(evt)
               .andThen(finalizeNewEvent)
               .run(latest) match {
@@ -25,12 +25,6 @@ package object compaction {
               case None => acc.remove(emId)
             }
           }
-        // TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
-//          acc.updateWith(evt.pk) {
-//            case Some(latest) =>
-//              mkNewEvent(evt).andThen(finalizeNewEvent).run(latest)
-//            case None => Some(evt)
-//          }
         acc
       }
       .values

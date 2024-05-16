@@ -11,7 +11,6 @@ import java.net.URI
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits
 import scala.jdk.CollectionConverters.*
-import scala.language.existentials
 
 trait MySqlContainerTest extends TestContainersForAll with BeforeAndAfterEach {
   self: Suite =>

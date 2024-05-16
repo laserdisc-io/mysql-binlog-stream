@@ -1,22 +1,28 @@
-name: Build
-
-on: [push, pull_request]
+name: CI
+on:
+  pull_request:
+    branches: ['*']
+  push:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: olafurpg/setup-scala@v13
+      - uses: actions/checkout@v4
         with:
-          java-version: openjdk@1.11
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v14
+        with:
+          java-version: corretto@1.17
       - name: Cache SBT
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/coursier/v1
             ~/.sbt
           key: sbt-${{ hashFiles('**/build.sbt') }}
       - name: Run tests
-        run: sbt clean test
+        run: sbt +clean +test +doc
+

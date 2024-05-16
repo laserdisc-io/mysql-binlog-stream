@@ -10,7 +10,6 @@ import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
 import io.laserdisc.mysql.binlog.stream.{MysqlBinlogStream, TransactionState, streamEvents}
 import io.laserdisc.mysql.binlog.{client, database}
-import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object BinLogListener extends IOApp {
@@ -52,7 +51,7 @@ object BinLogListener extends IOApp {
             _ <- MysqlBinlogStream
               .rawEvents[IO](binlogClient)
               .through(streamEvents[IO](transactionState, config.schema))
-              .evalTap(msg => summon[Logger[IO]].info(s"received $msg"))
+              .evalTap(msg => logger.info(s"received $msg"))
               // Here you should do the checkpoint
               .compile
               .drain

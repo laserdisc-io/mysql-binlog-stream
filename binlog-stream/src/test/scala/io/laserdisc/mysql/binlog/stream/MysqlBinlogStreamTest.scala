@@ -15,8 +15,6 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
-import scala.language.reflectiveCalls
-
 class MysqlBinlogStreamTest extends AnyWordSpec with ForAllTestContainer with MySqlContainerTest with Matchers {
 
   implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
@@ -41,6 +39,7 @@ class MysqlBinlogStreamTest extends AnyWordSpec with ForAllTestContainer with My
                 )
                 .transact(xa)
             )
+            .map(_ => ())
             .unsafeRunSync()
       })
 
