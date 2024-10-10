@@ -48,7 +48,7 @@ object MysqlBinlogStream {
     client: BinaryLogClient
   ): Stream[F, Event] =
     for {
-      d   <- Stream.resource(Dispatcher[F])
+      d   <- Stream.resource(Dispatcher.parallel[F])
       q   <- Stream.eval(Queue.bounded[F, Option[Event]](10000))
       proc = new MysSqlBinlogEventProcessor[F](client, q, d)
       /* some difficulties here during the cats3 migration.  Basically, we would have used:

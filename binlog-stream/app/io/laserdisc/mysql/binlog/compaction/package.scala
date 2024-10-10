@@ -25,7 +25,7 @@ package object compaction {
               case None => acc.remove(emId)
             }
           }
-        //TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
+        // TODO: use this code, once Scala 2.12 support ends, or  updateWith back ported to 2.12A
 //          acc.updateWith(evt.pk) {
 //            case Some(latest) =>
 //              mkNewEvent(evt).andThen(finalizeNewEvent).run(latest)

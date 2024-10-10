@@ -8,8 +8,8 @@ import com.github.shyiko.mysql.binlog.event.EventType.{ EXT_UPDATE_ROWS, UPDATE_
 import com.github.shyiko.mysql.binlog.event.{
   Event,
   EventData,
-  EventType,
-  EventHeaderV4 => JEventHeaderV4
+  EventHeaderV4 => JEventHeaderV4,
+  EventType
 }
 import org.typelevel.log4cats.Logger
 import io.circe.Json

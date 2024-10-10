@@ -42,7 +42,7 @@ object BinLogListener extends IOApp {
       database.transactor[IO](config).use { implicit xa =>
         for {
           implicit0(logger: Logger[IO]) <- Slf4jLogger.fromName[IO]("application")
-          //Here we do not provide binlog offset, client will be initialized with default file and offset
+          // Here we do not provide binlog offset, client will be initialized with default file and offset
           binlogClient   <- client.createBinLogClient[IO](config)
           schemaMetadata <- SchemaMetadata.buildSchemaMetadata(config.schema)
           transactionState <- TransactionState
@@ -51,10 +51,10 @@ object BinLogListener extends IOApp {
                  .rawEvents[IO](binlogClient)
                  .through(streamEvents[IO](transactionState))
                  .evalTap(msg => logger.info(s"received $msg"))
-                 //Here you should do the checkpoint
+                 // Here you should do the checkpoint
                  .compile
                  .drain
-        } yield (ExitCode.Success)
+        } yield ExitCode.Success
       }
     }
   }
