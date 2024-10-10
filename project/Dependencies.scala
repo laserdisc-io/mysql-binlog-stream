@@ -3,17 +3,17 @@ import sbt.Keys.libraryDependencies
 
 object Dependencies {
   val cirisVersion      = "3.6.0"
-  val doobieVersion     = "1.0.0-RC5"
-  val circeVersion      = "0.14.7"
+  val doobieVersion     = "1.0.0-RC6"
+  val circeVersion      = "0.14.10"
   val catsEffectVersion = "3.5.4"
 
   val TestLib = Seq(
     libraryDependencies ++= Seq(
       "org.scalamock"     %% "scalamock"            % "6.0.0"  % Test,
-      "org.scalatest"     %% "scalatest"            % "3.2.18" % Test,
-      "com.dimafeng"      %% "testcontainers-scala" % "0.41.3" % Test,
-      "org.testcontainers" % "mysql"                % "1.19.8" % Test,
-      "org.testcontainers" % "testcontainers"       % "1.19.8" % Test
+      "org.scalatest"     %% "scalatest"            % "3.2.19" % Test,
+      "com.dimafeng"      %% "testcontainers-scala" % "0.41.4" % Test,
+      "org.testcontainers" % "mysql"                % "1.20.2" % Test,
+      "org.testcontainers" % "testcontainers"       % "1.20.2" % Test
     )
   )
 
@@ -21,16 +21,16 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "is.cir"     %% "ciris-enumeratum" % cirisVersion,
       "is.cir"     %% "ciris-refined"    % cirisVersion,
-      "eu.timepit" %% "refined"          % "0.11.1"
+      "eu.timepit" %% "refined"          % "0.11.2"
     )
   )
 
   val Logging = Seq(
     libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.5.6",
-      "ch.qos.logback" % "logback-core"    % "1.5.6",
-      "org.slf4j"      % "jcl-over-slf4j"  % "2.0.13",
-      "org.slf4j"      % "jul-to-slf4j"    % "2.0.13",
+      "ch.qos.logback" % "logback-classic" % "1.5.9",
+      "ch.qos.logback" % "logback-core"    % "1.5.9",
+      "org.slf4j"      % "jcl-over-slf4j"  % "2.0.16",
+      "org.slf4j"      % "jul-to-slf4j"    % "2.0.16",
       "org.typelevel" %% "log4cats-slf4j"  % "2.7.0"
     )
   )
