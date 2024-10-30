@@ -42,7 +42,7 @@ object Dependencies {
       "org.tpolecat" %% "doobie-refined"              % doobieVersion,
       "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test,
       "mysql"         % "mysql-connector-java"        % "8.0.33",
-      "com.zendesk"   % "mysql-binlog-connector-java" % "0.29.2"
+      "com.zendesk"   % "mysql-binlog-connector-java" % "0.30.1"
     )
   )
 
