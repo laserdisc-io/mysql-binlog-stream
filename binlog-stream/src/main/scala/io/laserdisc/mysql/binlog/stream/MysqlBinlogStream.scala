@@ -2,7 +2,7 @@ package io.laserdisc.mysql.binlog.stream
 
 import cats.effect.std.{Dispatcher, Queue}
 import cats.effect.{Async, IO, LiftIO}
-import cats.implicits.*
+import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.Event
 import fs2.Stream

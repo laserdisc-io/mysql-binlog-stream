@@ -1,26 +1,15 @@
-organization := "io.laserdisc"
-name         := "mysql-binlog-stream"
+import laserdisc.sbt.CompileTarget.Scala2And3
+import laserdisc.sbt.LaserDiscDevelopers._
 
-lazy val scala213               = "2.13.14"
-lazy val scala3                 = "3.3.3"
-lazy val supportedScalaVersions = List(scala213, scala3)
+name := "mysql-binlog-stream"
 
-ThisBuild / crossScalaVersions := supportedScalaVersions
-ThisBuild / scalaVersion       := scala3
+ThisBuild / laserdiscRepoName      := "mysql-binlog-stream"
+ThisBuild / laserdiscCompileTarget := Scala2And3
 
 lazy val commonSettings = Seq(
-  organization := "io.laserdisc",
-  developers := List(
-    Developer("semenodm", "Dmytro Semenov", "sdo.semenov@gmail.com", url("https://github.com/semenodm")),
-    Developer("barryoneill", "Barry O'Neill", "", url("https://github.com/barryoneill"))
-  ),
-  licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  homepage                 := Some(url("https://github.com/laserdisc-io/fs2-aws")),
   Test / parallelExecution := false,
   Test / fork              := true,
-  Test / scalacOptions ++= BuildOptions.scalacTestOptions,
-  scalacOptions ++= BuildOptions.scalacOptions(scalaVersion.value),
-  libraryDependencies ++= BuildOptions.compilerPlugins(scalaVersion.value)
+  developers               := List(Dmytro, Barry)
 )
 
 lazy val noPublishSettings = Seq(
@@ -43,7 +32,6 @@ lazy val dockerPublishSettings = Seq(
 lazy val root = project
   .in(file("."))
   .settings(commonSettings)
-  .settings(crossScalaVersions := Nil)
   .settings(noPublishSettings)
   .aggregate(
     `mysql-binlog-stream-shared`,
@@ -51,6 +39,7 @@ lazy val root = project
     `binlog-stream`,
     `mysql-binlog-stream-examples`
   )
+  .enablePlugins(LaserDiscDefaultsPlugin)
 
 lazy val `mysql-binlog-stream-examples` =
   (project in file("mysql-binlog-stream-examples"))
@@ -68,13 +57,8 @@ lazy val `mysql-binlog-stream-shared` = (project in file("mysql-binlog-stream-sh
   .settings(
     commonSettings,
     Dependencies.TestLib,
-    Dependencies.Circe,
-    Dependencies.Cats
+    Dependencies.Circe
   )
-
-addCommandAlias("build", ";checkFormat;clean;test;coverage")
-addCommandAlias("format", ";scalafmtAll;scalafmtSbt")
-addCommandAlias("checkFormat", ";scalafmtCheckAll;scalafmtSbtCheck")
 
 lazy val `binlog-stream` = (project in file("binlog-stream"))
   .settings(

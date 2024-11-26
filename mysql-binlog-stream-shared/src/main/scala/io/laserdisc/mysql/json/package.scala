@@ -1,7 +1,7 @@
 package io.laserdisc.mysql
 
-import io.circe.*
-import io.circe.parser.*
+import io.circe._
+import io.circe.parser._
 
 package object json {
   def flatHash(doc: String, removeKey: String = ""): Either[Exception, String] =

@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog
 
 import cats.data.Kleisli
-import cats.implicits.*
+import cats.implicits._
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
 import io.laserdisc.mysql.json

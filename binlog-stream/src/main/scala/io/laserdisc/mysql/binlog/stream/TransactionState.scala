@@ -2,14 +2,14 @@ package io.laserdisc.mysql.binlog.stream
 
 import cats.data.State
 import cats.effect.{Ref, Sync}
-import cats.implicits.*
+import cats.implicits._
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.EventType.{EXT_UPDATE_ROWS, UPDATE_ROWS}
 import com.github.shyiko.mysql.binlog.event.deserialization.json.JsonBinary
-import com.github.shyiko.mysql.binlog.event.{Event, EventData, EventHeaderV4 as JEventHeaderV4, EventType}
+import com.github.shyiko.mysql.binlog.event.{Event, EventData, EventHeaderV4 => JEventHeaderV4, EventType}
 import io.circe.Json
 import io.laserdisc.mysql.binlog.event.EventMessage
-import io.laserdisc.mysql.binlog.models.*
+import io.laserdisc.mysql.binlog.models._
 import org.typelevel.log4cats.Logger
 
 import java.math.BigDecimal

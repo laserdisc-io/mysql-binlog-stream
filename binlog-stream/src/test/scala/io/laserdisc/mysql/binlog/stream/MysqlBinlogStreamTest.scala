@@ -7,7 +7,7 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient
 import com.github.shyiko.mysql.binlog.event.{EventHeaderV4, EventType}
 import db.MySqlContainerTest
 import doobie.hikari.HikariTransactor
-import doobie.implicits.*
+import doobie.implicits._
 import io.laserdisc.mysql.binlog.config.BinLogConfigOps
 import io.laserdisc.mysql.binlog.database
 import org.scalatest.matchers.should.Matchers
