@@ -1,8 +1,8 @@
 package io.laserdisc.mysql.binlog.models
 
-import com.github.shyiko.mysql.binlog.event.WriteRowsEventData as JWriteRowsEventData
+import com.github.shyiko.mysql.binlog.event.{WriteRowsEventData => JWriteRowsEventData}
 
-import scala.jdk.CollectionConverters.*
+import scala.jdk.CollectionConverters._
 
 object WriteRowsEventData {
   def unapply(arg: JWriteRowsEventData): Option[(Long, List[Array[Serializable]], Array[Int])] =

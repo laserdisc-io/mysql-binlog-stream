@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog
 
-import cats.effect.*
-import doobie.*
+import cats.effect._
+import doobie._
 import doobie.hikari.HikariTransactor
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 

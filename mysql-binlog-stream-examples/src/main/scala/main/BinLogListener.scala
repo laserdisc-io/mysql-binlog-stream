@@ -1,10 +1,10 @@
 package main
 
 import cats.effect.{ExitCode, IO, IOApp}
-import cats.implicits.*
-import ciris.*
-import ciris.refined.*
-import eu.timepit.refined.auto.*
+import cats.implicits._
+import ciris._
+import ciris.refined._
+import eu.timepit.refined.auto._
 import eu.timepit.refined.types.string.TrimmedString
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata

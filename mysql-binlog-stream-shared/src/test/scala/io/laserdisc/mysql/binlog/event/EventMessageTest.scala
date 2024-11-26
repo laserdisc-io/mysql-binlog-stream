@@ -9,7 +9,7 @@ class EventMessageTest extends AnyWordSpec with Matchers {
   "EventMessage" should {
     "be orderable by Offset" in {
 
-      import OffsetTest.*
+      import OffsetTest._
       import OffsetOrdering.ordering
 
       evtMsg(FILE_A, offset = 123) should be < evtMsg(FILE_B, offset = 999)

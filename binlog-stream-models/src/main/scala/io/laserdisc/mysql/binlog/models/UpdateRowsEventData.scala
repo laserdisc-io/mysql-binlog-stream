@@ -1,8 +1,8 @@
 package io.laserdisc.mysql.binlog.models
 
-import com.github.shyiko.mysql.binlog.event.UpdateRowsEventData as JUpdateRowsEventData
+import com.github.shyiko.mysql.binlog.event.{UpdateRowsEventData => JUpdateRowsEventData}
 
-import scala.jdk.CollectionConverters.*
+import scala.jdk.CollectionConverters._
 
 object UpdateRowsEventData {
   def unapply(

@@ -1,8 +1,8 @@
 package io.laserdisc.mysql.binlog.models
 
-import cats.implicits.*
-import doobie.*
-import doobie.implicits.*
+import cats.implicits._
+import doobie._
+import doobie.implicits._
 import cats.effect.MonadCancel
 
 case class BinaryLogs(fileName: String, size: Long)

@@ -5,7 +5,7 @@ import cats.effect.unsafe.implicits.global
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import db.MySqlContainerTest
-import doobie.implicits.*
+import doobie.implicits._
 import io.circe.optics.JsonPath.root
 import io.laserdisc.mysql.binlog.database
 import io.laserdisc.mysql.binlog.config.BinLogConfigOps

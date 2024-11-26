@@ -2,7 +2,7 @@ package io.laserdisc.mysql.binlog.event
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import OffsetTest.*
+import OffsetTest._
 
 object OffsetTest {
   val FILE_A = "mysql-bin-changelog.001450"

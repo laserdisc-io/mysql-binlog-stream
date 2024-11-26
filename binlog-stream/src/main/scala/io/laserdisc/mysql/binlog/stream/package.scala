@@ -2,7 +2,7 @@ package io.laserdisc.mysql.binlog
 
 import cats.effect.kernel.Ref
 import cats.effect.{Concurrent, Sync}
-import cats.implicits.*
+import cats.implicits._
 import com.github.shyiko.mysql.binlog.event.Event
 import org.typelevel.log4cats.Logger
 import io.laserdisc.mysql.binlog.event.EventMessage
@@ -13,14 +13,14 @@ package object stream {
       schema: String
   ): fs2.Pipe[F, Event, EventMessage] =
     _.through(streamTransactionPackages[F](transactionState, schema)).flatMap(pkg =>
-      fs2.Stream.eval(warnBigTransactionPackage(pkg)) >> fs2.Stream(pkg.events*)
+      fs2.Stream.eval(warnBigTransactionPackage(pkg)) >> fs2.Stream(pkg.events: _*)
     )
 
   def streamCompactedEvents[F[_]: Concurrent: Logger](
       transactionState: Ref[F, TransactionState],
       schema: String
   ): fs2.Pipe[F, Event, EventMessage] =
-    _.through(streamTransactionPackages[F](transactionState, schema)).flatMap(pkg => fs2.Stream(compaction.compact(pkg.events)*))
+    _.through(streamTransactionPackages[F](transactionState, schema)).flatMap(pkg => fs2.Stream(compaction.compact(pkg.events): _*))
 
   def streamTransactionPackages[F[_]: Concurrent: Logger](
       transactionState: Ref[F, TransactionState],

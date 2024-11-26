@@ -1,6 +1,6 @@
 package io.laserdisc.mysql.binlog.models
 
-import com.github.shyiko.mysql.binlog.event.QueryEventData as JQueryEventData
+import com.github.shyiko.mysql.binlog.event.{QueryEventData => JQueryEventData}
 
 object QueryEventData {
   def truncateTable(sql: String) = {

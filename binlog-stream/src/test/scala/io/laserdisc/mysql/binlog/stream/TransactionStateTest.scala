@@ -1,9 +1,9 @@
 package io.laserdisc.mysql.binlog.stream
 
-import _root_.io.circe.optics.JsonPath.*
+import _root_.io.circe.optics.JsonPath._
 import _root_.io.circe.Json
-import _root_.io.laserdisc.mysql.binlog.*
-import com.github.shyiko.mysql.binlog.event.*
+import _root_.io.laserdisc.mysql.binlog._
+import com.github.shyiko.mysql.binlog.event._
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

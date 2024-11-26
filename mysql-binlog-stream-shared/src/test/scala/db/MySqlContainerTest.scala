@@ -1,6 +1,6 @@
 package db
 
-import com.dimafeng.testcontainers.*
+import com.dimafeng.testcontainers._
 import com.dimafeng.testcontainers.scalatest.TestContainersForAll
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -10,7 +10,7 @@ import org.testcontainers.utility.DockerImageName
 import java.net.URI
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits
-import scala.jdk.CollectionConverters.*
+import scala.jdk.CollectionConverters._
 
 trait MySqlContainerTest extends TestContainersForAll with BeforeAndAfterEach {
   self: Suite =>
