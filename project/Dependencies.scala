@@ -2,7 +2,7 @@ import sbt._
 import sbt.Keys.libraryDependencies
 
 object Dependencies {
-  val cirisVersion  = "3.6.0"
+  val cirisVersion  = "3.7.0"
   val doobieVersion = "1.0.0-RC6"
   val circeVersion  = "0.14.10"
 
