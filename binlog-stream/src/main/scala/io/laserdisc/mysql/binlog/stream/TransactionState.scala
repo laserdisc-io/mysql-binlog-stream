@@ -372,11 +372,11 @@ object TransactionState {
         }
 
       val jsonValue = column.dataType match {
-        case "bigint"                     => Json.fromLong(unsafeCast[Long])
-        case "int" | "tinyint"            => Json.fromInt(unsafeCast[Int])
-        case "date" | "datetime" | "time" => Json.fromLong(unsafeCast[Long])
-        case "decimal"                    => Json.fromBigDecimal(unsafeCast[BigDecimal])
-        case "float"                      => Json.fromFloat(unsafeCast[Float]).get
+        case "bigint"                                                             => Json.fromLong(unsafeCast[Long])
+        case "int" | "tinyint"                                                    => Json.fromInt(unsafeCast[Int])
+        case "date" | "datetime" | "time"                                         => Json.fromLong(unsafeCast[Long])
+        case "decimal"                                                            => Json.fromBigDecimal(unsafeCast[BigDecimal])
+        case "float"                                                              => Json.fromFloat(unsafeCast[Float]).get
         case "text" | "mediumtext" | "longtext" | "tinytext" | "varchar" | "char" =>
           Json.fromString(new String(unsafeCast[Array[Byte]]))
         case "json" => Json.fromString(JsonBinary.parseAsString(unsafeCast[Array[Byte]]))

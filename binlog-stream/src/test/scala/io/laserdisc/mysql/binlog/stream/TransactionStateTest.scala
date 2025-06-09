@@ -35,7 +35,7 @@ class TransactionStateTest extends AnyWordSpec with Matchers with OptionValues {
     val header = new EventHeaderV4()
     header.setEventType(EventType.EXT_WRITE_ROWS)
     header.setTimestamp(System.currentTimeMillis())
-    val data = new WriteRowsEventData()
+    val data                                    = new WriteRowsEventData()
     val rows: util.List[Array[io.Serializable]] =
       new util.ArrayList[Array[io.Serializable]]()
     rows.add(
