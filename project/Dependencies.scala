@@ -40,7 +40,7 @@ object Dependencies {
   val Circe = libraryDependencies ++= Seq(
     "io.circe" %% "circe-core"   % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
-    "io.circe" %% "circe-optics" % "0.15.0" % Test
+    "io.circe" %% "circe-optics" % "0.15.1" % Test
   )
 
   val XML = libraryDependencies ++= Seq(
