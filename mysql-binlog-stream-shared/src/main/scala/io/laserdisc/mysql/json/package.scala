@@ -6,7 +6,7 @@ import io.circe.parser._
 package object json {
   def flatHash(doc: String, removeKey: String = ""): Either[Exception, String] =
     flatten(doc) match {
-      case Left(e) => Left(e)
+      case Left(e)   => Left(e)
       case Right(js) =>
         Right(
           if (removeKey == "")
@@ -28,7 +28,7 @@ package object json {
     json.foldWith(
       new Json.Folder[List[String]] with (Json => List[String]) {
         def apply(v: Json): List[String] = v.foldWith(this)
-        def onObject(v: JsonObject) =
+        def onObject(v: JsonObject)      =
           v.toList.flatMap { case (k, v) =>
             List(k.trim ++ ":" ++ v.foldWith(this).mkString(","))
           }

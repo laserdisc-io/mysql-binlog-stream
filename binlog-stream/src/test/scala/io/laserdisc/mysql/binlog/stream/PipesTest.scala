@@ -56,7 +56,7 @@ class PipesTest extends AnyWordSpec with Matchers with ForAllTestContainer with 
         .use { implicit xa =>
           implicit val logger: Logger[IO] = Slf4jLogger.getLoggerFromName[IO]("testing")
           for {
-            schemaMetadata <- SchemaMetadata.buildSchemaMetadata("test")
+            schemaMetadata   <- SchemaMetadata.buildSchemaMetadata("test")
             transactionState <- TransactionState
               .createTransactionState[IO](schemaMetadata, client)
             actions <- MysqlBinlogStream
