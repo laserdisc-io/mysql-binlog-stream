@@ -4,7 +4,7 @@ import sbt.Keys.libraryDependencies
 object Dependencies {
   val cirisVersion  = "3.7.0"
   val doobieVersion = "1.0.0-RC8"
-  val circeVersion  = "0.14.10"
+  val circeVersion  = "0.14.14"
 
   val TestLib = libraryDependencies ++= Seq(
     "org.scalamock"     %% "scalamock"            % "6.2.0"  % Test,
