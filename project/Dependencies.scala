@@ -10,8 +10,8 @@ object Dependencies {
     "org.scalamock"     %% "scalamock"            % "6.2.0"  % Test,
     "org.scalatest"     %% "scalatest"            % "3.2.19" % Test,
     "com.dimafeng"      %% "testcontainers-scala" % "0.43.0" % Test,
-    "org.testcontainers" % "mysql"                % "1.20.6" % Test,
-    "org.testcontainers" % "testcontainers"       % "1.20.6" % Test
+    "org.testcontainers" % "mysql"                % "1.21.3" % Test,
+    "org.testcontainers" % "testcontainers"       % "1.21.3" % Test
   )
 
   val Config = libraryDependencies ++= Seq(
