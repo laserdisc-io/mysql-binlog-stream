@@ -7,7 +7,7 @@ object Dependencies {
   val circeVersion  = "0.14.10"
 
   val TestLib = libraryDependencies ++= Seq(
-    "org.scalamock"     %% "scalamock"            % "6.2.0"  % Test,
+    "org.scalamock"     %% "scalamock"            % "7.4.1"  % Test,
     "org.scalatest"     %% "scalatest"            % "3.2.19" % Test,
     "com.dimafeng"      %% "testcontainers-scala" % "0.43.0" % Test,
     "org.testcontainers" % "mysql"                % "1.20.6" % Test,
