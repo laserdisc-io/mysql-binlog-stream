@@ -40,3 +40,10 @@ project/metals.sbt
 
 # mac
 .DS_Store
+
+# OpenAPI
+.openapi-generator-ignore
+.openapi-generator/
+
+# direnv
+.envrc.sample

@@ -44,8 +44,8 @@ object BinLogListener extends IOApp {
         database.transactor[IO](config).use { implicit xa =>
           for {
             // Here we do not provide binlog offset, client will be initialized with default file and offset
-            binlogClient   <- client.createBinLogClient[IO](config)
-            schemaMetadata <- SchemaMetadata.buildSchemaMetadata(config.schema)
+            binlogClient     <- client.createBinLogClient[IO](config)
+            schemaMetadata   <- SchemaMetadata.buildSchemaMetadata(config.schema)
             transactionState <- TransactionState
               .createTransactionState[IO](schemaMetadata, binlogClient)
             _ <- MysqlBinlogStream
