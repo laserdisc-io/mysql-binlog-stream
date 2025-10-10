@@ -56,7 +56,7 @@ class MultiSchemaTest extends AnyWordSpec with ForAllTestContainer with MySqlCon
     val r = for {
       meta     <- xaResource.use(implicit xa => SchemaMetadata.buildSchemaMetadata(schema))
       txnState <- TransactionState.createTransactionState[IO](meta, client)
-      res <-
+      res      <-
         MysqlBinlogStream
           .rawEvents[IO](client)
           .through(streamCompactedEvents[IO](txnState, schema))
