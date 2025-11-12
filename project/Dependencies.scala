@@ -3,7 +3,7 @@ import sbt.Keys.libraryDependencies
 
 object Dependencies {
   val cirisVersion  = "3.11.0"
-  val doobieVersion = "1.0.0-RC10"
+  val doobieVersion = "1.0.0-RC11"
   val circeVersion  = "0.14.15"
 
   val TestLib = libraryDependencies ++= Seq(
