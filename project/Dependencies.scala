@@ -11,7 +11,7 @@ object Dependencies {
     "org.scalatest"     %% "scalatest"            % "3.2.19" % Test,
     "com.dimafeng"      %% "testcontainers-scala" % "0.43.0" % Test,
     "org.testcontainers" % "mysql"                % "1.21.3" % Test,
-    "org.testcontainers" % "testcontainers"       % "1.21.3" % Test
+    "org.testcontainers" % "testcontainers"       % "2.0.2"  % Test
   )
 
   val Config = libraryDependencies ++= Seq(
