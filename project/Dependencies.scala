@@ -25,7 +25,7 @@ object Dependencies {
     "ch.qos.logback" % "logback-core"    % "1.5.19",
     "org.slf4j"      % "jcl-over-slf4j"  % "2.0.17",
     "org.slf4j"      % "jul-to-slf4j"    % "2.0.17",
-    "org.typelevel" %% "log4cats-slf4j"  % "2.7.1"
+    "org.typelevel" %% "log4cats-slf4j"  % "2.8.0"
   )
 
   val Persistence = libraryDependencies ++= Seq(
