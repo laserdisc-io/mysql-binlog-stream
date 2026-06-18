@@ -45,8 +45,8 @@ object Dependencies {
 
   val XML = libraryDependencies ++= Seq(
     "javax.xml.bind"   % "jaxb-api"   % "2.3.1",
-    "com.sun.xml.bind" % "jaxb-impl"  % "4.0.6",
-    "com.sun.xml.bind" % "jaxb-core"  % "4.0.6",
+    "com.sun.xml.bind" % "jaxb-impl"  % "4.0.9",
+    "com.sun.xml.bind" % "jaxb-core"  % "4.0.9",
     "javax.activation" % "activation" % "1.1.1"
   )
 
