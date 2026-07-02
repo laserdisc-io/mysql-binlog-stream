@@ -23,6 +23,7 @@ target/
 # intellij
 .idea/
 *.iml
+*.private.env.json
 
 # metals / bsp
 .metals/

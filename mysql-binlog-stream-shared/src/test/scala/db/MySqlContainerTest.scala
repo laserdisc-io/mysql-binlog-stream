@@ -8,6 +8,7 @@ import org.testcontainers.containers.Network
 import org.testcontainers.utility.DockerImageName
 
 import java.net.URI
+import java.util.Properties
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits
 import scala.jdk.CollectionConverters._
@@ -17,20 +18,17 @@ trait MySqlContainerTest extends TestContainersForAll with BeforeAndAfterEach {
 
   override type Containers = MySQLContainer
 
-  def startContainers() = {
+  def startContainers(): MySQLContainer = {
     container.start()
     container
   }
 
-  def container = mySQLContainer
+  def container: MySQLContainer = mySQLContainer
 
   protected val sharedNetwork: Network = Network.newNetwork()
 
   protected lazy val mySQLContainer: MySQLContainer = new MySQLContainer(
-    mysqlImageVersion = Some(System.getProperty("os.arch") match {
-      case "aarch64" => DockerImageName.parse("biarms/mysql:5.7").asCompatibleSubstituteFor("mysql")
-      case _         => DockerImageName.parse("mysql:5.7")
-    })
+    mysqlImageVersion = Some(DockerImageName.parse("mysql:8.4"))
   ) {
     this.container.withNetwork(sharedNetwork)
     this.container.withNetworkAliases("mysql")
@@ -42,7 +40,7 @@ trait MySqlContainerTest extends TestContainersForAll with BeforeAndAfterEach {
     this.container.withInitScript("init.sql")
 
   }
-  protected lazy val mysqlDBCreds = {
+  protected lazy val mysqlDBCreds: Properties = {
     val props = new java.util.Properties()
     props.put("user", container.username)
     props.put("password", container.password)
