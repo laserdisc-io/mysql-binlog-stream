@@ -8,7 +8,7 @@ import eu.timepit.refined.auto._
 import eu.timepit.refined.types.string.TrimmedString
 import io.laserdisc.mysql.binlog.config.BinLogConfig
 import io.laserdisc.mysql.binlog.models.SchemaMetadata
-import io.laserdisc.mysql.binlog.stream.{MysqlBinlogStream, TransactionState, streamEvents}
+import io.laserdisc.mysql.binlog.stream.{streamEvents, MysqlBinlogStream, TransactionState}
 import io.laserdisc.mysql.binlog.{client, database}
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 

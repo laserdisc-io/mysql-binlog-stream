@@ -1,10 +1,8 @@
-import laserdisc.sbt.CompileTarget.Scala2And3
+import laserdisc.sbt.CompileTarget.Scala2And3LTS
 import laserdisc.sbt.LaserDiscDevelopers._
 
-name := "mysql-binlog-stream"
-
 ThisBuild / laserdiscRepoName      := "mysql-binlog-stream"
-ThisBuild / laserdiscCompileTarget := Scala2And3
+ThisBuild / laserdiscCompileTarget := Scala2And3LTS
 
 lazy val commonSettings = Seq(
   Test / parallelExecution := false,
@@ -21,7 +19,7 @@ lazy val noPublishSettings = Seq(
 lazy val dockerPublishSettings = Seq(
   Docker / maintainer         := "Dmytro Semenov <sdo.semenov@gmail.com>",
   Docker / dockerExposedPorts := Seq(),
-  dockerBaseImage             := "openjdk:11",
+  dockerBaseImage             := "openjdk:17",
   dockerUpdateLatest          := true,
   Universal / javaOptions ++= Seq(
     "-J-XX:InitialRAMPercentage=70",
@@ -31,6 +29,7 @@ lazy val dockerPublishSettings = Seq(
 
 lazy val root = project
   .in(file("."))
+  .settings(name := "mysql-binlog-stream")
   .settings(commonSettings)
   .settings(noPublishSettings)
   .aggregate(
