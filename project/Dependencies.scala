@@ -34,7 +34,7 @@ object Dependencies {
     "org.tpolecat" %% "doobie-refined"              % doobieVersion,
     "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test,
     "com.mysql"     % "mysql-connector-j"           % "9.7.0",
-    "com.zendesk"   % "mysql-binlog-connector-java" % "0.30.3"
+    "com.zendesk"   % "mysql-binlog-connector-java" % "0.31.0"
   )
 
   val Circe = libraryDependencies ++= Seq(
