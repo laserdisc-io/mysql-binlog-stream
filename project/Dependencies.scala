@@ -3,7 +3,7 @@ import sbt.Keys.libraryDependencies
 
 object Dependencies {
   val cirisVersion  = "3.15.0"
-  val doobieVersion = "1.0.0-RC12"
+  val doobieVersion = "1.0.0-RC13"
   val circeVersion  = "0.14.16"
 
   val TestLib = libraryDependencies ++= Seq(
@@ -29,12 +29,12 @@ object Dependencies {
   )
 
   val Persistence = libraryDependencies ++= Seq(
-    "org.tpolecat" %% "doobie-core"                 % doobieVersion,
-    "org.tpolecat" %% "doobie-hikari"               % doobieVersion,
-    "org.tpolecat" %% "doobie-refined"              % doobieVersion,
-    "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test,
-    "com.mysql"     % "mysql-connector-j"           % "9.7.0",
-    "com.zendesk"   % "mysql-binlog-connector-java" % "0.30.3"
+    "org.typelevel" %% "doobie-core"                 % doobieVersion,
+    "org.typelevel" %% "doobie-hikari"               % doobieVersion,
+    "org.typelevel" %% "doobie-refined"              % doobieVersion,
+    "org.typelevel" %% "doobie-scalatest"            % doobieVersion % Test,
+    "com.mysql"      % "mysql-connector-j"           % "9.7.0",
+    "com.zendesk"    % "mysql-binlog-connector-java" % "0.30.3"
   )
 
   val Circe = libraryDependencies ++= Seq(
