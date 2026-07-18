@@ -1,7 +1,7 @@
 package io.laserdisc.mysql.binlog.models
 
-import doobie._
-import doobie.implicits._
+import org.typelevel.doobie._
+import org.typelevel.doobie.implicits._
 
 import scala.collection.mutable
 import cats.effect.MonadCancel

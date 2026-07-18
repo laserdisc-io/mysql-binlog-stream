@@ -1,13 +1,13 @@
 package io.laserdisc.mysql.binlog.stream
 
-import doobie.ConnectionIO
-import doobie.implicits._
-import doobie.util.update.Update
+import org.typelevel.doobie.ConnectionIO
+import org.typelevel.doobie.implicits._
+import org.typelevel.doobie.util.update.Update
 
 case class Sku(id: Int, sku: String)
 
 object Sku {
-  def insert(id: Int, sku: String): doobie.Update0 =
+  def insert(id: Int, sku: String): org.typelevel.doobie.Update0 =
     sql"""insert into sku (id, sku)
          |values ($id, $sku)""".stripMargin.update
 
