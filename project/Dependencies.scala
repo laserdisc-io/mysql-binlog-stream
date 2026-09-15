@@ -2,7 +2,7 @@ import sbt.*
 import sbt.Keys.libraryDependencies
 
 object Dependencies {
-  val cirisVersion  = "3.15.0"
+  val cirisVersion  = "3.15.1"
   val doobieVersion = "1.0.0-RC12"
   val circeVersion  = "0.14.16"
 
@@ -21,10 +21,10 @@ object Dependencies {
   )
 
   val Logging = libraryDependencies ++= Seq(
-    "ch.qos.logback" % "logback-classic" % "1.5.37",
-    "ch.qos.logback" % "logback-core"    % "1.5.37",
-    "org.slf4j"      % "jcl-over-slf4j"  % "2.0.18",
-    "org.slf4j"      % "jul-to-slf4j"    % "2.0.18",
+    "ch.qos.logback" % "logback-classic" % "1.6.3",
+    "ch.qos.logback" % "logback-core"    % "1.6.3",
+    "org.slf4j"      % "jcl-over-slf4j"  % "2.0.19",
+    "org.slf4j"      % "jul-to-slf4j"    % "2.0.19",
     "org.typelevel" %% "log4cats-slf4j"  % "2.8.0"
   )
 
@@ -33,8 +33,8 @@ object Dependencies {
     "org.tpolecat" %% "doobie-hikari"               % doobieVersion,
     "org.tpolecat" %% "doobie-refined"              % doobieVersion,
     "org.tpolecat" %% "doobie-scalatest"            % doobieVersion % Test,
-    "com.mysql"     % "mysql-connector-j"           % "9.7.0",
-    "com.zendesk"   % "mysql-binlog-connector-java" % "0.30.3"
+    "com.mysql"     % "mysql-connector-j"           % "26.7.0",
+    "com.zendesk"   % "mysql-binlog-connector-java" % "0.31.0"
   )
 
   val Circe = libraryDependencies ++= Seq(
