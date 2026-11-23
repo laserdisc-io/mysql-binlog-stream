@@ -6,8 +6,8 @@ import cats.implicits._
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.shyiko.mysql.binlog.BinaryLogClient
 import db.MySqlContainerTest
-import doobie.hikari.HikariTransactor
-import doobie.implicits._
+import org.typelevel.doobie.hikari.HikariTransactor
+import org.typelevel.doobie.implicits._
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import io.laserdisc.mysql.binlog.database
