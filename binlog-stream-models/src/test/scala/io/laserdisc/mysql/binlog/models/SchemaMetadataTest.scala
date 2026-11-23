@@ -4,8 +4,8 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.dimafeng.testcontainers.ForAllTestContainer
 import db.MySqlContainerTest
-import doobie.util.transactor.Transactor
-import doobie.util.transactor.Transactor.Aux
+import org.typelevel.doobie.util.transactor.Transactor
+import org.typelevel.doobie.util.transactor.Transactor.Aux
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
